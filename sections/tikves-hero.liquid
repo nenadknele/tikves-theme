@@ -1,0 +1,502 @@
+{%- liquid
+  assign s = section.settings
+
+  case s.button_size
+    when 'small'
+      assign btn_pad = '10px 18px'
+      assign btn_font = 12
+    when 'large'
+      assign btn_pad = '15px 28px'
+      assign btn_font = 14
+    else
+      assign btn_pad = '13px 24px'
+      assign btn_font = 13
+  endcase
+
+  comment
+    Solid style is Terra Rossa A64029 with white text. Optional Paper
+    panel behind the words. Focal point can anchor top or bottom. Desktop
+    frame can follow a proportion. Heading can render in capitals.
+    Buttons uppercase and tracked like every other button on the site.
+    6 Sep 2026: in panel mode the phone stacks image then words, and the
+    button runs full width there so it matches the tile buttons.
+    23 Sep 2026: one image per screen size through a picture element, so
+    the phone no longer downloads the desktop photograph and the desktop
+    no longer downloads the phone one. Heading tag is a setting, so a page
+    keeps a single h1. Lazy loading for a hero that sits below the fold.
+    28 Sep 2026, speed: with Load first on, the photograph for each screen
+    size is announced in the response headers, so the phone starts on it
+    before the page has finished arriving. A middle size for the phone.
+  endcomment
+
+  assign scrim_a = s.scrim | divided_by: 100.0
+  assign scrim_b = s.scrim | times: 0.6 | divided_by: 100.0
+  if s.valign == 'flex-end'
+    assign scrim_dir = 'to top right'
+  elsif s.valign == 'flex-start'
+    assign scrim_dir = 'to bottom right'
+  else
+    assign scrim_dir = 'to right'
+  endif
+
+  if s.text_panel
+    assign txt_color = '#1F2328'
+    assign txt_shadow = 'none'
+  else
+    assign txt_color = '#ffffff'
+    assign txt_shadow = '0 1px 14px rgba(0,0,0,0.45)'
+  endif
+
+  case s.button_style
+    when 'outline'
+      assign btn_bg = 'transparent'
+      assign btn_color = txt_color
+      assign btn_border = '1px solid currentColor'
+      assign btn_bg_hover = '#A64029'
+      assign btn_color_hover = '#ffffff'
+      assign btn_border_hover = '1px solid #A64029'
+    when 'link'
+      assign btn_bg = 'transparent'
+      assign btn_color = txt_color
+      assign btn_border = '0'
+      assign btn_pad = '0'
+      assign btn_bg_hover = 'transparent'
+      assign btn_color_hover = txt_color
+      assign btn_border_hover = '0'
+    when 'cream'
+      assign btn_bg = '#F5EFE7'
+      assign btn_color = '#1F2328'
+      assign btn_border = '1px solid #1F2328'
+      assign btn_bg_hover = '#1F2328'
+      assign btn_color_hover = '#F5EFE7'
+      assign btn_border_hover = '1px solid #1F2328'
+    else
+      assign btn_bg = '#A64029'
+      assign btn_color = '#ffffff'
+      assign btn_border = '1px solid #A64029'
+      assign btn_bg_hover = '#8E3623'
+      assign btn_color_hover = '#ffffff'
+      assign btn_border_hover = '1px solid #8E3623'
+  endcase
+
+  assign heading_tag = s.heading_tag | default: 'h1'
+  if s.lcp
+    assign img_loading = 'eager'
+    assign img_priority = 'high'
+  else
+    assign img_loading = 'lazy'
+    assign img_priority = 'auto'
+  endif
+-%}
+
+<div class="tk-hero tk-hero--{{ section.id }}{% if s.text_panel %} tk-hero--panel{% endif %}{% if s.stack_mobile and s.text_panel == false %} tk-hero--stack{% endif %}">
+  {%- if s.image != blank or s.image_mobile != blank -%}
+    {%- liquid
+      assign main_img = s.image
+      if main_img == blank
+        assign main_img = s.image_mobile
+      endif
+    -%}
+    {%- capture desk_set -%}{{ main_img | image_url: width: 800 }} 800w, {{ main_img | image_url: width: 1400 }} 1400w, {{ main_img | image_url: width: 2400 }} 2400w{%- endcapture -%}
+    {%- if s.image != blank and s.image_mobile != blank -%}
+      {%- capture mob_set -%}{{ s.image_mobile | image_url: width: 600 }} 600w, {{ s.image_mobile | image_url: width: 900 }} 900w, {{ s.image_mobile | image_url: width: 1200 }} 1200w{%- endcapture -%}
+      {%- if s.lcp -%}
+        {{ s.image_mobile | image_url: width: 1200 | preload_tag: as: 'image', imagesrcset: mob_set, imagesizes: '100vw', media: '(max-width: 768px)', fetchpriority: 'high' }}
+        {{ main_img | image_url: width: 2400 | preload_tag: as: 'image', imagesrcset: desk_set, imagesizes: '100vw', media: '(min-width: 769px)', fetchpriority: 'high' }}
+      {%- endif -%}
+    {%- elsif s.lcp -%}
+      {{ main_img | image_url: width: 2400 | preload_tag: as: 'image', imagesrcset: desk_set, imagesizes: '100vw', fetchpriority: 'high' }}
+    {%- endif -%}
+    <picture class="tk-hero__pic">
+      {%- if s.image != blank and s.image_mobile != blank -%}
+        <source
+          media="(max-width: 768px)"
+          srcset="{{ mob_set }}"
+          sizes="100vw"
+          width="{{ s.image_mobile.width }}"
+          height="{{ s.image_mobile.height }}">
+      {%- endif -%}
+      <img
+        class="tk-hero__img"
+        src="{{ main_img | image_url: width: 2400 }}"
+        srcset="{{ desk_set }}"
+        sizes="100vw"
+        alt="{{ main_img.alt | escape }}"
+        width="{{ main_img.width }}"
+        height="{{ main_img.height }}"
+        loading="{{ img_loading }}"
+        fetchpriority="{{ img_priority }}">
+    </picture>
+  {%- endif -%}
+
+  <div class="tk-hero__scrim"></div>
+
+  {%- if s.image_link != blank -%}
+    <a class="tk-hero__link" href="{{ s.image_link }}" aria-label="{{ s.image_link_label | default: 'Shop the cases' | escape }}"></a>
+  {%- endif -%}
+
+  <div class="tk-hero__inner">
+    <div class="tk-hero__text">
+      {%- if s.heading != blank -%}
+        <{{ heading_tag }} class="tk-hero__title">{{ s.heading | escape }}</{{ heading_tag }}>
+      {%- endif -%}
+      {%- if s.subheading != blank -%}
+        <p class="tk-hero__sub">{{ s.subheading | escape }}</p>
+      {%- endif -%}
+      {%- if s.button_label != blank -%}
+        <a class="tk-hero__btn tk-hero__btn--{{ s.button_style }}" href="{{ s.button_link | default: '/collections/all' }}">{{ s.button_label | escape }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .tk-hero--{{ section.id }} {
+    position: relative;
+    overflow: hidden;
+    height: {{ s.height_mobile }}px;
+  }
+  .tk-hero--{{ section.id }} .tk-hero__pic { display: block; }
+  .tk-hero--{{ section.id }} .tk-hero__img {
+    display: block;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: {{ s.focal_mobile }};
+  }
+  .tk-hero--{{ section.id }} .tk-hero__scrim {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient({{ scrim_dir }}, rgba(0,0,0,{{ scrim_a }}) 0%, rgba(0,0,0,{{ scrim_b }}) 40%, rgba(0,0,0,0) 75%);
+  }
+  .tk-hero--{{ section.id }} .tk-hero__link {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 2;
+    display: block;
+  }
+  .tk-hero--{{ section.id }} .tk-hero__inner {
+    position: relative;
+    z-index: 3;
+    height: 100%;
+    display: flex;
+    align-items: {{ s.valign }};
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    pointer-events: none;
+  }
+  .tk-hero--{{ section.id }} .tk-hero__inner a { pointer-events: auto; }
+  .tk-hero--{{ section.id }} .tk-hero__text {
+    box-sizing: border-box;
+    max-width: {{ s.text_width_mobile }}%;
+    padding: 32px 24px !important;
+    margin: 0 !important;
+  }
+
+  /* Panel mode on the phone: photograph, then the words underneath. */
+  .tk-hero--{{ section.id }}.tk-hero--panel { height: auto; }
+  .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__img {
+    position: relative;
+    height: {{ s.height_mobile }}px;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__scrim { display: none; }
+  .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__link { bottom: auto; height: {{ s.height_mobile }}px; }
+  .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__inner {
+    display: block;
+    height: auto;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__text {
+    background: #F5EFE7;
+    max-width: none;
+    margin: 0 !important;
+    padding: 24px 20px 28px !important;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    font-size: 14px;
+  }
+
+  /* Stack mode, phone only: photograph, then the words on Paper. Desktop keeps the overlay. 7 Sep 2026. */
+  .tk-hero--{{ section.id }}.tk-hero--stack { height: auto; }
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__img {
+    position: relative;
+    height: {{ s.height_mobile }}px;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__scrim { display: none; }
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__link { bottom: auto; height: {{ s.height_mobile }}px; }
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__inner {
+    display: block;
+    height: auto;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__text {
+    background: #F5EFE7;
+    max-width: none;
+    margin: 0 !important;
+    padding: 32px 20px 32px !important;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__title,
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__sub {
+    color: #1F2328;
+    text-shadow: none;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    font-size: 14px;
+  }
+
+  .tk-hero--{{ section.id }} .tk-hero__title {
+    margin: 0;
+    color: {{ txt_color }};
+    font-size: {{ s.title_size_mobile }}px;
+    line-height: 1.15;
+    text-shadow: {{ txt_shadow }};
+    {%- if s.title_caps %}
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.1;
+    {%- endif %}
+  }
+  .tk-hero--{{ section.id }} .tk-hero__sub {
+    margin: 8px 0 0;
+    color: {{ txt_color }};
+    font-size: {{ s.sub_size_mobile }}px;
+    line-height: 1.45;
+    text-shadow: {{ txt_shadow }};
+  }
+  .tk-hero--{{ section.id }} .tk-hero__btn {
+    display: inline-block;
+    margin-top: 16px;
+    padding: {{ btn_pad }};
+    background: {{ btn_bg }} !important;
+    background-image: none !important;
+    color: {{ btn_color }} !important;
+    border: {{ btn_border }} !important;
+    border-radius: 999px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: {{ btn_font }}px;
+    line-height: 1.3;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .tk-hero--{{ section.id }} .tk-hero__btn--link {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    border-radius: 0;
+  }
+  .tk-hero--{{ section.id }} .tk-hero__btn:hover,
+  .tk-hero--{{ section.id }} .tk-hero__btn:focus-visible {
+    background: {{ btn_bg_hover }} !important;
+    background-image: none !important;
+    color: {{ btn_color_hover }} !important;
+    border: {{ btn_border_hover }} !important;
+    opacity: 1;
+  }
+
+  @media only screen and (min-width: 769px) {
+    .tk-hero--{{ section.id }},
+    .tk-hero--{{ section.id }}.tk-hero--panel,
+    .tk-hero--{{ section.id }}.tk-hero--stack {
+      {%- if s.ratio_desktop == 'fixed' or s.ratio_desktop == blank %}
+      height: {{ s.height_desktop }}px;
+      {%- else %}
+      height: auto;
+      aspect-ratio: {{ s.ratio_desktop }};
+      {%- endif %}
+    }
+    .tk-hero--{{ section.id }} .tk-hero__img { object-position: {{ s.focal_desktop }}; }
+    .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__img,
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__img {
+      position: absolute;
+      height: 100%;
+    }
+    .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__scrim { display: block; }
+    .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__link { bottom: 0; height: auto; }
+    .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__btn {
+      display: inline-block;
+      width: auto;
+      padding: {{ btn_pad }};
+      font-size: {{ btn_font }}px;
+    }
+    .tk-hero--{{ section.id }} .tk-hero__inner,
+    .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__inner,
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__inner {
+      display: flex;
+      align-items: {{ s.valign }};
+      {%- if s.ratio_desktop == 'fixed' or s.ratio_desktop == blank %}
+      height: 100%;
+      {%- else %}
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      height: auto;
+      {%- endif %}
+    }
+    .tk-hero--{{ section.id }} .tk-hero__text {
+      max-width: calc({{ s.text_width_desktop }}px + 2 * max(56px, 6vw));
+      padding: 64px max(56px, 6vw) !important;
+    }
+    .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__text {
+      background: rgba(245, 239, 231, 0.96);
+      margin: max(32px, 3vw) !important;
+      padding: 28px 32px !important;
+      max-width: calc({{ s.text_width_desktop }}px + 64px);
+    }
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__scrim { display: block; }
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__link { bottom: 0; height: auto; }
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__text {
+      background: transparent;
+      max-width: calc({{ s.text_width_desktop }}px + 2 * max(56px, 6vw));
+      padding: 64px max(56px, 6vw) !important;
+    }
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__title,
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__sub {
+      color: {{ txt_color }};
+      text-shadow: {{ txt_shadow }};
+    }
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__btn {
+      display: inline-block;
+      width: auto;
+      padding: {{ btn_pad }};
+      font-size: {{ btn_font }}px;
+    }
+    .tk-hero--{{ section.id }} .tk-hero__title { font-size: {{ s.title_size_desktop }}px; }
+    .tk-hero--{{ section.id }} .tk-hero__sub { font-size: {{ s.sub_size_desktop }}px; margin-top: 10px; }
+    .tk-hero--{{ section.id }} .tk-hero__btn { margin-top: 20px; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Tikves hero",
+  "settings": [
+    { "type": "header", "content": "Images" },
+    { "type": "image_picker", "id": "image", "label": "Desktop image" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Mobile image" },
+    { "type": "checkbox", "id": "lcp", "label": "Load first", "default": true, "info": "On for the hero at the top of the page, so the photograph loads before anything else. Off for a hero further down, so it loads when the reader gets near it." },
+    { "type": "url", "id": "image_link", "label": "Make the whole image a link" },
+    { "type": "text", "id": "image_link_label", "label": "Link description, for screen readers", "default": "Shop the cases" },
+    {
+      "type": "select",
+      "id": "focal_desktop",
+      "label": "Desktop focal point",
+      "default": "center center",
+      "options": [
+        { "value": "center top", "label": "Top" },
+        { "value": "left center", "label": "Left" },
+        { "value": "center center", "label": "Centre" },
+        { "value": "right center", "label": "Right" },
+        { "value": "center bottom", "label": "Bottom" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "focal_mobile",
+      "label": "Mobile focal point",
+      "default": "right center",
+      "options": [
+        { "value": "center top", "label": "Top" },
+        { "value": "left center", "label": "Left" },
+        { "value": "center center", "label": "Centre" },
+        { "value": "right center", "label": "Right" },
+        { "value": "center bottom", "label": "Bottom" }
+      ]
+    },
+    { "type": "header", "content": "Text" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "A small range." },
+    {
+      "type": "select",
+      "id": "heading_tag",
+      "label": "Heading level",
+      "default": "h1",
+      "info": "One h1 per page. The first hero on a page takes h1, any other takes h2. The size does not change.",
+      "options": [
+        { "value": "h1", "label": "h1, the page heading" },
+        { "value": "h2", "label": "h2, a section heading" }
+      ]
+    },
+    { "type": "checkbox", "id": "title_caps", "label": "Heading in capitals", "default": false, "info": "Tracked capitals, matching the section headings." },
+    { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "We can tell you everything about every bottle in it." },
+    { "type": "checkbox", "id": "text_panel", "label": "Words on a Paper panel", "default": false, "info": "Ink text on a Paper panel over the image on desktop. On the phone the words sit under the photograph instead." },
+    { "type": "checkbox", "id": "stack_mobile", "label": "Stack on the phone", "default": false, "info": "Photograph first, then the words on Paper underneath, on the phone only. Desktop keeps the words on the image. Ignored when the Paper panel is on." },
+    {
+      "type": "select",
+      "id": "valign",
+      "label": "Vertical position",
+      "default": "center",
+      "options": [
+        { "value": "flex-start", "label": "Top" },
+        { "value": "center", "label": "Middle" },
+        { "value": "flex-end", "label": "Bottom" }
+      ]
+    },
+    { "type": "header", "content": "Button" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Shop the cases" },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "default": "solid",
+      "options": [
+        { "value": "solid", "label": "Solid terra rossa" },
+        { "value": "cream", "label": "Cream with ink text" },
+        { "value": "outline", "label": "Outlined" },
+        { "value": "link", "label": "Plain underlined text" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "button_size",
+      "label": "Button size",
+      "default": "small",
+      "options": [
+        { "value": "small", "label": "Small" },
+        { "value": "medium", "label": "Medium" },
+        { "value": "large", "label": "Large" }
+      ]
+    },
+    { "type": "header", "content": "Text column width" },
+    { "type": "range", "id": "text_width_mobile", "label": "Mobile width", "min": 40, "max": 100, "step": 2, "unit": "%", "default": 60 },
+    { "type": "range", "id": "text_width_desktop", "label": "Desktop width", "min": 280, "max": 900, "step": 10, "unit": "px", "default": 480 },
+    { "type": "header", "content": "Type sizes" },
+    { "type": "range", "id": "title_size_mobile", "label": "Heading, mobile", "min": 18, "max": 44, "step": 1, "unit": "px", "default": 32 },
+    { "type": "range", "id": "title_size_desktop", "label": "Heading, desktop", "min": 28, "max": 90, "step": 2, "unit": "px", "default": 56 },
+    { "type": "range", "id": "sub_size_mobile", "label": "Subheading, mobile", "min": 13, "max": 22, "step": 1, "unit": "px", "default": 16 },
+    { "type": "range", "id": "sub_size_desktop", "label": "Subheading, desktop", "min": 14, "max": 28, "step": 1, "unit": "px", "default": 19 },
+    { "type": "header", "content": "Height and contrast" },
+    { "type": "range", "id": "height_mobile", "label": "Mobile height", "min": 220, "max": 560, "step": 10, "unit": "px", "default": 380 },
+    {
+      "type": "select",
+      "id": "ratio_desktop",
+      "label": "Desktop shape",
+      "default": "fixed",
+      "info": "Fixed height crops the photograph to fit. A proportion shows more of it, taller on wide screens.",
+      "options": [
+        { "value": "fixed", "label": "Fixed height, below" },
+        { "value": "21 / 9", "label": "Wide, 21:9" },
+        { "value": "2 / 1", "label": "2:1" },
+        { "value": "16 / 9", "label": "16:9" },
+        { "value": "3 / 2", "label": "3:2, the whole photograph" }
+      ]
+    },
+    { "type": "range", "id": "height_desktop", "label": "Desktop height, when fixed", "min": 320, "max": 760, "step": 10, "unit": "px", "default": 480 },
+    { "type": "range", "id": "scrim", "label": "Shading behind text", "min": 0, "max": 80, "step": 2, "unit": "%", "default": 42, "info": "Rises from the corner the words sit in. Not needed with the Paper panel." }
+  ],
+  "presets": [
+    { "name": "Tikves hero" }
+  ],
+  "disabled_on": { "groups": ["footer", "header", "custom.popups"] }
+}
+{% endschema %}

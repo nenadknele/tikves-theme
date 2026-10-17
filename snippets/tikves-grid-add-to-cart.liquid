@@ -1,0 +1,98 @@
+{%- comment -%}
+  TIKVES LONDON . GRID ADD TO CART
+  Rendered under every product card on collection pages, search results
+  and related products, so a customer can buy without opening the page.
+  Operator ruling 4 Sep 2026: an Add to cart button on all products
+  everywhere.
+
+  28 Sep 2026, operator: the full-width bar was too big on the phone, the
+  small pill that replaced it was too small. It is now a wide pill,
+  centred under the price, most of the card's width but not edge to edge.
+  The card's title, descriptor and price are centred to match; that rule
+  lives in snippets/tikves-head-css.liquid. Colours unchanged.
+
+  One variant and in stock: adds straight to the cart without a page
+  reload and opens the cart drawer.
+  More than one variant: sends the customer to the product page.
+  Out of stock: the button stays, greyed, reading Sold out.
+
+  The CSS and the click handler are injected once per page, guarded by
+  window.tkGridAtc. The same handler drives the Add to cart buttons in
+  the tikves-singles rows, which use the same data-tk-gatc hook.
+
+  TO UNDO: delete this snippet and the one render line in
+  snippets/product-grid-item.liquid.
+{%- endcomment -%}
+
+{%- liquid
+  assign v = product.selected_or_first_available_variant | default: product.variants.first
+  assign many = false
+  if product.variants.size > 1
+    assign many = true
+  endif
+-%}
+
+<div class="tk-gatc">
+  {%- if product.available == false -%}
+    <button type="button" class="tk-gatc__btn" disabled aria-disabled="true">{{ 'products.product.sold_out' | t }}</button>
+  {%- elsif many -%}
+    <a class="tk-gatc__btn" href="{{ product.url | within: collection }}">{{ 'products.product.add_to_cart' | t }}</a>
+  {%- else -%}
+    <form class="tk-gatc__form" action="{{ routes.cart_add_url }}" method="post" data-tk-gatc>
+      <input type="hidden" name="id" value="{{ v.id }}">
+      <input type="hidden" name="quantity" value="1">
+      <button type="submit" class="tk-gatc__btn">{{ 'products.product.add_to_cart' | t }}</button>
+    </form>
+  {%- endif -%}
+</div>
+
+<script>
+(function () {
+  if (window.tkGridAtc) return;
+  window.tkGridAtc = true;
+
+  var css = ''
+    + '.tk-gatc{margin:10px 0 0;position:relative;z-index:2;text-align:center}'
+    + '.tk-gatc__form{margin:0}'
+    + '.tk-gatc__btn{display:block;width:86%;max-width:340px;margin:0 auto;box-sizing:border-box;padding:13px 20px;'
+    + 'border:1px solid #A64029;border-radius:999px;background:#A64029;color:#FFFFFF;'
+    + 'font-size:13px;letter-spacing:.1em;text-transform:uppercase;text-align:center;'
+    + 'text-decoration:none;cursor:pointer;line-height:1.3;'
+    + 'transition:background-color .15s ease,color .15s ease,border-color .15s ease}'
+    + '.tk-gatc__btn:hover{background:#8E3623;border-color:#8E3623;color:#FFFFFF}'
+    + '.tk-gatc__btn[disabled]{background:transparent;color:#1F2328;border-color:#B9AC9B;opacity:.7;cursor:default}';
+  var st = document.createElement('style');
+  st.appendChild(document.createTextNode(css));
+  document.head.appendChild(st);
+
+  document.addEventListener('submit', function (e) {
+    var form = e.target.closest ? e.target.closest('[data-tk-gatc]') : null;
+    if (!form) return;
+    e.preventDefault();
+    var btn = form.querySelector('button');
+    if (!btn || btn.disabled) return;
+    var label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Adding';
+    fetch('/cart/add.js', { method: 'POST', headers: { 'Accept': 'application/json' }, body: new FormData(form) })
+      .then(function (r) { if (!r.ok) { throw new Error('add failed'); } return r.json(); })
+      .then(function () { return fetch('/cart.js', { headers: { 'Accept': 'application/json' } }).then(function (r) { return r.json(); }); })
+      .then(function (cart) {
+        var num = document.querySelector('.cart-link__bubble-num');
+        if (num) { num.textContent = cart.item_count; }
+        var bub = document.querySelector('.cart-link__bubble');
+        if (bub) { bub.classList.add('cart-link__bubble--visible'); }
+        document.dispatchEvent(new CustomEvent('cart:build'));
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
+        document.dispatchEvent(new CustomEvent('cart:open'));
+        btn.textContent = 'Added';
+        setTimeout(function () { btn.disabled = false; btn.textContent = label; }, 2500);
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.textContent = label;
+        form.submit();
+      });
+  });
+})();
+</script>

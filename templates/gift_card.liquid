@@ -1,0 +1,182 @@
+{% layout 'gift_card' %}
+
+{%- liquid
+  assign formatted_initial_value = gift_card.initial_value | money_without_trailing_zeros: gift_card.currency
+  assign card_inactive = false
+  if gift_card.expired or gift_card.enabled != true
+    assign card_inactive = true
+  endif
+  assign expiry_date = gift_card.expires_on | date: '%-d %B %Y'
+  assign code_size = gift_card.code | format_code | size
+-%}
+
+{%- style -%}
+  .template-giftcard .page-width { max-width: 560px; }
+  .template-giftcard .giftcard-header { padding: 36px 0 8px; }
+  .template-giftcard .giftcard { font-size: 16px; }
+
+  .tl-gc { padding: 0 20px 24px; text-align: center; color: {{ settings.color_body_text }}; }
+  .tl-gc__eyebrow { margin: 0 0 6px; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: {{ settings.color_header_text }}; }
+  .tl-gc__title { margin: 0 0 24px; font-size: 28px; line-height: 1.2; }
+
+  .tl-gc__message { margin: 0 auto 28px; max-width: 420px; padding: 18px 20px; border: 1px solid {{ settings.color_borders }}; background: {{ settings.color_header }}; text-align: left; }
+  .tl-gc__message p { margin: 0; }
+  .tl-gc__message-label { display: block; margin-bottom: 6px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: {{ settings.color_header_text }}; }
+
+  .tl-gc__image { margin: 0 auto 24px; max-width: 420px; }
+  .tl-gc__image img { display: block; width: 100%; height: auto; }
+
+  .tl-gc__amount { margin: 0 0 20px; font-size: 56px; line-height: 1; color: {{ settings.color_header_text }}; }
+  .tl-gc__amount--long { font-size: 40px; }
+  .tl-gc__balance { margin: 0 0 20px; font-size: 15px; }
+  .tl-gc__balance strong { color: {{ settings.color_header_text }}; }
+
+  .tl-gc__code { margin: 20px auto 8px; max-width: 420px; padding: 18px 12px; border: 1px dashed {{ settings.color_borders }}; background: #FFFFFF; cursor: pointer; }
+  .tl-gc__code-text { display: block; font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 22px; letter-spacing: .12em; line-height: 1.3; text-transform: uppercase; word-break: break-all; }
+  .tl-gc__code--medium .tl-gc__code-text { font-size: 18px; }
+  .tl-gc__code--small .tl-gc__code-text { font-size: 15px; letter-spacing: .06em; }
+  .tl-gc__code-hint { margin: 0 0 24px; font-size: 13px; color: {{ settings.color_body_text }}; opacity: .7; }
+
+  .tl-gc__qr { margin: 4px auto 24px; }
+  .tl-gc__qr .giftcard__qr-code { display: block; width: 150px; height: 150px; margin: 0 auto; padding: 0; border: 0; background: transparent; font-size: 0; line-height: 0; overflow: hidden; }
+  .tl-gc__qr .giftcard__qr-code canvas { display: none; }
+  .tl-gc__qr .giftcard__qr-code img { display: block; width: 150px; height: 150px; margin: 0; padding: 0; border: 0; }
+  .tl-gc__qr .giftcard__qr-code:empty { display: none; }
+  .tl-gc__qr .tl-gc__code-hint { margin: 6px 0 0; }
+
+  .tl-gc__status { display: inline-block; margin: 0 0 20px; padding: 6px 12px; border: 1px solid {{ settings.color_borders }}; font-size: 13px; letter-spacing: .04em; }
+  .tl-gc__status--off { background: {{ settings.color_body_text }}; color: {{ settings.color_body_bg }}; border-color: transparent; }
+  .tl-gc--inactive .tl-gc__code-text { text-decoration: line-through; opacity: .5; }
+
+  .tl-gc__how { margin: 0 auto 28px; max-width: 420px; }
+  .tl-gc__how p { margin: 0 0 10px; }
+
+  .tl-gc__actions { margin: 0 auto 8px; max-width: 420px; }
+  .tl-gc__actions .btn { display: block; width: 100%; }
+  .tl-gc__print { display: inline-block; margin-top: 16px; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
+
+  .tl-gc__small { margin: 32px auto 0; max-width: 420px; padding-top: 20px; border-top: 1px solid {{ settings.color_borders }}; font-size: 13px; line-height: 1.5; opacity: .8; }
+  .tl-gc__small p { margin: 0 0 8px; }
+  .tl-gc__small a { text-decoration: underline; text-underline-offset: 3px; }
+
+  .giftcard__footer { padding: 20px 0 48px; }
+
+  @media print {
+    .tl-gc__actions, .tl-gc__print, .giftcard__footer { display: none; }
+  }
+{%- endstyle -%}
+
+<div class="tl-gc{% if card_inactive %} tl-gc--inactive{% endif %}">
+
+  <p class="tl-gc__eyebrow">Gift card</p>
+  <h2 class="tl-gc__title">A gift card for Tikveš London</h2>
+
+  {%- if gift_card.message != blank -%}
+    <div class="tl-gc__message">
+      <span class="tl-gc__message-label">A note from the sender</span>
+      <p>{{ gift_card.message | escape }}</p>
+    </div>
+  {%- endif -%}
+
+  <div class="tl-gc__image">
+    <img
+      src="{{ 'tikves-gift-card-landscape-1600x1000.png' | file_img_url: '640x' }}"
+      srcset="{{ 'tikves-gift-card-landscape-1600x1000.png' | file_img_url: '480x' }} 480w, {{ 'tikves-gift-card-landscape-1600x1000.png' | file_img_url: '960x' }} 960w"
+      sizes="(max-width: 520px) 100vw, 420px"
+      width="960"
+      height="600"
+      alt="Tikveš London gift card"
+      loading="eager">
+  </div>
+
+  {%- assign initial_value_size = formatted_initial_value | size -%}
+  <p class="h1 tl-gc__amount{% if initial_value_size > 6 %} tl-gc__amount--long{% endif %}">{{ formatted_initial_value }}</p>
+
+  {%- if gift_card.balance != gift_card.initial_value -%}
+    <p class="tl-gc__balance"><strong>{{ gift_card.balance | money }}</strong> left of {{ formatted_initial_value }}</p>
+  {%- endif -%}
+
+  {%- if gift_card.enabled != true -%}
+    <span class="tl-gc__status tl-gc__status--off">This card has been disabled</span>
+  {%- elsif gift_card.expired -%}
+    <span class="tl-gc__status tl-gc__status--off">Expired on {{ expiry_date }}</span>
+  {%- elsif gift_card.expires_on -%}
+    <span class="tl-gc__status">Valid until {{ expiry_date }}</span>
+  {%- endif -%}
+
+  <div class="tl-gc__code{% if code_size > 25 and code_size <= 30 %} tl-gc__code--medium{% elsif code_size > 30 %} tl-gc__code--small{% endif %}" onclick="selectText('GiftCardDigits');" title="Tap to select the code">
+    <strong class="tl-gc__code-text" id="GiftCardDigits">{{ gift_card.code | format_code }}</strong>
+  </div>
+  <p class="tl-gc__code-hint">Tap the code to select it</p>
+
+  {%- if gift_card.qr_identifier != blank -%}
+    <div class="tl-gc__qr" id="QrWrap">
+      <div class="giftcard__qr-code" id="QrCode" data-identifier="{{ gift_card.qr_identifier }}"></div>
+      <p class="tl-gc__code-hint">Scan to open this card</p>
+    </div>
+  {%- endif -%}
+
+  <div class="tl-gc__how">
+    <p>Enter this code at checkout to use the card.</p>
+    <p>It spends on anything in the shop. Wine, rakija, a curated case, or a bit of each. Spend less than the card and the balance stays on it for next time. Spend more and you pay the difference.</p>
+  </div>
+
+  <div class="tl-gc__actions">
+    <a href="{{ shop.url }}" class="btn">Shop the range</a>
+    <a href="#" class="tl-gc__print" onclick="window.print(); return false;">Print this page</a>
+  </div>
+
+  <div class="tl-gc__small">
+    <p>We only sell alcohol to over 18s. Whoever uses this card confirms their age at checkout.</p>
+    <p><a href="{{ shop.url }}/pages/delivery">How delivery works</a>.</p>
+    <p>Questions about the card? <a href="{{ shop.url }}/pages/contact">Get in touch</a>.</p>
+  </div>
+
+</div>
+
+<script type="text/javascript">
+  function selectText(element) {
+    var doc = document,
+        text = doc.getElementById(element);
+    if (!text) { return; }
+    if (window.getSelection) {
+      var selection = window.getSelection(),
+          range = doc.createRange();
+      range.selectNodeContents(text);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }
+
+  (function () {
+    function hideQr() {
+      var wrap = document.getElementById('QrWrap');
+      if (wrap && wrap.parentNode) { wrap.parentNode.removeChild(wrap); }
+    }
+
+    function buildQr() {
+      var el = document.getElementById('QrCode');
+      if (!el) { return; }
+      var identifier = el.getAttribute('data-identifier');
+      if (!identifier || typeof window.QRCode === 'undefined') { hideQr(); return; }
+      try {
+        new window.QRCode(el, {
+          text: identifier,
+          width: 300,
+          height: 300,
+          colorDark: '{{ settings.color_body_text }}',
+          colorLight: '#FFFFFF',
+          imageAltText: 'QR code for this gift card'
+        });
+      } catch (e) {
+        hideQr();
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', buildQr);
+    } else {
+      buildQr();
+    }
+  })();
+</script>

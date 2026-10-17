@@ -1,0 +1,434 @@
+{%- doc -%}
+  Hover/focus-triggered informational popup.
+
+  @param {string} text - Tooltip content
+  @param {string} content - The trigger element HTML
+  @param {string} [placement] - 'top' | 'bottom' | 'start' | 'end'. Default: 'top'
+  @param {boolean} [arrow] - Render the arrow pointing at the trigger. Default: true
+  @param {number} [delay] - Milliseconds to wait before showing on hover. Skipped for 300ms after any tooltip on the page closes, so moving between neighbouring triggers feels instant. Focus always shows immediately. Default: 200
+  @param {boolean} [decorative] - Mark the bubble `aria-hidden` and skip the `aria-describedby` wiring. Use when the trigger already carries the same text as its accessible name. Default: false
+  @param {boolean} [show_on_focus] - Open on keyboard focus. Turn off when the trigger's content is swapped on selection, which otherwise replays the open animation. Default: true
+  @param {string} [classes] - Additional CSS classes
+  @param {string} [style] - Inline style overrides
+  @param {string} [id] - HTML id attribute
+  @param {string} [attr] - Additional HTML attributes
+
+  @example
+  {% render 'kit.tooltip', text: 'Add to wishlist', content: icon_button_html %}
+  @example
+  {% render 'kit.tooltip', text: 'Ships in 2-3 days', placement: 'bottom', content: trigger_html %}
+{%- enddoc -%}
+
+{%- render 'kit.tokens' -%}
+
+{%- liquid
+  assign placement = placement | default: 'top'
+  assign arrow = arrow | default: true, allow_false: true
+  assign decorative = decorative | default: false, allow_false: true
+  assign show_on_focus = show_on_focus | default: true, allow_false: true
+  assign delay = delay | default: 200
+
+  assign class_list = 'kit-tooltip'
+
+  if arrow == false
+    assign class_list = class_list | append: ' kit-tooltip--no-arrow'
+  endif
+
+  if classes != blank
+    assign class_list = class_list | append: ' ' | append: classes
+  endif
+
+  if id != blank
+    assign tooltip_id = 'tooltip-' | append: id
+  else
+    assign tooltip_id = 'tooltip-' | append: text | handleize | truncate: 20, ''
+  endif
+-%}
+
+<kit-tooltip
+  class="{{ class_list }}"
+  placement="{{ placement }}"
+  delay="{{ delay }}"
+  show-on-focus="{{ show_on_focus }}"
+  {%- if style != blank %}
+    style="{{ style | escape }}"
+  {% endif %}
+  {%- if id != blank %}
+    id="{{ id }}"
+  {% endif %}
+  {%- if attr != blank %}
+    {{ attr -}}
+  {% endif %}
+>
+  <span class="kit-tooltip__trigger">
+    {{- content -}}
+  </span>
+  <span
+    class="kit-tooltip__bubble"
+    popover="manual"
+    id="{{ tooltip_id }}"
+    {%- if decorative %}
+      aria-hidden="true"
+    {% else %}
+      role="tooltip"
+    {% endif %}
+  >
+    {{- text -}}
+  </span>
+</kit-tooltip>
+
+{% stylesheet %}
+  kit-tooltip {
+    display: inline-flex;
+  }
+
+  .kit-tooltip__trigger {
+    display: inline-flex;
+  }
+
+  .kit-tooltip__bubble {
+    --kit-tooltip-offset: 6px;
+    --kit-tooltip-color-background: var(--kit-color-primary);
+
+    position: absolute;
+    inset: auto;
+    width: max-content;
+    max-width: 200px;
+    margin: 0;
+    padding: var(--kit-space-2xs) var(--kit-space-xs);
+    border: none;
+    border-radius: var(--kit-radius-sm);
+    background-color: var(--kit-tooltip-color-background);
+    color: var(--kit-color-secondary);
+    font-family: var(--kit-font-family-body);
+    font-size: var(--kit-font-size-xs);
+    font-weight: var(--kit-font-weight-normal);
+    line-height: var(--kit-body-line-height);
+    letter-spacing: var(--kit-body-letter-spacing);
+    text-align: start;
+    overflow: visible;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(var(--kit-tooltip-enter-x, 0), var(--kit-tooltip-enter-y, 0));
+    transition:
+      opacity var(--kit-transition-normal),
+      transform var(--kit-transition-normal),
+      overlay var(--kit-transition-normal) allow-discrete,
+      display var(--kit-transition-normal) allow-discrete;
+  }
+
+  .kit-tooltip__bubble:popover-open {
+    opacity: 1;
+    transform: none;
+  }
+
+  @starting-style {
+    .kit-tooltip__bubble:popover-open {
+      opacity: 0;
+      transform: translate(var(--kit-tooltip-enter-x, 0), var(--kit-tooltip-enter-y, 0));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .kit-tooltip__bubble {
+      transition: none;
+    }
+  }
+
+  /* Arrow */
+  .kit-tooltip__bubble::after {
+    content: '';
+    position: absolute;
+    border: 4px solid transparent;
+  }
+
+  .kit-tooltip--no-arrow .kit-tooltip__bubble::after {
+    content: none;
+  }
+
+  /* Placement: top */
+  kit-tooltip[placement='top'] .kit-tooltip__bubble {
+    --kit-tooltip-enter-y: 4px;
+  }
+
+  kit-tooltip[placement='top'] .kit-tooltip__bubble::after {
+    top: 100%;
+    left: calc(50% + var(--arrow-offset, 0px));
+    transform: translateX(-50%);
+    border-top-color: var(--kit-tooltip-color-background);
+  }
+
+  /* Placement: bottom */
+  kit-tooltip[placement='bottom'] .kit-tooltip__bubble {
+    --kit-tooltip-enter-y: -4px;
+  }
+
+  kit-tooltip[placement='bottom'] .kit-tooltip__bubble::after {
+    bottom: 100%;
+    left: calc(50% + var(--arrow-offset, 0px));
+    transform: translateX(-50%);
+    border-bottom-color: var(--kit-tooltip-color-background);
+  }
+
+  /* Placement: start */
+  kit-tooltip[placement='start'] .kit-tooltip__bubble {
+    --kit-tooltip-enter-x: 4px;
+  }
+
+  kit-tooltip[placement='start']:dir(rtl) .kit-tooltip__bubble {
+    --kit-tooltip-enter-x: -4px;
+  }
+
+  kit-tooltip[placement='start'] .kit-tooltip__bubble::after {
+    inset-inline-start: 100%;
+    top: calc(50% + var(--arrow-offset, 0px));
+    transform: translateY(-50%);
+    border-inline-start-color: var(--kit-tooltip-color-background);
+  }
+
+  /* Placement: end */
+  kit-tooltip[placement='end'] .kit-tooltip__bubble {
+    --kit-tooltip-enter-x: -4px;
+  }
+
+  kit-tooltip[placement='end']:dir(rtl) .kit-tooltip__bubble {
+    --kit-tooltip-enter-x: 4px;
+  }
+
+  kit-tooltip[placement='end'] .kit-tooltip__bubble::after {
+    inset-inline-end: 100%;
+    top: calc(50% + var(--arrow-offset, 0px));
+    transform: translateY(-50%);
+    border-inline-end-color: var(--kit-tooltip-color-background);
+  }
+
+  @media (forced-colors: active) {
+    .kit-tooltip__bubble {
+      border: solid 1px;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  const FLIPS = { top: 'bottom', bottom: 'top', start: 'end', end: 'start' };
+  const VIEWPORT_MARGIN = 4;
+  const MIN_ARROW_INSET = 12;
+  const FINE_POINTER = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  // After one tooltip is shown, neighbouring triggers open instantly for a short period.
+  const WARM_WINDOW = 300;
+  let warmUntil = 0;
+
+  // Only one tooltip on the page is open at a time
+  let openTooltip = null;
+
+  class KitTooltip extends HTMLElement {
+    #abortController = null;
+    #openAbortController = null;
+    #showTimeout = null;
+    #placement = String();
+    #delay = Number();
+    #showOnFocus = Boolean();
+    #isRTL = Boolean();
+    #trigger = null;
+    #bubble = null;
+
+    connectedCallback() {
+      this.#placement = this.getAttribute('placement') || 'top';
+      this.#delay = Number(this.getAttribute('delay')) || 0;
+      this.#showOnFocus = this.getAttribute('show-on-focus') !== 'false';
+      this.#trigger = this.querySelector('.kit-tooltip__trigger');
+      this.#bubble = this.querySelector('.kit-tooltip__bubble');
+      this.#isRTL = getComputedStyle(this).direction === 'rtl';
+
+      if (this.#isRTL && !this.matches(':dir(rtl)')) this.setAttribute('dir', 'rtl');
+
+      if (!this.#trigger || !this.#bubble) return;
+
+      this.#wireDescription();
+
+      this.#abortController = new AbortController();
+      const { signal } = this.#abortController;
+
+      this.#trigger.addEventListener('mouseenter', () => this.#scheduleShow(), { signal });
+      this.#trigger.addEventListener('mouseleave', () => this.#hide(), { signal });
+      this.#trigger.addEventListener('focusout', () => this.#hide(), { signal });
+
+      if (this.#showOnFocus) {
+        this.#trigger.addEventListener(
+          'focusin',
+          (event) => {
+            if (event.target instanceof Element && event.target.matches(':focus-visible')) this.#show();
+          },
+          { signal }
+        );
+      }
+
+      // Hide until measured, or it flashes at the previous position
+      this.#bubble.addEventListener(
+        'beforetoggle',
+        (event) => {
+          if (event.newState === 'open') this.#bubble.style.visibility = 'hidden';
+        },
+        { signal }
+      );
+
+      this.#bubble.addEventListener(
+        'toggle',
+        (event) => {
+          if (event.newState === 'open') {
+            this.#position();
+            this.#bubble.style.visibility = '';
+            this.#trackWhileOpen();
+          } else {
+            this.#openAbortController?.abort();
+            this.#openAbortController = null;
+          }
+        },
+        { signal }
+      );
+    }
+
+    disconnectedCallback() {
+      if (openTooltip === this) openTooltip = null;
+      this.#abortController?.abort();
+      this.#openAbortController?.abort();
+      clearTimeout(this.#showTimeout);
+    }
+
+    #trackWhileOpen() {
+      this.#openAbortController?.abort();
+      this.#openAbortController = new AbortController();
+
+      window.addEventListener('resize', () => this.#position(), {
+        passive: true,
+        signal: this.#openAbortController.signal,
+      });
+
+      document.addEventListener('keydown', (event) => event.key === 'Escape' && this.#hide(), {
+        signal: this.#openAbortController.signal,
+      });
+    }
+
+    // The focusable element is usually nested (a radio inside a label)
+    #wireDescription() {
+      if (this.#bubble.getAttribute('aria-hidden') === 'true') return;
+
+      const describable = this.#trigger.querySelector(
+        'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+
+      if (describable && !describable.hasAttribute('aria-describedby')) {
+        describable.setAttribute('aria-describedby', this.#bubble.id);
+      }
+    }
+
+    #scheduleShow() {
+      // Tapping fires a synthetic mouseenter; only real hover should open
+      if (!FINE_POINTER.matches) return;
+
+      clearTimeout(this.#showTimeout);
+
+      if (Date.now() < warmUntil) {
+        this.#show();
+        return;
+      }
+
+      this.#showTimeout = setTimeout(() => this.#show(), this.#delay);
+    }
+
+    #show() {
+      clearTimeout(this.#showTimeout);
+      if (this.#bubble.matches(':popover-open')) return;
+
+      openTooltip?.#hide();
+      openTooltip = this;
+
+      this.setAttribute('placement', this.#placement);
+      this.#bubble.showPopover();
+    }
+
+    #hide() {
+      clearTimeout(this.#showTimeout);
+      if (openTooltip === this) openTooltip = null;
+      if (!this.#bubble.matches(':popover-open')) return;
+
+      this.#bubble.hidePopover();
+      this.setAttribute('placement', this.#placement);
+      warmUntil = Date.now() + WARM_WINDOW;
+    }
+
+    #position() {
+      const anchor = this.#trigger.getBoundingClientRect();
+      const width = this.#bubble.offsetWidth;
+      const height = this.#bubble.offsetHeight;
+      const offset = parseFloat(getComputedStyle(this.#bubble).getPropertyValue('--kit-tooltip-offset')) || 0;
+      const vw = document.documentElement.clientWidth;
+      const vh = document.documentElement.clientHeight;
+
+      let placement = this.#placement;
+      let box = this.#boxFor(placement, anchor, width, height, offset);
+
+      if (!this.#fits(box, width, height, vw, vh)) {
+        const flipped = this.#boxFor(FLIPS[placement], anchor, width, height, offset);
+
+        if (this.#fits(flipped, width, height, vw, vh)) {
+          placement = FLIPS[placement];
+          box = flipped;
+        }
+      }
+
+      this.setAttribute('placement', placement);
+
+      const left = clamp(box.left, VIEWPORT_MARGIN, Math.max(VIEWPORT_MARGIN, vw - VIEWPORT_MARGIN - width));
+      const top = clamp(box.top, VIEWPORT_MARGIN, Math.max(VIEWPORT_MARGIN, vh - VIEWPORT_MARGIN - height));
+
+      this.#bubble.style.left = `${Math.round(left + window.scrollX)}px`;
+      this.#bubble.style.top = `${Math.round(top + window.scrollY)}px`;
+
+      this.#positionArrow(placement, anchor, { height, left, top, width });
+    }
+
+    // Keep the arrow on the trigger after clamping
+    #positionArrow(placement, anchor, box) {
+      const isVertical = placement === 'top' || placement === 'bottom';
+      const anchorCenter = isVertical ? anchor.left + anchor.width / 2 : anchor.top + anchor.height / 2;
+      const bubbleCenter = isVertical ? box.left + box.width / 2 : box.top + box.height / 2;
+      const limit = Math.max(0, (isVertical ? box.width : box.height) / 2 - MIN_ARROW_INSET);
+
+      this.#bubble.style.setProperty('--arrow-offset', `${clamp(anchorCenter - bubbleCenter, -limit, limit)}px`);
+    }
+
+    #boxFor(placement, anchor, width, height, offset) {
+      // start/end are logical, so they swap sides in RTL
+      const beforeAnchor = anchor.left - offset - width;
+      const afterAnchor = anchor.right + offset;
+      const centeredTop = anchor.top + anchor.height / 2 - height / 2;
+
+      switch (placement) {
+        case 'bottom':
+          return { left: anchor.left + anchor.width / 2 - width / 2, top: anchor.bottom + offset };
+        case 'start':
+          return { left: this.#isRTL ? afterAnchor : beforeAnchor, top: centeredTop };
+        case 'end':
+          return { left: this.#isRTL ? beforeAnchor : afterAnchor, top: centeredTop };
+        default:
+          return { left: anchor.left + anchor.width / 2 - width / 2, top: anchor.top - offset - height };
+      }
+    }
+
+    #fits(box, width, height, vw, vh) {
+      if (this.#placement === 'top' || this.#placement === 'bottom') {
+        return box.top >= VIEWPORT_MARGIN && box.top + height <= vh - VIEWPORT_MARGIN;
+      }
+
+      return box.left >= VIEWPORT_MARGIN && box.left + width <= vw - VIEWPORT_MARGIN;
+    }
+  }
+
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+
+  customElements.define('kit-tooltip', KitTooltip);
+{% endjavascript %}

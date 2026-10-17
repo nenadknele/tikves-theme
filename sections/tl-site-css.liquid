@@ -1,0 +1,23 @@
+{%- comment -%}
+  TIKVES LONDON . SITE CSS
+  Retired 28 Sep 2026, speed. Every rule that lived here (policy and rich
+  text links, the footer in Paper Deep and Ink, the age gate panel, the
+  newsletter popup stack) now loads in the head from
+  snippets/tikves-site-css.liquid, rendered by layout/theme.liquid, so it
+  is in place before the page first paints. From the Footer group it
+  arrived at the very end of the HTML. This section renders nothing, is
+  no longer in sections/footer-group.json, and can be deleted from the
+  code editor at any time. The rules stay in force either way.
+{%- endcomment -%}
+
+{% schema %}
+{
+  "name": "Site CSS",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Retired 28 Sep 2026. The site CSS now loads in the head from snippets/tikves-site-css.liquid. This section renders nothing and can be deleted."
+    }
+  ]
+}
+{% endschema %}

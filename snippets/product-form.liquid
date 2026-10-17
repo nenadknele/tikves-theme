@@ -1,0 +1,63 @@
+{%- form 'product', product, id: form_id, class: 'product-single__form' -%}
+
+  {%- liquid
+    assign gift_card_recipient_feature_active = false
+    if block.settings.show_gift_card_recipient and product.gift_card?
+      assign gift_card_recipient_feature_active = true
+    endif
+
+    assign enable_dynamic_buttons = false
+    if show_dynamic_checkout and gift_card_recipient_feature_active == false
+      unless template contains 'preorder'
+        assign enable_dynamic_buttons = true
+      endunless
+    endif
+  -%}
+
+  <input type="hidden" name="id" value="{{ current_variant.id }}" data-kit-refresh="variant-id">
+
+  {%- if gift_card_recipient_feature_active -%}
+    {%- render 'gift-card-recipient-form', product: product, form: form, section: section -%}
+  {%- endif -%}
+
+  {%- if enable_dynamic_buttons -%}
+    <div class="payment-buttons">
+  {%- endif -%}
+
+    {%- liquid
+      assign default_text = 'products.product.add_to_cart' | t
+      assign button_text = 'products.product.add_to_cart' | t
+      if template contains 'preorder'
+        assign default_text = 'products.product.preorder' | t
+        assign button_text = 'products.product.preorder' | t
+      endif
+      if current_variant == nil
+        assign button_text = 'products.product.unavailable' | t
+      elsif current_variant.available == false
+        assign button_text = 'products.product.sold_out' | t
+      endif
+    -%}
+
+    <button
+      {% if product.empty? %}type="button"{% else %}type="submit"{% endif %}
+      name="add"
+      data-add-to-cart
+      data-kit-refresh="atc"
+      class="btn btn--full add-to-cart{% if enable_dynamic_buttons and product.selling_plan_groups == empty %} btn--secondary{% endif %}"
+      {% unless current_variant.available %} disabled="disabled"{% endunless %}>
+      <span data-add-to-cart-text data-default-text="{{ default_text }}">
+        {{ button_text }}
+      </span>
+    </button>
+
+    {%- if enable_dynamic_buttons -%}
+      {{ form | payment_button }}
+    {%- endif -%}
+
+  {%- if enable_dynamic_buttons -%}
+    </div>
+  {%- endif -%}
+
+  <div class="shopify-payment-terms product__policies">{{ form | payment_terms }}</div>
+
+{%- endform -%}

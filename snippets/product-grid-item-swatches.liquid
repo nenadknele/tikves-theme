@@ -1,0 +1,87 @@
+{% comment %}
+Renders a product card's color swatches from option values, so it has no variant limit.
+Arguments
+- product: product object
+- [collection]: collection object
+- [link]: boolean, render swatches as links (default: true)
+{% endcomment %}
+
+{%- liquid
+  assign link = link | default: true, allow_false: true
+  assign swatch_trigger = 'products.general.color_swatch_trigger' | t | downcase
+  assign swatch_file_extension = 'png'
+-%}
+
+{%- for option in product.options_with_values -%}
+  {%- liquid
+    assign option_name = option.name | downcase
+    assign is_color = false
+    if option.values.first.swatch
+      assign is_color = true
+    elsif option_name contains swatch_trigger
+      assign is_color = true
+    elsif swatch_trigger == 'color' and option_name contains 'colour'
+      assign is_color = true
+    endif
+  -%}
+
+  {%- if is_color -%}
+    {%- if option.values.size > 1 -%}
+      <div class="grid-product__colors grid-product__colors--{{ product.id }}">
+        {%- for value in option.values -%}
+          {%- liquid
+            assign variant = value.variant
+
+            if value.swatch.color
+              assign swatch_color = value.swatch.color
+            else
+              assign swatch_color = value.name | split: ' ' | last | handle
+            endif
+
+            assign swatch_image = nil
+            assign color_file_name = value.name | handle | append: '.' | append: swatch_file_extension
+            if value.swatch.image
+              assign swatch_image = value.swatch.image | image_url: width: 50
+            elsif images[color_file_name] != blank
+              assign swatch_image = color_file_name | file_img_url: '50x50' | prepend: 'https:' | split: '?' | first
+            endif
+
+            # No single variant carries this value, so let the product page resolve it
+            assign swatch_url = nil
+            if link
+              if variant
+                assign swatch_url = variant.url | within: collection
+              else
+                assign swatch_url = product.url | within: collection | append: '?option_values=' | append: value.id
+              endif
+            endif
+
+            assign swatch_classes = value.name | handle | prepend: 'color-swatch--'
+            if variant.image
+              assign swatch_classes = swatch_classes | append: ' color-swatch--with-image'
+            endif
+          -%}
+
+          {%- capture swatch_label -%}{{ product.title }} - {{ value.name }}{%- endcapture -%}
+
+          {%- capture swatch_attributes -%}
+            {%- unless link %} role="img"{% endunless -%}
+            {%- if variant.image %}
+              data-variant-id="{{ variant.id }}" data-variant-image="{{ variant.image | image_url: width: 400 }}"
+            {%- endif -%}
+          {%- endcapture -%}
+
+          {%- render 'kit.swatch',
+            tag: 'span',
+            href: swatch_url,
+            color: swatch_color,
+            image: swatch_image,
+            classes: swatch_classes,
+            aria_label: swatch_label,
+            attr: swatch_attributes
+          -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+{%- endfor -%}

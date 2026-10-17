@@ -1,0 +1,115 @@
+{%- liquid
+  assign s = section.settings
+-%}
+
+<div class="tkb tkb--{{ section.id }}">
+  {%- if s.title != blank -%}
+    <div class="page-width">
+      <h2 class="{{ s.heading_size }} tkb__head">{{ s.title | escape }}</h2>
+    </div>
+  {%- endif -%}
+
+  <div class="tkb__stack">
+    {%- for block in section.blocks -%}
+      {%- assign b = block.settings -%}
+      <a class="tkb__band tkb__band--{{ block.id }}" href="{{ b.link | default: '/collections/all' }}" {{ block.shopify_attributes }}>
+        <span class="tkb__inner">
+          <span class="tkb__label">{{ b.label | escape }}</span>
+          {%- if b.line != blank -%}<span class="tkb__line">{{ b.line | escape }}</span>{%- endif -%}
+          {%- if b.cta != blank -%}<span class="tkb__cta">{{ b.cta | escape }}</span>{%- endif -%}
+        </span>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% style %}
+  .tkb--{{ section.id }} { padding: 8px 0 30px; }
+  .tkb--{{ section.id }} .tkb__head { margin: 0 0 14px; }
+  .tkb--{{ section.id }} .tkb__stack { display: block; }
+  .tkb--{{ section.id }} .tkb__band {
+    display: block;
+    text-decoration: none;
+    margin-bottom: 10px;
+    min-height: 132px;
+    box-sizing: border-box;
+  }
+  .tkb--{{ section.id }} .tkb__band:last-child { margin-bottom: 0; }
+  .tkb--{{ section.id }} .tkb__inner {
+    display: block;
+    padding: 26px 22px;
+    max-width: 1500px;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+  .tkb--{{ section.id }} .tkb__label { display: block; font-size: 28px; line-height: 1.1; }
+  .tkb--{{ section.id }} .tkb__line { display: block; font-size: 15px; line-height: 1.45; margin-top: 8px; }
+  .tkb--{{ section.id }} .tkb__cta {
+    display: inline-block;
+    margin-top: 16px;
+    padding: 7px 14px;
+    border: 1px solid currentColor;
+    font-size: 14px;
+    line-height: 1.2;
+  }
+
+  {%- for block in section.blocks -%}
+    .tkb--{{ section.id }} .tkb__band--{{ block.id }} {
+      background: {{ block.settings.bg | default: '#4A0D18' }};
+      color: {{ block.settings.fg | default: '#F5EFE7' }};
+    }
+  {%- endfor -%}
+
+  @media only screen and (min-width: 769px) {
+    .tkb--{{ section.id }} { padding: 16px 0 50px; }
+    .tkb--{{ section.id }} .tkb__stack {
+      display: flex;
+      gap: 10px;
+      max-width: 1500px;
+      margin: 0 auto;
+      padding: 0 22px;
+      box-sizing: border-box;
+    }
+    .tkb--{{ section.id }} .tkb__band { flex: 1 1 0; margin-bottom: 0; min-height: 260px; }
+    .tkb--{{ section.id }} .tkb__inner { padding: 40px 28px; max-width: none; }
+    .tkb--{{ section.id }} .tkb__label { font-size: 34px; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Tikves colour bands",
+  "class": "index-section",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "Browse by colour" },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "default": "h2",
+      "options": [
+        { "value": "h3", "label": "Small" },
+        { "value": "h2", "label": "Medium" },
+        { "value": "h1", "label": "Large" }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "band",
+      "name": "Band",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "Red" },
+        { "type": "text", "id": "line", "label": "One line" },
+        { "type": "text", "id": "cta", "label": "Link text", "default": "Shop" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "color", "id": "bg", "label": "Background", "default": "#4A0D18" },
+        { "type": "color", "id": "fg", "label": "Text", "default": "#F5EFE7" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Tikves colour bands" } ],
+  "disabled_on": { "groups": ["footer", "header", "custom.popups"] }
+}
+{% endschema %}

@@ -1,0 +1,335 @@
+<age-verification-popup
+  id="AgeVerificationPopup-{{ section.id }}"
+  class="
+    age-verification-popup modal modal--square modal--mobile-friendly
+    {% if section.settings.image != blank %}
+      age-verification-popup--image-true
+    {% else %}
+      age-verification-popup--image-false
+    {% endif %}
+  "
+  data-test-mode="{{ section.settings.enable_test_mode }}"
+  data-section-id="{{ section.id }}"
+>
+  {% if section.settings.image != blank %}
+    <div class="age-verification-popup__background-image-wrapper" data-background-image>
+      {% comment %} Full width image so don't need to adjust sizes attribute, fallback is 100vw {% endcomment %}
+      {%- render 'image-element',
+        img: section.settings.image,
+        img_width: 2400,
+        classes: 'age-verification-popup__background-image',
+      -%}
+    </div>
+    {% style %}
+      .age-verification-popup__background-image {
+        {% if section.settings.blur_image %}
+          filter: blur(4px);
+          transform: scale(1.03);
+        {% endif %}
+      }
+    {% endstyle %}
+  {% else %}
+    {% comment %}
+      No photograph. Rather than fight whichever theme rule paints the
+      backdrop, lay our own fixed panel over the whole viewport and lift
+      the modal content above it.
+    {% endcomment %}
+    <div class="tl-gate-backdrop" aria-hidden="true"></div>
+    {% style %}
+      #AgeVerificationPopup-{{ section.id }} .tl-gate-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+        background-color: {{ section.settings.backdrop_color }};
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      #AgeVerificationPopup-{{ section.id }} .modal__inner {
+        position: relative;
+        z-index: 1;
+        background-color: transparent !important;
+        background-image: none !important;
+      }
+
+      #AgeVerificationPopup-{{ section.id }} .modal__centered {
+        background-color: transparent !important;
+        background-image: none !important;
+      }
+
+      #AgeVerificationPopup-{{ section.id }} .modal__centered-content {
+        background-color: {{ section.settings.panel_color }} !important;
+        max-width: {{ section.settings.panel_width }}px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    {% endstyle %}
+  {% endif %}
+
+  <div class="modal__inner" data-nosnippet>
+    <div class="modal__centered">
+      <div
+        class="
+          modal__centered-content modal__centered-content--padded
+        "
+        >
+        <div class="age-verification-popup__content-wrapper">
+          {%- if section.settings.logo != blank -%}
+            <div class="tl-gate-logo" style="text-align: {{ section.settings.logo_align }}; margin-bottom: {{ section.settings.logo_gap }}px;">
+              {%- comment -%} 28 Sep 2026, speed: the logo is requested at its display size, not at 700px. {%- endcomment -%}
+              <img
+                src="{{ section.settings.logo | image_url: width: 420 }}"
+                srcset="{{ section.settings.logo | image_url: width: 280 }} 280w, {{ section.settings.logo | image_url: width: 420 }} 420w, {{ section.settings.logo | image_url: width: 560 }} 560w"
+                sizes="{{ section.settings.logo_width }}px"
+                alt="{{ shop.name | escape }}"
+                width="{{ section.settings.logo.width }}"
+                height="{{ section.settings.logo.height }}"
+                loading="eager"
+                style="width: {{ section.settings.logo_width }}px; max-width: 100%; height: auto; display: inline-block;">
+            </div>
+          {%- endif -%}
+
+          <div
+            class="age-verification-popup__content age-verification-popup__content--active"
+            data-age-verification-popup-content
+          >
+            {% if section.settings.heading != blank %}
+              <h2 class="{{ section.settings.heading_size }}">{{ section.settings.heading }}</h2>
+            {% endif %}
+            {% if section.settings.text != blank %}
+              <div class="rte">
+                <div class="enlarge-text">{{ section.settings.text }}</div>
+              </div>
+            {% endif %}
+            {% if section.settings.decline_button_label != blank and section.settings.approve_button_label != blank %}
+              <div class="age-verification-popup__btns-wrapper">
+            {% endif %}
+              {% if section.settings.decline_button_label != blank %}
+                <button
+                  class="btn btn--secondary"
+                  data-age-verification-popup-decline-button
+                >
+                  {{ section.settings.decline_button_label }}
+                </button>
+              {% endif %}
+              {% if section.settings.approve_button_label != blank %}
+                <button
+                  class="btn"
+                  data-age-verification-popup-exit-button
+                >
+                  {{ section.settings.approve_button_label }}
+                </button>
+              {% endif %}
+            {% if section.settings.decline_button_label != blank and section.settings.approve_button_label != blank %}
+              </div>
+            {% endif %}
+          </div>
+          <div
+            class="age-verification-popup__decline-content age-verification-popup__decline-content--inactive"
+            data-age-verification-popup-decline-content
+          >
+            {% if section.settings.decline_heading != blank %}
+              <h2>{{ section.settings.decline_heading }}</h2>
+            {% endif %}
+            {% if section.settings.decline_text != blank %}
+              <div class="rte">
+                <div class="enlarge-text">{{ section.settings.decline_text }}</div>
+              </div>
+            {% endif %}
+            {% if section.settings.return_button_label != blank %}
+              <button
+                class="btn btn--secondary"
+                data-age-verification-popup-return-button
+              >
+                {{ section.settings.return_button_label }}
+              </button>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</age-verification-popup>
+
+
+{% schema %}
+  {
+    "name": "t:sections.age-verification-popup.name",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "enable_test_mode",
+        "label": "t:sections.age-verification-popup.settings.enable_test_mode.label",
+        "info": "t:sections.age-verification-popup.settings.enable_test_mode.info",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo",
+        "info": "Transparent PNG. Sits above the heading."
+      },
+      {
+        "type": "range",
+        "id": "logo_width",
+        "label": "Logo width",
+        "default": 120,
+        "min": 60,
+        "max": 260,
+        "step": 10,
+        "unit": "px"
+      },
+      {
+        "type": "range",
+        "id": "logo_gap",
+        "label": "Space under logo",
+        "default": 26,
+        "min": 0,
+        "max": 80,
+        "step": 2,
+        "unit": "px"
+      },
+      {
+        "type": "select",
+        "id": "logo_align",
+        "label": "Logo alignment",
+        "default": "left",
+        "options": [
+          { "value": "left", "label": "Left" },
+          { "value": "center", "label": "Centre" }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Panel and backdrop"
+      },
+      {
+        "type": "paragraph",
+        "content": "These apply only when no background image is set below."
+      },
+      {
+        "type": "color",
+        "id": "backdrop_color",
+        "label": "Backdrop colour",
+        "default": "#4A0D18"
+      },
+      {
+        "type": "color",
+        "id": "panel_color",
+        "label": "Panel colour",
+        "default": "#F5EFE7"
+      },
+      {
+        "type": "range",
+        "id": "panel_width",
+        "label": "Panel width",
+        "default": 460,
+        "min": 320,
+        "max": 720,
+        "step": 20,
+        "unit": "px"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.age-verification-popup.settings.header_background_image"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "t:sections.age-verification-popup.settings.image.label",
+        "info": "t:sections.age-verification-popup.settings.image.info"
+      },
+      {
+        "type": "checkbox",
+        "id": "blur_image",
+        "label": "t:sections.age-verification-popup.settings.blur_image.label",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "t:sections.age-verification-popup.settings.header_age_verification_question"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "t:sections.age-verification-popup.settings.heading.label",
+        "default": "Confirm your age"
+      },
+      {
+        "type": "select",
+        "id": "heading_size",
+        "label": "t:common.heading_size.label",
+        "default": "h2",
+        "options": [
+          {
+            "value": "h3",
+            "label": "t:common.heading_size.options.small.label"
+          },
+          {
+            "value": "h2",
+            "label": "t:common.heading_size.options.medium.label"
+          },
+          {
+            "value": "h1",
+            "label": "t:common.heading_size.options.large.label"
+          }
+        ]
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "t:sections.age-verification-popup.settings.text.label",
+        "default": "<p>Are you 18 or older?</p>"
+      },
+      {
+        "type": "text",
+        "id": "decline_button_label",
+        "label": "t:sections.age-verification-popup.settings.decline_button_label.label",
+        "default": "No"
+      },
+      {
+        "type": "text",
+        "id": "approve_button_label",
+        "label": "t:sections.age-verification-popup.settings.approve_button_label.label",
+        "default": "Yes"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.age-verification-popup.settings.header_declined"
+      },
+      {
+        "type": "paragraph",
+        "content": "t:sections.age-verification-popup.settings.content"
+      },
+      {
+        "type": "text",
+        "id": "decline_heading",
+        "label": "t:sections.age-verification-popup.settings.decline_heading.label",
+        "default": "You must be 18+ to shop"
+      },
+      {
+        "type": "richtext",
+        "id": "decline_text",
+        "label": "t:sections.age-verification-popup.settings.decline_text.label",
+        "default": "<p>This store is only available to customers 18 years or older.</p>"
+      },
+      {
+        "type": "text",
+        "id": "return_button_label",
+        "label": "t:sections.age-verification-popup.settings.return_button_label.label",
+        "default": "Go back"
+      }
+    ],
+    "disabled_on": {
+      "groups": ["footer", "header"]
+    }
+  }
+{% endschema %}

@@ -1,0 +1,207 @@
+{%- if settings.cart_type == 'drawer' -%}
+  <div id="CartDrawer" class="drawer drawer--right">
+    <form id="CartDrawerForm" action="{{ routes.cart_url }}" method="post" novalidate class="drawer__contents" data-location="cart-drawer">
+      <div class="drawer__fixed-header">
+        <div class="drawer__header appear-animation appear-delay-1">
+          <div class="h2 drawer__title">{{ 'cart.general.title' | t }}</div>
+          <div class="drawer__close">
+            <button type="button" class="drawer__close-button js-drawer-close">
+              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 64 64"><title>icon-X</title><path d="m19 17.61 27.12 27.13m0-27.12L19 44.74"/></svg>
+              <span class="icon__fallback-text">{{ 'cart.general.close_cart' | t }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer__inner">
+        <div class="drawer__scrollable">
+          {% comment %}
+            ORDER CHANGED 30 Aug 2026 ON OPERATOR INSTRUCTION, to follow the
+            Overtone cart he supplied as the reference. THIS REVERSES THE
+            28 Aug 2026 ORDERING DECISION, which put the delivery block under
+            the bottles so the countdown was read after the cart contents.
+            The reference puts the free-delivery progress FIRST, because it is
+            the thing that changes what the customer buys, and on a phone
+            anything below the fold is not read at all.
+            If this is ever reversed again, record why, because it has now
+            moved twice.
+          {% endcomment %}
+          {% render 'tl-delivery-summary' %}
+
+          <div data-products class="appear-animation appear-delay-2"></div>
+
+          {% comment %}
+            JOINING GIFT, 30 Aug 2026. Sits with the bottles rather than in
+            the footer, so it never pushes the checkout button down. It
+            captures nothing itself: it opens the newsletter popup, which is
+            the only capture on this site proven to work.
+          {% endcomment %}
+          {% render 'tl-joining-gift' %}
+
+          {% comment %}
+            Safe place field. No signature model, operator ruling 26 Jul 2026, implemented
+            24 Aug 2026. COLLAPSED 28 Aug 2026 on operator instruction: presentation only.
+            THE WORDING BELOW IS UNCHANGED AND IS WITH THE SOLICITOR. The bolded at-your-risk
+            line is the fence against abuse: chosen safe place plus delivery record counts as
+            delivered. Do not edit, shorten or reflow that sentence. The <details> element is
+            open by default when the customer has already written a note, so nothing they typed
+            is ever hidden from them.
+          {% endcomment %}
+          {% if settings.cart_notes_enable %}
+            <details class="appear-animation appear-delay-3 tl-note"{% if cart.note != blank %} open{% endif %}>
+              <summary class="tl-note__summary">Add delivery instructions</summary>
+              <label for="CartNoteDrawer">Where should we leave it if you're out?</label>
+              <p class="tl-note__help">Optional. Somewhere secure at your address, out of sight and out of the weather. <strong>Left there at your risk. Once the delivery record shows it was left in your chosen place, it counts as delivered.</strong> If nobody is in, Royal Mail may leave it with a neighbour aged 18 or over.</p>
+              <textarea name="note" class="input-full cart-notes" id="CartNoteDrawer" rows="2">{{ cart.note }}</textarea>
+            </details>
+          {% endif %}
+        </div>
+
+        <div class="drawer__footer appear-animation appear-delay-4">
+          <div data-discounts>
+            {% if cart.cart_level_discount_applications != blank %}
+              <div class="cart__discounts cart__item-sub cart__item-row">
+                <div>{{ 'cart.general.discounts' | t }}</div>
+                <div class="text-right">
+                  {% for cart_discount in cart.cart_level_discount_applications %}
+                    <div class="cart__discount">
+                      {{ cart_discount.title }} (-{{ cart_discount.total_allocated_amount | money }})
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="cart__item-sub cart__item-row">
+            <div class="ajaxcart__subtotal">{{ 'cart.general.subtotal' | t }}</div>
+            <div data-subtotal>{{ cart.total_price | money }}</div>
+          </div>
+
+          {% comment %}
+            28 Aug 2026. Replaced the theme default, which read shipping, taxes and discount
+            codes calculated at checkout. Three faults: it said shipping where every other
+            surface says delivery; it implied tax is added at checkout when prices are
+            tax-inclusive; and it offered a discount code field that does not exist in this
+            drawer. The cart page carries the same correction.
+          {% endcomment %}
+          <div class="cart__item-row text-center">
+            <small>Delivery calculated at checkout.<br /></small>
+          </div>
+
+          {% comment %}
+            AGE AND TERMS TICK. THE LABEL WORDING AND THE TICK ITSELF ARE UNTOUCHED, 28 Aug 2026.
+            It is not known whether this tick is the due-diligence record under sections 146 to 147
+            Licensing Act 2003, so nothing about what it asks or whether it blocks has been changed.
+            That question is with the solicitor. WHAT DID CHANGE is only the failure message:
+            theme.js answers an unticked box with a native browser alert(), which on a phone is a
+            system popup at the moment of checkout. The script below replaces it with inline text.
+            FAIL-SAFE BY DESIGN: it does not disable the theme's own check. If this script fails to
+            load, theme.js still blocks checkout with its alert. The tick always blocks either way.
+            30 Aug 2026: the LETTER-SPACING AND CAPITALS were removed in CSS so it reads on two
+            lines instead of four. Presentation only. Not one word changed.
+          {% endcomment %}
+          {% if settings.cart_terms_conditions_enable %}
+            <div class="cart__item-row cart__terms">
+              <input type="checkbox" id="CartTermsDrawer" class="cart__terms-checkbox">
+              <label for="CartTermsDrawer">
+                {% if settings.cart_terms_conditions_page != blank %}
+                  {{ 'cart.general.terms_html' | t: url: settings.cart_terms_conditions_page.url }}
+                {% else %}
+                  {{ 'cart.general.terms' | t }}
+                {% endif %}
+              </label>
+              <p class="cart__terms-error" data-tl-terms-error hidden>Please tick the box above to continue.</p>
+            </div>
+          {% endif %}
+
+          {% comment %}
+            ONE CHECKOUT BUTTON, 30 Aug 2026, operator instruction, following the
+            Overtone reference. THE EXPRESS WALLET BUTTONS ARE REMOVED FROM THIS
+            DRAWER ONLY. Shop Pay, Apple Pay and PayPal all still appear at
+            checkout, so no payment method is lost; the customer taps Check out
+            first. They were roughly 300px of a phone screen and had squeezed the
+            bottle list down to a single row.
+            TO PUT THEM BACK, restore:
+              {% raw %}{% if additional_checkout_buttons and settings.cart_additional_buttons %}{% endraw %}
+              a div with class additional-checkout-buttons, containing
+              {% raw %}{{ content_for_additional_checkout_buttons }}{% endraw %}
+          {% endcomment %}
+          <div class="cart__checkout-wrapper">
+            <button type="submit" name="checkout" data-terms-required="{{ settings.cart_terms_conditions_enable }}" class="btn cart__checkout">
+              {{ 'cart.general.checkout' | t }}
+            </button>
+
+            <button type="button" class="tl-continue js-drawer-close">Continue shopping</button>
+          </div>
+        </div>
+      </div>
+
+      {% comment %}
+        Empty state, 28 Aug 2026. Was one sentence and no way out, so anyone who opened the
+        bag out of curiosity had to close it by hand. Points at Cases because that is where
+        the order value is and where the welcome offer applies.
+      {% endcomment %}
+      <div class="drawer__cart-empty appear-animation appear-delay-2">
+        <div class="drawer__scrollable">
+          <p>{{ 'cart.general.empty' | t }}</p>
+          <div class="tl-empty__actions">
+            <a href="/collections/cases" class="btn btn--full">Shop the cases</a>
+            <a href="/collections/all-wines" class="text-link tl-empty__secondary">Or browse every wine</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    .tl-note{margin-top:14px}
+    .tl-note__summary{cursor:pointer;font-size:13px;text-decoration:underline;text-underline-offset:3px;list-style:none;padding:4px 0}
+    .tl-note__summary::-webkit-details-marker{display:none}
+    .tl-note__summary::after{content:" +";text-decoration:none}
+    .tl-note[open] .tl-note__summary::after{content:" \2212"}
+    .tl-note[open] .tl-note__summary{margin-bottom:6px}
+    .tl-empty__actions{margin-top:18px}
+    .tl-empty__secondary{display:block;margin-top:12px;font-size:13px}
+    .cart__terms-error{margin:6px 0 0;font-size:13px;color:#4A0D18;font-weight:600}
+    .cart__terms.has-error .cart__terms-checkbox{outline:2px solid #4A0D18;outline-offset:2px}
+    .tl-continue{display:block;width:100%;margin-top:12px;padding:6px 0;border:0;background:none;cursor:pointer;font-size:13px;color:inherit;text-decoration:underline;text-underline-offset:3px}
+  </style>
+
+  <script>
+  (function () {
+    // Capture phase on document, so this runs BEFORE the theme's own submit handler
+    // and the native alert never fires. Listeners attached to the form itself would
+    // run in registration order and could not be relied on to go first.
+    document.addEventListener('submit', function (evt) {
+      var form = evt.target;
+      if (!form || !form.querySelector) return;
+
+      var box = form.querySelector('.cart__terms-checkbox');
+      var btn = form.querySelector('.cart__checkout');
+      if (!box || !btn) return;
+      if (btn.getAttribute('data-terms-required') !== 'true') return;
+      if (box.checked) return;
+
+      evt.preventDefault();
+      evt.stopPropagation();
+      btn.classList.remove('btn--loading');
+
+      var wrap = box.closest('.cart__terms');
+      var msg = form.querySelector('[data-tl-terms-error]');
+      if (wrap) wrap.classList.add('has-error');
+      if (msg) msg.hidden = false;
+      try { box.focus({ preventScroll: false }); } catch (e) { box.focus(); }
+
+      if (!box.dataset.tlBound) {
+        box.dataset.tlBound = '1';
+        box.addEventListener('change', function () {
+          if (!box.checked) return;
+          if (wrap) wrap.classList.remove('has-error');
+          if (msg) msg.hidden = true;
+        });
+      }
+    }, true);
+  })();
+  </script>
+{%- endif -%}

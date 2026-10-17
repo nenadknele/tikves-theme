@@ -1,0 +1,141 @@
+{% doc %}
+  Renders one product option's values as radios. Swatch options (value.swatch)
+  render as swatches; every other option renders button-styled radios.
+
+  @param {object} option - product_option object (from product.options_with_values)
+  @param {string} [picker_id] - Prefix for the radio group `name`. Must be unique per picker instance on the page. Default: the section id.
+  @param {boolean} [enable_swatches] - Render values with a swatch as swatches. Default: false
+  @param {boolean} [enable_swatch_tooltips] - Show the value name in a tooltip on hover of a swatch. Requires `enable_swatches`. Default: false
+  @param {string} [swatch_tooltip_placement] - 'top' | 'bottom' | 'start' | 'end'. Default: 'top'
+  @param {boolean} [swatch_tooltip_arrow] - Render the tooltip's arrow. Default: true
+  @param {string[]} [availability_map] - This option's values that some available variant carries. Nil when the server can't rate them.
+  @param {boolean} [selection_incomplete] - Whether the selection is incomplete. Default: false
+  @param {number} [swatch_image_size] - Edge length in px of the square swatch image requested from the CDN. Match it to the rendered swatch size times the pixel density. Default: 64
+  @param {string} [legacy_swatch_source] - 'variant_image' (value.variant.image), 'files' (Shopify Files), or 'assets' (theme assets). The latter two resolve with `{value-handle}.png`. Requires `enable_swatches`.
+{% enddoc %}
+
+{% liquid
+  assign enable_swatches = enable_swatches | default: false, allow_false: true
+  assign enable_swatch_tooltips = enable_swatch_tooltips | default: false, allow_false: true
+  assign swatch_tooltip_placement = swatch_tooltip_placement | default: 'top'
+  assign swatch_tooltip_arrow = swatch_tooltip_arrow | default: true, allow_false: true
+  assign selection_incomplete = selection_incomplete | default: false
+  assign swatch_image_size = swatch_image_size | default: 64
+
+  assign sold_out_label = 'kit.info.sold_out' | t | escape | prepend: ' - '
+
+  assign option_name_escaped = option.name | escape
+  assign option_name = picker_id | default: section.id | append: '-' | append: option_name_escaped
+%}
+
+{% capture stack_content %}
+  {% for value in option.values %}
+    {%- liquid
+      # With nothing chosen, a value is rated by whether any available variant carries it
+      assign button_swatch_disabled = false
+      if selection_incomplete and availability_map != nil
+        unless availability_map contains value.name
+          assign button_swatch_disabled = true
+        endunless
+      elsif value.available == false
+        assign button_swatch_disabled = true
+      endif
+
+      assign input_value = value | escape
+      assign value_name_escaped = value.name | escape
+
+      assign swatch_tooltip_id = option_name | handleize | append: '-' | append: value.id
+
+      assign radio_attr = 'data-option-value-id="' | append: value.id | append: '"'
+      assign radio_attr = radio_attr | append: ' data-option-name="' | append: option_name_escaped | append: '"'
+      if value.product_url
+        assign radio_attr = radio_attr | append: ' data-product-url="' | append: value.product_url | append: '"'
+      endif
+
+      assign input_checked = value.selected
+      if selection_incomplete
+        assign input_checked = false
+      endif
+
+      assign is_swatch = false
+      assign swatch_color = nil
+      assign swatch_image = nil
+      if enable_swatches and value.swatch
+        assign is_swatch = true
+        assign swatch_color = value.swatch.color
+        assign swatch_image = value.swatch.image | image_url: width: swatch_image_size, height: swatch_image_size, crop: 'center'
+      elsif enable_swatches and legacy_swatch_source != blank
+        assign is_swatch = true
+        assign swatch_color = value.name | split: ' ' | last | handle
+        assign legacy_swatch_file = value.name | handle | append: '.png'
+
+        # First, ensure product_url is not set (combined listing)
+        if value.product_url == blank and legacy_swatch_source == 'variant_image' and value.variant.image != nil
+          assign swatch_image = value.variant.image | image_url: width: swatch_image_size, height: swatch_image_size, crop: 'center'
+        endif
+
+        if legacy_swatch_source == 'files' and images[legacy_swatch_file] != blank
+          assign swatch_image = images[legacy_swatch_file] | image_url: width: swatch_image_size, height: swatch_image_size, crop: 'center'
+        endif
+
+        if legacy_swatch_source == 'assets'
+          assign swatch_image = legacy_swatch_file | asset_url
+        endif
+      endif
+    -%}
+
+    {% capture radio_content %}
+      {% if is_swatch %}
+        {%- render 'kit.swatch',
+          tag: 'span',
+          color: swatch_color,
+          image: swatch_image,
+          disabled: button_swatch_disabled
+        -%}
+        {%- render 'kit.visually-hidden', text: value_name_escaped -%}
+      {% else %}
+        {% render 'kit.button',
+          tag: 'span',
+          text: value_name_escaped,
+          variant: 'secondary',
+          disabled: button_swatch_disabled
+        %}
+      {% endif %}
+      {%- if button_swatch_disabled -%}
+        {%- render 'kit.visually-hidden', text: sold_out_label, attr: 'data-sold-out-label' -%}
+      {%- endif -%}
+    {% endcapture %}
+
+    {% capture radio_markup %}
+      {% render 'kit.radio',
+        name: option_name,
+        content: radio_content,
+        value: input_value,
+        checked: input_checked,
+        required: true,
+        attr: radio_attr
+      %}
+    {% endcapture %}
+
+    {% if is_swatch and enable_swatch_tooltips %}
+      {% render 'kit.tooltip',
+        text: value_name_escaped,
+        content: radio_markup,
+        placement: swatch_tooltip_placement,
+        arrow: swatch_tooltip_arrow,
+        id: swatch_tooltip_id,
+        decorative: true,
+        show_on_focus: false
+      %}
+    {% else %}
+      {{ radio_markup }}
+    {% endif %}
+  {% endfor %}
+{% endcapture %}
+
+{% render 'kit.stack',
+  content: stack_content,
+  direction: 'horizontal',
+  gap: 'xs',
+  wrap: true
+%}

@@ -1,0 +1,118 @@
+{%- comment -%}
+  Footer newsletter block. Heading, one line of text, email signup,
+  social icons. Never collapses on mobile.
+
+  5 Sep 2026: the field and the JOIN button are the same height and
+  width, slim, stacked, the button under the field, on every screen.
+
+  13 Sep 2026: footer moved from Wine to Paper Deep. The field was a
+  cream outline on transparent, built for the dark ground. Now a square
+  Ink outline on the footer ground, no fill, so it reads as a field on cream.
+
+  15 Sep 2026: the footer is a NEWS capture only. No joining gift, no
+  code, no mention of the ten pounds. It tags prospect,news,footer so the
+  Klaviyo news segment can tell it from the popup, which keeps the gift.
+{%- endcomment -%}
+
+{%- liquid
+  assign show_form = true
+  if block.settings.show_form == false
+    assign show_form = false
+  endif
+  assign join_label = block.settings.button_label | default: 'Join'
+-%}
+
+<div class="footer__item-padding tl-stay-in-touch">
+  {%- if block.settings.show_footer_title -%}
+    <h2 class="h4 footer__title tl-footer-title--static">{{ block.settings.title }}</h2>
+  {%- endif -%}
+
+  <div class="footer__collapsible footer_collapsible--disabled tl-footer-newsletter--open">
+    {%- if block.settings.text != blank -%}
+      <div class="tl-stay-in-touch__text">{{ block.settings.text }}</div>
+    {%- endif -%}
+
+    {%- if show_form -%}
+      {%- form 'customer', id: 'newsletter-footer', class: 'tl-stay-in-touch__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="note note--success">{{ 'general.newsletter_form.newsletter_confirmation' | t }}</div>
+        {%- endif -%}
+        {%- if form.context == 'footer' and form.errors -%}
+          {{ form.errors | default_errors }}
+        {%- endif -%}
+
+        <label for="Email-{{ block.id }}" class="hidden-label">{{ 'general.newsletter_form.newsletter_email' | t }}</label>
+        <input type="hidden" name="contact[tags]" value="prospect,news,footer">
+        <input type="hidden" name="contact[context]" value="footer">
+        <div class="tl-join">
+          <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ 'general.newsletter_form.newsletter_email' | t }}" name="contact[email]" id="Email-{{ block.id }}" class="tl-join__input" autocorrect="off" autocapitalize="off" autocomplete="email" required>
+          <button type="submit" id="newsletter-submit-{{ block.id }}" class="tl-join__btn" name="commit">{{ join_label | escape }}</button>
+        </div>
+        <p class="tl-join__fine">You must be 18 or over. Unsubscribe any time.</p>
+      {%- endform -%}
+    {%- endif -%}
+
+    {% render 'social-icons', additional_classes: 'footer__social tl-stay-in-touch__social' %}
+  </div>
+</div>
+
+{%- style -%}
+  .tl-stay-in-touch { padding-top: 8px; padding-bottom: 16px; }
+  .tl-footer-title--static { display: block; margin-bottom: 14px; }
+  .tl-stay-in-touch__text { margin-bottom: 16px; max-width: 420px; }
+  .tl-join {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 360px;
+  }
+  .tl-join__input,
+  .tl-join__btn {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    height: 44px !important;
+    min-height: 0 !important;
+    line-height: 1 !important;
+    padding: 0 16px !important;
+    margin: 0 !important;
+    font-size: 14px;
+  }
+  .tl-join__input {
+    border: 1px solid #1F2328;
+    border-radius: 0;
+    background: transparent;
+    color: #1F2328;
+  }
+  .tl-join__input::placeholder { color: #1F2328; opacity: 0.6; }
+  .tl-join__input:focus { outline: none; border-color: #A64029; }
+  .tl-join__btn {
+    border: 1px solid #A64029;
+    border-radius: 999px;
+    background: #A64029;
+    color: #FFFFFF;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+  }
+  .tl-join__btn:hover,
+  .tl-join__btn:focus-visible {
+    background: #8E3623;
+    border-color: #8E3623;
+    color: #FFFFFF;
+  }
+  .tl-join__fine { margin: 12px 0 0; max-width: 360px; font-size: 12px; line-height: 1.4; opacity: 0.7; }
+  .tl-stay-in-touch__social { margin-top: 22px; }
+  .tl-stay-in-touch__social li { margin-right: 6px; }
+  @media only screen and (max-width: 768px) {
+    .tl-stay-in-touch { padding-top: 40px; padding-bottom: 32px; }
+    .tl-footer-title--static { padding-top: 0; margin-bottom: 12px; }
+    .tl-footer-newsletter--open { padding-top: 0; padding-bottom: 0; }
+    .tl-stay-in-touch__text,
+    .tl-join,
+    .tl-join__fine { max-width: none; }
+    .tl-stay-in-touch__social { margin-top: 26px; }
+  }
+{%- endstyle -%}

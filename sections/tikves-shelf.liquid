@@ -1,0 +1,146 @@
+{%- comment -%}
+  TIKVES LONDON . SHELF
+  A heading, one short line, and a row of products from a collection.
+  Swipes sideways on mobile, sits in one row on desktop.
+
+  Built 27 Aug 2026 as a copy of the theme's own featured-collection
+  markup, so cards, prices and sold-out states render exactly as they
+  do in the singles grid. The one addition is the intro line, which
+  takes the same treatment as the ladder intro.
+
+  Integrates with tikves-home-design: add this section's key to
+  keys_all and keys_pad in templates/index.json. Leave it out of
+  keys_band for a Paper ground, add it for Sand.
+{%- endcomment -%}
+
+{%- assign shelf_collection = collections[section.settings.collection] -%}
+{%- assign per_row = section.settings.per_row -%}
+
+<div
+  id="CollectionSection-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="collection-grid"
+  data-context="featured-collection">
+
+  {%- if section.settings.title != blank or section.settings.intro != blank -%}
+    <div class="page-width">
+      <div class="section-header">
+        {%- if section.settings.title != blank -%}
+          <h2 class="section-header__title {{ section.settings.heading_size }}">
+            {{ section.settings.title }}
+          </h2>
+        {%- endif -%}
+        {%- if section.settings.intro != blank -%}
+          <p class="tks-shelf__intro">{{ section.settings.intro }}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="page-width page-width--flush-small">
+    <div class="grid-overflow-wrapper">
+      <div class="grid grid--uniform" data-aos="overflow__animation">
+        {%- if section.settings.collection == blank or shelf_collection.empty? or shelf_collection.products_count == 0 -%}
+          {%- comment -%} Nothing to show. Renders empty on a live shop rather than placeholders. {%- endcomment -%}
+        {%- else -%}
+          {%- for product in shelf_collection.products limit: 12 -%}
+            {%- render 'product-grid-item',
+              product: product,
+              collection: shelf_collection,
+              per_row: per_row,
+              quick_shop_enable: settings.quick_shop_enable,
+              fallback: '39vw',
+            -%}
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  {%- if section.settings.link_label != blank and shelf_collection != blank -%}
+    <div class="page-width text-center tks-shelf__link">
+      <a href="{{ shelf_collection.url }}" class="btn btn--secondary btn--small">{{ section.settings.link_label }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% style %}
+  #CollectionSection-{{ section.id }} .tks-shelf__intro {
+    max-width: 46ch;
+    margin: 0 auto;
+    text-align: center;
+  }
+  #CollectionSection-{{ section.id }} .tks-shelf__link {
+    margin-top: 24px;
+  }
+  @media only screen and (min-width: 769px) {
+    #CollectionSection-{{ section.id }} .tks-shelf__link {
+      margin-top: 32px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Tikves shelf",
+  "class": "index-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "A heading, one short line, and a row of products from a collection. Swipes sideways on mobile."
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "And then there is rakija"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "default": "h3",
+      "options": [
+        { "value": "h3", "label": "Small" },
+        { "value": "h2", "label": "Medium" },
+        { "value": "h1", "label": "Large" }
+      ]
+    },
+    {
+      "type": "textarea",
+      "id": "intro",
+      "label": "Line under the heading"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "per_row",
+      "label": "Products per row, desktop",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "Button label",
+      "default": "See the rakija",
+      "info": "Links to the collection. Leave empty for no button."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tikves shelf",
+      "category": "Tikves"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["footer", "header", "custom.popups"]
+  }
+}
+{% endschema %}

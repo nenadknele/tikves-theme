@@ -1,0 +1,272 @@
+{%- comment -%}
+  TIKVES LONDON . CASE LADDER
+  Two layouts. CARDS is the BBR unit: a light card sitting on the
+  tinted band, image on top, words beneath. LIST is the original
+  priced list and is kept so the change is one setting to reverse.
+
+  THE HOLDING PLATE. Where a case has no photograph yet the card
+  gets a Wine plate carrying one small line instead of a hole. It
+  reads as a decision, not as a broken image. Set a photograph on
+  the product and the plate becomes the photograph, no theme edit.
+
+  The card name uses the theme heading face in sentence case. It
+  deliberately does not use the h4 class, which Impulse styles as
+  an upper-case label and the house rules bar upper-case headings.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign cols = section.blocks.size | at_most: 4 | at_least: 1
+-%}
+
+<div class="tkl tkl--{{ section.id }} tkl--{{ s.layout }} page-width">
+  {%- if s.title != blank -%}
+    <div class="tkl__head">
+      <h2 class="{{ s.heading_size }}">{{ s.title | escape }}</h2>
+      {%- if s.intro != blank -%}<p class="tkl__intro">{{ s.intro | escape }}</p>{%- endif -%}
+    </div>
+  {%- endif -%}
+
+  {%- if s.layout == 'cards' -%}
+
+    <div class="tkl__cards">
+      {%- for block in section.blocks -%}
+        {%- assign p = all_products[block.settings.product] -%}
+        {%- if p != empty and p.title != blank -%}
+          <a class="tkl__card" href="{{ p.url }}" {{ block.shopify_attributes }}>
+            {%- if p.featured_image != blank -%}
+              <span class="tkl__plate">
+                <img
+                  src="{{ p.featured_image | image_url: width: 800 }}"
+                  srcset="{{ p.featured_image | image_url: width: 400 }} 400w, {{ p.featured_image | image_url: width: 800 }} 800w"
+                  sizes="(min-width: 769px) 22vw, 46vw"
+                  alt="{{ p.featured_image.alt | escape }}"
+                  loading="lazy"
+                  width="400" height="500">
+              </span>
+            {%- else -%}
+              <span class="tkl__plate tkl__plate--holding">
+                <span class="tkl__mark">{{ s.plate_text | escape }}</span>
+              </span>
+            {%- endif -%}
+            <span class="tkl__cbody">
+              <span class="tkl__name">{{ p.title }}</span>
+              {%- if block.settings.subtitle != blank -%}
+                <span class="tkl__sub">{{ block.settings.subtitle | escape }}</span>
+              {%- endif -%}
+              <span class="tkl__price">{{ p.price | money }}</span>
+            </span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+  {%- else -%}
+
+    <div class="tkl__list">
+      {%- for block in section.blocks -%}
+        {%- assign p = all_products[block.settings.product] -%}
+        {%- if p != empty and p.title != blank -%}
+          <a class="tkl__row" href="{{ p.url }}" {{ block.shopify_attributes }}>
+            {%- if s.show_thumbs -%}
+              <span class="tkl__thumb{% if p.featured_image == blank %} tkl__thumb--empty{% endif %}">
+                {%- if p.featured_image != blank -%}
+                  <img src="{{ p.featured_image | image_url: width: 260 }}" alt="{{ p.featured_image.alt | escape }}" loading="lazy" width="130" height="130">
+                {%- endif -%}
+              </span>
+            {%- endif -%}
+            <span class="tkl__body">
+              <span class="tkl__rname">{{ p.title }}</span>
+              {%- if block.settings.subtitle != blank -%}
+                <span class="tkl__rsub">{{ block.settings.subtitle | escape }}</span>
+              {%- endif -%}
+            </span>
+            <span class="tkl__rprice">{{ p.price | money }}</span>
+          </a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+
+  {%- endif -%}
+
+  {%- if s.link_label != blank -%}
+    <div class="tkl__foot">
+      <a href="{{ s.link_url | default: '/collections/all' }}" class="tkl__all">{{ s.link_label | escape }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% style %}
+  .tkl--{{ section.id }} .tkl__head { margin-bottom: 22px; }
+  .tkl--{{ section.id }} .tkl__head h2 { margin: 0; }
+  .tkl--{{ section.id }} .tkl__intro { margin: 6px 0 0; font-size: 15px; }
+  .tkl--{{ section.id }} .tkl__foot { margin-top: 20px; }
+  .tkl--{{ section.id }} .tkl__all {
+    font-size: 15px;
+    color: {{ settings.color_button }};
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  /* ---- CARDS ---- */
+  .tkl--{{ section.id }}.tkl--cards .tkl__cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .tkl--{{ section.id }}.tkl--cards .tkl__foot { text-align: center; }
+  .tkl--{{ section.id }} .tkl__card {
+    display: block;
+    background: {{ s.card_color }};
+    text-decoration: none;
+    color: inherit;
+  }
+  .tkl--{{ section.id }} .tkl__plate {
+    display: block;
+    aspect-ratio: 4 / 5;
+    background: {{ s.card_color }};
+    overflow: hidden;
+  }
+  .tkl--{{ section.id }} .tkl__plate img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+  }
+  .tkl--{{ section.id }} .tkl__plate--holding {
+    background: {{ s.holding_color }};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tkl--{{ section.id }} .tkl__mark {
+    color: {{ s.holding_text_color }};
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 9px 0;
+    border-top: 1px solid {{ s.holding_text_color }}55;
+    border-bottom: 1px solid {{ s.holding_text_color }}55;
+  }
+  .tkl--{{ section.id }} .tkl__cbody { display: block; padding: 14px 16px 18px; }
+  .tkl--{{ section.id }} .tkl__name {
+    display: block;
+    margin: 0;
+    font-family: var(--typeHeaderPrimary, inherit);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    font-size: 17px;
+    line-height: 1.25;
+  }
+  .tkl--{{ section.id }} .tkl__sub { display: block; font-size: 13px; line-height: 1.35; margin-top: 5px; opacity: 0.75; }
+  .tkl--{{ section.id }} .tkl__price { display: block; font-size: 15px; margin-top: 9px; }
+
+  /* ---- LIST ---- */
+  .tkl--{{ section.id }}.tkl--list .tkl__head,
+  .tkl--{{ section.id }}.tkl--list .tkl__list,
+  .tkl--{{ section.id }}.tkl--list .tkl__foot {
+    max-width: {{ s.list_width }}px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .tkl--{{ section.id }} .tkl__list { border-top: 1px solid {{ settings.color_borders }}; }
+  .tkl--{{ section.id }} .tkl__row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 2px;
+    border-bottom: 1px solid {{ settings.color_borders }};
+    text-decoration: none;
+    color: inherit;
+    min-height: 56px;
+    box-sizing: border-box;
+  }
+  .tkl--{{ section.id }} .tkl__thumb {
+    flex: 0 0 {{ s.thumb_size }}px;
+    width: {{ s.thumb_size }}px;
+    height: {{ s.thumb_size }}px;
+    background: {{ settings.color_small_image_bg }};
+    display: block;
+    overflow: hidden;
+  }
+  .tkl--{{ section.id }} .tkl__thumb--empty { background: transparent; }
+  .tkl--{{ section.id }} .tkl__thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .tkl--{{ section.id }} .tkl__body { flex: 1 1 auto; display: block; min-width: 0; }
+  .tkl--{{ section.id }} .tkl__rname { display: block; font-size: 17px; line-height: 1.25; }
+  .tkl--{{ section.id }} .tkl__rsub { display: block; font-size: 14px; line-height: 1.35; margin-top: 3px; opacity: 0.75; }
+  .tkl--{{ section.id }} .tkl__rprice { flex: 0 0 auto; font-size: 16px; white-space: nowrap; }
+
+  @media only screen and (min-width: 769px) {
+    .tkl--{{ section.id }}.tkl--cards .tkl__cards {
+      grid-template-columns: repeat({{ cols }}, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .tkl--{{ section.id }} .tkl__card:hover .tkl__name { text-decoration: underline; text-underline-offset: 3px; }
+    .tkl--{{ section.id }} .tkl__name { font-size: 20px; }
+    .tkl--{{ section.id }} .tkl__sub { font-size: 14px; }
+    .tkl--{{ section.id }} .tkl__price { font-size: 16px; }
+    .tkl--{{ section.id }} .tkl__cbody { padding: 16px 18px 22px; }
+    .tkl--{{ section.id }} .tkl__row { padding: 18px 4px; gap: 20px; }
+    .tkl--{{ section.id }} .tkl__row:hover .tkl__rname { text-decoration: underline; text-underline-offset: 3px; }
+    .tkl--{{ section.id }} .tkl__rname { font-size: 19px; }
+    .tkl--{{ section.id }} .tkl__rsub { font-size: 15px; }
+    .tkl--{{ section.id }} .tkl__rprice { font-size: 18px; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Tikves case ladder",
+  "class": "index-section",
+  "max_blocks": 8,
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "default": "cards",
+      "options": [
+        { "value": "cards", "label": "Cards" },
+        { "value": "list", "label": "Priced list" }
+      ]
+    },
+    { "type": "text", "id": "title", "label": "Heading", "default": "The cases" },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "label": "Heading size",
+      "default": "h3",
+      "options": [
+        { "value": "h3", "label": "Small" },
+        { "value": "h2", "label": "Medium" },
+        { "value": "h1", "label": "Large" }
+      ]
+    },
+    { "type": "text", "id": "intro", "label": "One orienting line" },
+    { "type": "text", "id": "link_label", "label": "Footer link label", "default": "See all cases" },
+    { "type": "url", "id": "link_url", "label": "Footer link" },
+    { "type": "header", "content": "Cards" },
+    { "type": "color", "id": "card_color", "label": "Card background", "default": "#F5EFE7", "info": "Paper, so the card lifts off the tinted band." },
+    { "type": "text", "id": "plate_text", "label": "Holding plate line", "default": "Six bottles", "info": "Shown only where a case has no photograph yet." },
+    { "type": "color", "id": "holding_color", "label": "Holding plate background", "default": "#4A0D18", "info": "Wine fills the space. Paper #F5EFE7 makes it quiet instead." },
+    { "type": "color", "id": "holding_text_color", "label": "Holding plate text", "default": "#F5EFE7" },
+    { "type": "header", "content": "Priced list, if that layout is chosen" },
+    { "type": "range", "id": "list_width", "label": "List width on desktop", "min": 640, "max": 1100, "step": 20, "unit": "px", "default": 820 },
+    { "type": "checkbox", "id": "show_thumbs", "label": "Show thumbnails", "default": true },
+    { "type": "range", "id": "thumb_size", "label": "Thumbnail size", "min": 48, "max": 96, "step": 4, "unit": "px", "default": 64 }
+  ],
+  "blocks": [
+    {
+      "type": "case",
+      "name": "Case card",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Case" },
+        { "type": "text", "id": "subtitle", "label": "One line on who it is for" }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Tikves case ladder" } ],
+  "disabled_on": { "groups": ["footer", "header", "custom.popups"] }
+}
+{% endschema %}

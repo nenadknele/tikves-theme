@@ -1,0 +1,19 @@
+{%- comment -%}
+  Shopify only bundles a `{% stylesheet %}` from a snippet that actually renders, so every
+  component the picker can reach is named here to keep injected markup styled.
+  https://shopify.dev/docs/storefronts/themes/best-practices/performance/stylesheet-subsetting#subsetting-and-the-section-rendering-api
+{%- endcomment -%}
+
+{%- capture kit_css_preload -%}
+  {%- render 'kit.tokens' -%}
+  {%- render 'kit.button' -%}
+  {%- render 'kit.fieldset' -%}
+  {%- render 'kit.radio', name: 'kit-css-preload', value: '' -%}
+  {%- render 'kit.select' -%}
+  {%- render 'kit.stack', content: '' -%}
+  {%- render 'kit.swatch' -%}
+  {%- render 'kit.text', text: '' -%}
+  {%- render 'kit.visually-hidden' -%}
+  {%- render 'kit.product-variant-picker' -%}
+  {%- render 'kit.product-section-refresh' -%}
+{%- endcapture -%}

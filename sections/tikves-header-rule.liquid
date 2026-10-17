@@ -1,0 +1,85 @@
+{%- comment -%}
+  TIKVES LONDON - HEADER HAIRLINE AND MOBILE SEARCH POSITION
+  Added 14 Aug 2026.
+
+  6 Sep 2026: on the phone the search icon moves across to sit beside
+  the menu button on the left. The layout itself, menu left, logo
+  centred, icons right, is the theme's own centre-left setting. Only the
+  one icon is moved, and only on the phone.
+
+  The theme's small--hide and medium-up--hide classes are restated at
+  the end so nothing here can show an icon twice.
+
+  TO REMOVE: delete this section from the Header group in the theme
+  editor, or remove "tikves_header_rule" from sections/header-group.json.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign rule_color = s.color
+  if rule_color == blank
+    assign rule_color = '#B9AC9B'
+  endif
+  assign rule_alpha = s.opacity | divided_by: 100.0
+-%}
+
+{% style %}
+  {%- if s.enabled -%}
+  #HeaderWrapper .site-header,
+  .header-wrapper .site-header {
+    border-bottom: {{ s.thickness }}px solid {{ rule_color | color_modify: 'alpha', rule_alpha }};
+  }
+  {%- endif -%}
+
+  /* Icons in the left column sit side by side, never stacked. */
+  .site-header .header-item--left .site-nav,
+  .site-header .header-item--left .site-nav__icons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  {%- if s.search_left_mobile -%}
+  @media only screen and (max-width: 768px) {
+    .site-header .header-layout { position: relative; }
+    .site-header .header-item--icons .js-search-header {
+      position: absolute;
+      left: {{ s.search_offset }}px;
+      top: 50%;
+      transform: translateY(-50%);
+      margin: 0;
+      z-index: 3;
+    }
+  }
+  {%- endif -%}
+
+  /* The theme's own show and hide classes must still win. */
+  @media only screen and (max-width: 768px) {
+    .site-header .small--hide { display: none !important; }
+  }
+  @media only screen and (min-width: 769px) {
+    .site-header .medium-up--hide { display: none !important; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Header hairline",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "One hairline along the bottom edge of the header. Also puts the search icon beside the menu button on the phone."
+    },
+    { "type": "checkbox", "id": "enabled", "label": "Show the hairline", "default": true },
+    { "type": "color", "id": "color", "label": "Hairline colour", "default": "#B9AC9B" },
+    { "type": "range", "id": "opacity", "label": "Strength", "min": 10, "max": 100, "step": 5, "unit": "%", "default": 50 },
+    { "type": "range", "id": "thickness", "label": "Thickness", "min": 1, "max": 3, "step": 1, "unit": "px", "default": 1 },
+    { "type": "header", "content": "Mobile search" },
+    { "type": "checkbox", "id": "search_left_mobile", "label": "Search beside the menu button", "default": true, "info": "Phone only. Untick to leave it with the account and bag on the right." },
+    { "type": "range", "id": "search_offset", "label": "Distance from the left edge", "min": 28, "max": 90, "step": 2, "unit": "px", "default": 46 }
+  ],
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

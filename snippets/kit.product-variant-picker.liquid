@@ -1,0 +1,745 @@
+{% doc %}
+  Product variant picker built. Renders one fieldset per product option — swatch/button radios or a dropdown — from product.options_with_values.
+
+  @param {object} product - Product object
+  @param {string} [picker_type] - 'button' | 'dropdown'. Default: 'button'
+  @param {boolean} [show_labels] - Show option name labels. Default: true
+  @param {string} [show_selected_values] - 'swatch' | 'all' | 'none'. Which button/swatch options show the selected value beside the legend. Never applies to dropdowns. Default: 'swatch'
+  @param {boolean} [enable_swatches] - Render values with a swatch as swatches. Ignored for 'dropdown' unless `swatches_as_buttons`. Default: false
+  @param {boolean} [swatches_as_buttons] - Let options that have swatches render as swatches even when `picker_type` is 'dropdown'. Forces vertical stacking. Requires `enable_swatches`. Default: false
+  @param {boolean} [enable_swatch_tooltips] - Show the value name in a tooltip on hover of a swatch. Requires `enable_swatches`. Default: false
+  @param {string} [swatch_tooltip_placement] - 'top' | 'bottom' | 'start' | 'end'. Default: 'top'
+  @param {boolean} [swatch_tooltip_arrow] - Render the tooltip's arrow. Default: true
+  @param {boolean} [update_url] - Replace the browser URL with ?variant= on selection. Default: true
+  @param {boolean} [allow_unselected] - Render with no option value selected, prompting a choice per option. Default: false
+  @param {string} [legend_extra] - Markup slotted into one option's legend, after the name — a size-chart trigger, a help link. Not escaped. Requires `legend_extra_option` and `show_labels`.
+  @param {string} [legend_extra_option] - Name of the option `legend_extra` attaches to, matched case-insensitively (e.g. 'Size').
+  @param {string} [legacy_swatch_triggers] - Comma-separated keywords naming the options that carry legacy swatches (e.g. 'color,colour,couleur'), matched case-insensitively against any part of the option name. Requires `legacy_swatch_source`.
+  @param {string} [legacy_swatch_source] - 'variant_image' (value.variant.image), 'files' (Shopify Files), or 'assets' (theme assets). The latter two resolve with `{value-handle}.png`. Requires `enable_swatches`.
+  @param {number} [swatch_image_size] - Edge length in px of the square swatch image requested from the CDN. Match it to the rendered swatch size times the pixel density. Default: 64
+  @param {boolean} [variant_id_field] - Render the hidden `name="id"` submit input for the selected variant, kept current by the picker's own swap. The picker must sit inside the theme's product `<form>` for the input to submit. Default: false
+
+  @example
+  {% render 'kit.product-variant-picker', product: product, picker_type: 'button' %}
+{% enddoc %}
+
+{%- liquid
+  assign picker_type = picker_type | default: 'button'
+  assign show_labels = show_labels | default: true, allow_false: true
+  assign show_selected_values = show_selected_values | default: 'swatch'
+  assign update_url = update_url | default: true, allow_false: true
+  assign variant_id_field = variant_id_field | default: false, allow_false: true
+  assign allow_unselected = allow_unselected | default: false, allow_false: true
+  assign swatches_as_buttons = swatches_as_buttons | default: false, allow_false: true
+  assign enable_swatch_tooltips = enable_swatch_tooltips | default: false, allow_false: true
+  assign swatch_tooltip_placement = swatch_tooltip_placement | default: 'top'
+  assign swatch_tooltip_arrow = swatch_tooltip_arrow | default: true, allow_false: true
+  assign swatch_image_size = swatch_image_size | default: 64
+
+  assign selection_incomplete = false
+  assign selected_variant = product.selected_or_first_available_variant
+  if allow_unselected and product.selected_variant == nil
+    assign selection_incomplete = true
+    assign selected_variant = nil
+  endif
+
+  # For marking availability of unselected options
+  # skipped for high-variant products and combined listings
+  assign availability_map = nil
+  if allow_unselected and product.variants.size == product.variants_count
+    assign availability_map = product.variants | where: 'available'
+    for option in product.options_with_values
+      assign linked_product_urls = option.values | map: 'product_url' | join
+      if linked_product_urls != blank
+        assign availability_map = nil
+        break
+      endif
+    endfor
+  endif
+
+  assign sold_out_label = 'kit.info.sold_out' | t | escape | prepend: ' - '
+
+  assign select_prompt_text = nil
+  if allow_unselected
+    assign select_prompt_text = 'kit.actions.select' | t
+  endif
+
+  # `variant | json` omits the inventory keys, so splice them onto the blob
+  assign variant_json = selected_variant | json
+  if selected_variant
+    capture inventory_json
+      echo ',"inventory_quantity":'
+      echo selected_variant.inventory_quantity | json
+      echo ',"inventory_management":'
+      echo selected_variant.inventory_management | json
+      echo ',"inventory_policy":'
+      echo selected_variant.inventory_policy | json
+    endcapture
+    assign variant_json = variant_json | remove_last: '}' | append: inventory_json | append: '}'
+  endif
+
+  assign stack_gap = 'lg'
+  assign stack_direction = 'vertical'
+  if picker_type == 'dropdown' and swatches_as_buttons == false
+    assign stack_gap = 'md'
+    assign stack_direction = 'horizontal'
+  endif
+
+  assign legend_extra_option_match = legend_extra_option | downcase
+  assign legacy_swatch_trigger_list = legacy_swatch_triggers | downcase | split: ','
+
+  assign picker_id = 'kit-variant-picker-' | append: section.id | append: '-' | append: product.id
+-%}
+
+{%- if product.has_only_default_variant -%}
+  {%- if variant_id_field -%}
+    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}" data-variants>
+  {%- endif -%}
+  <script type="application/json" data-kit-selected-variant>
+    {{- variant_json -}}
+  </script>
+{%- endif -%}
+
+{%- unless product.has_only_default_variant -%}
+  {%- capture picker_options -%}
+    {%- for option in product.options_with_values -%}
+      {%- liquid
+        assign option_name_match = option.name | downcase
+
+        assign option_legend = nil
+        if show_labels
+          assign option_legend = option.name
+        endif
+
+        # Legacy swatch options are named by the caller, not detected from value.swatch
+        assign option_legacy_swatch_source = nil
+        if enable_swatches and legacy_swatch_source != blank
+          if picker_type == 'button' or swatches_as_buttons
+            for legacy_swatch_trigger in legacy_swatch_trigger_list
+              assign legacy_swatch_trigger_match = legacy_swatch_trigger | strip
+              if legacy_swatch_trigger_match != blank and option_name_match contains legacy_swatch_trigger_match
+                assign option_legacy_swatch_source = legacy_swatch_source
+                break
+              endif
+            endfor
+          endif
+        endif
+
+        assign option_has_swatches = false
+        if enable_swatches
+          assign option_swatches = option.values | map: 'swatch' | compact
+          if option_swatches.size > 0 or option_legacy_swatch_source != blank
+            assign option_has_swatches = true
+          endif
+        endif
+
+        assign option_picker_type = picker_type
+        if option_picker_type == 'dropdown' and swatches_as_buttons and option_has_swatches
+          assign option_picker_type = 'button'
+        endif
+
+        # Show selection as prompt or selected value
+        assign option_selection = nil
+        if option_picker_type != 'dropdown' and show_selected_values != 'none'
+          assign option_selection = select_prompt_text
+          if option_selection == nil
+            if show_selected_values == 'all' or option_has_swatches
+              assign option_selection = option.selected_value
+            endif
+          endif
+        endif
+
+        # Generate a map of this option's values that some available variant carries
+        if availability_map
+          assign option_property = 'option' | append: option.position
+          assign option_availability_map = availability_map | map: option_property
+        endif
+
+        # legend_extra attaches to a single named option, not every fieldset
+        assign option_legend_extra = nil
+        if legend_extra != blank and legend_extra_option_match != blank
+          if option_name_match == legend_extra_option_match
+            assign option_legend_extra = legend_extra
+          endif
+        endif
+      -%}
+
+      {%- capture option_content -%}
+        {%- if option_picker_type == 'dropdown' -%}
+          {%- render 'kit.product-variant-picker.dropdown',
+            option: option,
+            availability_map: option_availability_map,
+            selection_incomplete: selection_incomplete,
+            use_placeholder: allow_unselected
+          -%}
+        {%- else -%}
+          {%- render 'kit.product-variant-picker.button',
+            option: option,
+            picker_id: picker_id,
+            enable_swatches: enable_swatches,
+            enable_swatch_tooltips: enable_swatch_tooltips,
+            swatch_tooltip_placement: swatch_tooltip_placement,
+            swatch_tooltip_arrow: swatch_tooltip_arrow,
+            availability_map: option_availability_map,
+            legacy_swatch_source: option_legacy_swatch_source,
+            swatch_image_size: swatch_image_size,
+            selection_incomplete: selection_incomplete
+          -%}
+        {%- endif -%}
+      {%- endcapture -%}
+
+      {%- render 'kit.fieldset',
+        legend: option_legend,
+        legend_extra: option_legend_extra,
+        selection_name: option_selection,
+        content: option_content
+      -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {%- capture picker_stack -%}
+    {%- render 'kit.stack', gap: stack_gap, direction: stack_direction, content: picker_options, wrap: true -%}
+  {%- endcapture -%}
+
+  <kit-variant-picker
+    class="kit-product-variant-picker"
+    data-section-id="{{ section.id }}"
+    data-product-id="{{ product.id }}"
+    data-product-title="{{ product.title | escape }}"
+    data-product-handle="{{ product.handle }}"
+    data-product-url="{{ product.url }}"
+    data-variant-id="{{ selected_variant.id }}"
+    {% if update_url %}
+      data-update-url
+    {% endif %}
+    {% if allow_unselected %}
+      data-allow-unselected
+    {% endif %}
+  >
+    {{ picker_stack }}
+    <template data-sold-out-label-template>
+      {%- render 'kit.visually-hidden', text: sold_out_label, attr: 'data-sold-out-label' -%}
+    </template>
+    {%- if variant_id_field and selected_variant -%}
+      <input
+        type="hidden"
+        name="id"
+        value="{{ selected_variant.id }}"
+        data-variants
+      >
+    {%- endif -%}
+    <script type="application/json" data-view-event-payload>
+      {{- product | standard_event_data: 'view' -}}
+    </script>
+    <script type="application/json" data-kit-selected-variant>
+      {{- variant_json -}}
+    </script>
+    {%- if availability_map -%}
+      <script type="application/json" data-kit-available-options>
+        {{- availability_map | map: 'options' | json -}}
+      </script>
+    {%- endif -%}
+  </kit-variant-picker>
+{%- endunless -%}
+
+{% stylesheet %}
+  .kit-product-variant-picker {
+    display: block;
+  }
+
+  /* Sold-out values borrow the disabled look but stay selectable */
+  .kit-product-variant-picker .kit-radio :is(.kit-button--disabled, .kit-swatch--disabled) {
+    cursor: pointer;
+  }
+
+  .kit-picker--loading {
+    opacity: var(--kit-opacity-disabled, 0.5);
+    pointer-events: none;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  /*============================================================================
+    kit-variant-picker
+    - For quick shop, fetch the full merchant-configured product page and set
+    the correct section id on the picker
+
+    Events:
+    - shopify:product-select
+    - kit:variant-picker:change (legacy)
+    - kit:variant-picker:after-change (legacy)
+    - kit:variant-picker:error (legacy)
+  ==============================================================================*/
+
+  if (!customElements.get('kit-variant-picker')) {
+    class KitVariantPicker extends HTMLElement {
+      #abortController = null;
+      #standardEventsReady = null;
+      // Prevents race conditions between completed requests
+      #selectionId = 0;
+      #chosenOptions = new Map();
+
+      get sectionId() {
+        return this.dataset.sectionId;
+      }
+
+      set sectionId(value) {
+        this.dataset.sectionId = value;
+      }
+
+      connectedCallback() {
+        this.#readIdentity();
+        this.selectedVariant = JSON.parse(this.querySelector('[data-kit-selected-variant]')?.textContent ?? 'null');
+        this.shouldUpdateUrl = 'updateUrl' in this.dataset;
+        this.allowUnselected = 'allowUnselected' in this.dataset;
+        this.soldOutLabelTemplate = this.querySelector('template[data-sold-out-label-template]');
+        this.soldOutLabel = this.soldOutLabelTemplate.content.querySelector('[data-sold-out-label]').textContent;
+        this.#resolveAvailability();
+        this.#echoChoices();
+        this.#standardEventsReady = this.#loadStandardEvents();
+        this.addEventListener('change', this.#onChange);
+      }
+
+      disconnectedCallback() {
+        this.removeEventListener('change', this.#onChange);
+        this.#abortController?.abort();
+      }
+
+      #readIdentity(el = this) {
+        this.productId = el.dataset.productId;
+        this.productTitle = el.dataset.productTitle;
+        this.productHandle = el.dataset.productHandle;
+        this.productUrl = el.dataset.productUrl;
+        this.variantId = el.dataset.variantId;
+
+        if (el !== this) {
+          this.dataset.productId = el.dataset.productId;
+          this.dataset.productTitle = el.dataset.productTitle;
+          this.dataset.productHandle = el.dataset.productHandle;
+          this.dataset.productUrl = el.dataset.productUrl;
+          this.dataset.variantId = el.dataset.variantId;
+        }
+      }
+
+      async #loadStandardEvents() {
+        try {
+          this.SE = await import('https://cdn.shopify.com/storefront/standard-events.js');
+        } catch (error) {
+          console.error('Failed to load the Shopify Standard Events module.', error);
+        }
+      }
+
+      async #onChange(event) {
+        const trigger = event.target;
+
+        if (!(trigger instanceof HTMLElement) || !trigger.matches('input[type="radio"], select')) {
+          return;
+        }
+
+        const selectedOption = trigger.tagName === 'SELECT'
+          ? trigger.options[trigger.selectedIndex]
+          : trigger.closest('[data-option-value-id]');
+        const optionValueId = selectedOption?.dataset.optionValueId;
+        const productUrl = selectedOption?.dataset.productUrl;
+        const previous = {
+          product: this.#product(),
+          variantId: this.variantId
+        };
+
+        // Remember the selections and check if all options are chosen (for unselected picker)
+        let incomplete = false;
+        if (this.allowUnselected) {
+          this.#getSelectedOptions().forEach(option => this.#chosenOptions.set(option.name, option.id));
+          incomplete = this.selectionIncomplete;
+        }
+
+        const deferred = await this.#dispatchChange(productUrl, previous, incomplete);
+        if (!deferred) return;
+
+        const selectionId = ++this.#selectionId;
+
+        try {
+          const html = await this.#refresh(optionValueId, productUrl, selectionId, incomplete);
+          const viewEventPayloadEl = html.querySelector('kit-variant-picker [data-view-event-payload]');
+          const viewPayload = JSON.parse(viewEventPayloadEl?.textContent?.trim() ?? 'null');
+          const viewEventVariant = viewPayload?.product?.selectedVariant ?? null;
+
+          this.#dispatchAfterChange(html, this.selectedVariant, viewEventVariant, deferred, previous);
+        } catch (error) {
+          deferred.reject(error);
+
+          // Ignore errors triggered by aborted/superseded requests
+          if (error.name === 'AbortError') return;
+          if (selectionId !== this.#selectionId) return;
+
+          console.error(error);
+          this.#dispatchError(error, productUrl, previous);
+        }
+      }
+
+      async #refresh(changedOptionValueId, productUrl, selectionId, incomplete) {
+        const sectionRequestUrl = this.#variantUrl(productUrl);
+        sectionRequestUrl.searchParams.set('section_id', this.sectionId);
+
+        this.#abortController?.abort();
+        const refreshAbortController = new AbortController();
+        this.#abortController = refreshAbortController;
+
+        this.#setLoading();
+        try {
+          const sectionRequest = await fetch(sectionRequestUrl, { signal: refreshAbortController.signal });
+
+          if (!sectionRequest.ok) {
+            throw new Error(`Variant section request failed with ${sectionRequest.status}`);
+          }
+
+          const sectionResponse = await sectionRequest.text();
+          const sectionHtml = new DOMParser().parseFromString(sectionResponse, 'text/html');
+          const newPicker = sectionHtml.querySelector('kit-variant-picker');
+
+          if (!newPicker) {
+            throw new Error('<kit-variant-picker> not found');
+          }
+
+          // In case a new request begins after the current request can be aborted
+          if (selectionId !== this.#selectionId) {
+            throw new DOMException('Superseded by a newer selection', 'AbortError');
+          }
+
+          this.innerHTML = newPicker.innerHTML;
+          this.#readIdentity(newPicker);
+          this.selectedVariant = JSON.parse(this.querySelector('[data-kit-selected-variant]')?.textContent ?? 'null');
+          this.#reconcileSelections();
+          this.#resolveAvailability();
+          this.#echoChoices();
+
+          if (incomplete) {
+            this.variantId = '';
+            this.dataset.variantId = '';
+            this.selectedVariant = null;
+            this.querySelector('[data-variants]')?.remove();
+          }
+
+          this.#restoreFocus(changedOptionValueId);
+          this.#updateHistory(this.variantId, productUrl);
+
+          return sectionHtml;
+        } finally {
+          // Clear loading state if the current request was not superseded
+          if (selectionId === this.#selectionId) {
+            this.#unsetLoading();
+          }
+        }
+      }
+
+      async #dispatchChange(productUrl, previous, incomplete) {
+        const changeEvent = this.#emit('change', {
+          picker: this,
+          previousVariant: previous.variantId,
+          product: previous.product,
+          sectionId: this.sectionId,
+          selectedOptions: this.#getSelectedOptions().map(({ name, value }) => ({ name, value })),
+          selectionIncomplete: incomplete
+        }, { cancelable: true });
+
+        if (changeEvent.defaultPrevented) return null;
+
+        // Unselected: still refresh to narrow availability, but no variant reporting
+        if (incomplete) return { resolve() { }, reject() { } };
+
+        await this.#standardEventsReady;
+        if (!this.SE?.ProductSelectEvent) {
+          this.#navigate(productUrl);
+          return null;
+        }
+
+        const deferred = this.SE.ProductSelectEvent.createPromise();
+        this.#standardDispatch({ promise: deferred.promise });
+        return deferred;
+      }
+
+      #dispatchAfterChange(html, selectedVariant, viewEventVariant, deferred, previous) {
+        this.#emit('after-change', {
+          html,
+          picker: this,
+          previousProduct: previous.product,
+          previousVariant: previous.variantId,
+          product: this.#product(),
+          productChanged: previous.product.id !== this.productId,
+          sectionId: this.sectionId,
+          selectedOptions: this.#getSelectedOptions().map(({ name, value }) => ({ name, value })),
+          selectionIncomplete: this.selectionIncomplete,
+          variant: selectedVariant
+        });
+
+        deferred.resolve({
+          detail: { html },
+          variant: viewEventVariant
+        });
+      }
+
+      #dispatchError(error, productUrl, previous) {
+        const errorEvent = this.#emit('error', {
+          error,
+          picker: this,
+          previousVariant: previous.variantId,
+          product: previous.product,
+          sectionId: this.sectionId
+        }, { cancelable: true });
+
+        if (!errorEvent.defaultPrevented) {
+          this.#navigate(productUrl);
+        }
+      }
+
+      #standardDispatch({ promise }) {
+        const selectedOptions = this.#getSelectedOptions().map(({ name, value }) => {
+          return { name, value };
+        });
+
+        this.dispatchEvent(new this.SE.ProductSelectEvent({
+          selectedOptions,
+          product: {
+            id: this.productId,
+            title: this.productTitle,
+            handle: this.productHandle
+          },
+          promise
+        }));
+      }
+
+      #product() {
+        return {
+          id: this.productId,
+          title: this.productTitle,
+          handle: this.productHandle,
+          url: this.productUrl
+        };
+      }
+
+      #emit(type, detail, { cancelable = false } = {}) {
+        const event = new CustomEvent(`kit:variant-picker:${type}`, {
+          bubbles: true,
+          cancelable,
+          detail
+        });
+
+        this.dispatchEvent(event);
+        return event;
+      }
+
+      #navigate(productUrl) {
+        const url = this.#variantUrl(productUrl);
+
+        this.#setLoading();
+        window.location.assign(url.toString());
+      }
+
+      get selectionIncomplete() {
+        if (!this.allowUnselected) return false;
+
+        const names = new Set();
+        const chosen = new Set();
+
+        this.querySelectorAll('[data-option-name]').forEach(el => {
+          const { optionName } = el.dataset;
+
+          names.add(optionName);
+
+          const isChosen = el.tagName === 'SELECT'
+            ? el.value !== ''
+            : el.querySelector('input[type="radio"]:checked') !== null;
+
+          if (isChosen) chosen.add(optionName);
+        });
+
+        return chosen.size < names.size;
+      }
+
+      #getSelectedOptions() {
+        return [...this.querySelectorAll('input[type="radio"]:checked, select')].map(el => {
+          if (el.tagName === 'SELECT') {
+            return {
+              name: el.dataset.optionName,
+              value: el.options[el.selectedIndex]?.value,
+              id: el.options[el.selectedIndex]?.dataset.optionValueId
+            };
+          } else if (el.tagName === 'INPUT') {
+            return {
+              name: el.closest('[data-option-name]')?.dataset.optionName,
+              value: el.value,
+              id: el.closest('[data-option-value-id]')?.dataset.optionValueId
+            };
+          }
+        }).filter(option => option.name && option.value && option.id);
+      }
+
+      // Since refresh resolves some variant, clear selections that were not chosen
+      #reconcileSelections() {
+        if (!this.allowUnselected) return;
+
+        [...this.querySelectorAll('[data-option-name]')].forEach(el => {
+          const chosenValueId = this.#chosenOptions.get(el.dataset.optionName);
+
+          if (el.tagName === 'SELECT') {
+            const match = chosenValueId
+              && [...el.options].find(option => option.dataset.optionValueId === chosenValueId);
+
+            if (match) {
+              el.value = match.value;
+            } else {
+              const placeholder = [...el.options].find(option => option.value === '');
+              if (placeholder) placeholder.disabled = false;
+              el.value = '';
+            }
+          } else {
+            const input = el.querySelector('input[type="radio"]');
+            if (input) input.checked = Boolean(chosenValueId) && el.dataset.optionValueId === chosenValueId;
+          }
+        });
+      }
+
+      // Proper availability resolution for incomplete selections (Shopify defaults to a fallback variant's values)
+      #resolveAvailability() {
+        if (!this.selectionIncomplete && this.selectedVariant) return;
+
+        const availableOptions = JSON.parse(this.querySelector('[data-kit-available-options]')?.textContent ?? 'null');
+
+        // High-variant products and combined listings
+        if (!availableOptions) {
+          this.#resetUnresolvedAvailability();
+          return;
+        }
+
+        // With nothing chosen, the server already rated every value against these variants
+        const anyChosen = [...this.querySelectorAll('fieldset')].some(fieldset => this.#chosenValue(fieldset) !== null);
+        if (anyChosen) this.#applyTrueAvailability(availableOptions);
+      }
+
+      #applyTrueAvailability(availableOptions) {
+        const chosen = [];
+
+        this.querySelectorAll('fieldset').forEach((fieldset, index) => {
+          const matchesEarlierChoices = options => chosen.every((chosenValue, i) => {
+            const isUnchosen = chosenValue === null;
+            const isMatchingChoice = options[i] === chosenValue;
+
+            return isUnchosen || isMatchingChoice;
+          });
+
+          // Mark available if the combination with earlier choices belongs to an available variant
+          this.#markAvailability(fieldset, value => {
+            return availableOptions.some(options => {
+              const isMatchingValue = options[index] === value;
+
+              return isMatchingValue && matchesEarlierChoices(options);
+            });
+          });
+
+          chosen.push(this.#chosenValue(fieldset));
+        });
+      }
+
+      // Resets availability for unresolved options
+      #resetUnresolvedAvailability() {
+        let earlierChosen = true;
+
+        this.querySelectorAll('fieldset').forEach(fieldset => {
+          if (!earlierChosen) this.#markAvailability(fieldset, () => true);
+
+          earlierChosen = earlierChosen && this.#chosenValue(fieldset) !== null;
+        });
+      }
+
+      #chosenValue(fieldset) {
+        const select = fieldset.querySelector('select');
+
+        return select
+          ? select.value || null
+          : fieldset.querySelector('input[type="radio"]:checked')?.value ?? null;
+      }
+
+      #markAvailability(fieldset, isAvailable) {
+
+        fieldset.querySelectorAll('option:not([value=""])').forEach(option => {
+          const available = isAvailable(option.value);
+
+          option.textContent = available ? option.value : `${option.value}${this.soldOutLabel}`;
+        });
+
+        fieldset.querySelectorAll('input[type="radio"]').forEach(input => {
+          const available = isAvailable(input.value);
+          const radio = input.closest('[data-option-value-id]');
+
+          radio?.querySelector('.kit-button')?.classList.toggle('kit-button--disabled', !available);
+          radio?.querySelector('.kit-swatch')?.classList.toggle('kit-swatch--disabled', !available);
+
+          // Keeps the screen-reader sold-out label in step with the visual marking
+          const label = radio?.querySelector('[data-sold-out-label]');
+          if (available) {
+            label?.remove();
+          } else if (!label) {
+            radio?.append(this.soldOutLabelTemplate.content.cloneNode(true));
+          }
+        });
+      }
+
+      #echoChoices() {
+        this.querySelectorAll('input[type="radio"]:checked').forEach(input => {
+          const selection = input.closest('fieldset')?.querySelector('.kit-fieldset__legend-selection');
+
+          if (selection) selection.textContent = input.value;
+        });
+      }
+
+      #variantUrl(productUrl) {
+        const url = new URL(productUrl || this.productUrl, window.location.origin);
+        const optionValues = this.#getSelectedOptions()
+          .map(option => option.id)
+          .join(',');
+
+        url.searchParams.set('option_values', optionValues);
+        return url;
+      }
+
+      #updateHistory(variantId, productUrl) {
+        if (!this.shouldUpdateUrl || window.Shopify?.designMode) return;
+
+        const url = new URL(window.location.href);
+
+        if (productUrl) {
+          url.pathname = new URL(productUrl, window.location.origin).pathname;
+        }
+
+        if (variantId) {
+          url.searchParams.set('variant', variantId);
+        } else {
+          url.searchParams.delete('variant');
+        }
+
+        window.history.replaceState({}, '', url.toString());
+      }
+
+      #restoreFocus(optionValueId) {
+        const option = this.querySelector(`[data-option-value-id="${optionValueId}"]`);
+
+        if (!option) return;
+        if (option.tagName === 'OPTION' && !matchMedia('(pointer: coarse)').matches) {
+          option.closest('select')?.focus();
+        } else {
+          (option.querySelector('input') || option).focus();
+        }
+      }
+
+      #setLoading() {
+        this.classList.add('kit-picker--loading');
+      }
+
+      #unsetLoading() {
+        this.classList.remove('kit-picker--loading');
+      }
+    }
+
+    customElements.define('kit-variant-picker', KitVariantPicker);
+  }
+{% endjavascript %}

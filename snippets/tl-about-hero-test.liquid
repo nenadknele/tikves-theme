@@ -1,0 +1,36 @@
+{%- comment -%}
+  ABOUT HERO TEST. 11 Oct 2026. Test only. Rendered in the head from
+  snippets/tikves-head-css.liquid on the About page only. Shows the cellar
+  carving as the hero with the tightened header and subheader. The real
+  change is a page body edit; this snippet is thrown away afterwards.
+{%- endcomment -%}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&display=swap">
+<style>
+  .tl-herotext{padding-top:24px !important;}
+  .tl-herotext h1{font-size:28px !important;line-height:1.12 !important;}
+  .tl-mission{padding-top:12px !important;}
+  .tl-mission .tl-lead{font-weight:400 !important;font-size:18px !important;line-height:1.45 !important;}
+  @media (min-width:750px){
+    .tl-herotext{padding-top:40px !important;}
+    .tl-herotext h1{font-size:34px !important;}
+    .tl-mission{padding-top:16px !important;}
+    .tl-mission .tl-lead{font-size:20px !important;}
+  }
+</style>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var base = 'https://cdn.shopify.com/s/files/1/1056/7647/2665/files/about-hero-cellar-carving.jpg?v=1791751130';
+    var img = document.querySelector('.tl-hero__img');
+    if (img) {
+      img.srcset = base + '&width=640 640w, ' + base + '&width=1080 1080w, ' + base + '&width=1600 1600w';
+      img.src = base + '&width=1080';
+      img.width = 1080;
+      img.height = 720;
+      img.alt = 'A bunch of grapes and leaves carved in stone in an old cellar';
+    }
+    var h1 = document.querySelector('.tl-herotext h1');
+    if (h1) h1.textContent = 'Macedonian wine, from London.';
+    var lead = document.querySelector('.tl-mission .tl-lead');
+    if (lead) lead.textContent = 'Made in the Tikveš valley for centuries. Hardly any of it reaches the UK. We bring the best of it here.';
+  });
+</script>

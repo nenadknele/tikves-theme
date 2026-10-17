@@ -1,0 +1,54 @@
+{% doc %}
+  Renders one product option as a native select dropdown. Options, availability and
+  selection come from option.values, so it is safe for high-variant products.
+
+  @param {object} option - product_option object (from product.options_with_values)
+  @param {string[]} [availability_map] - This option's values that some available variant carries. Nil when the server can't rate them.
+  @param {boolean} [selection_incomplete] - Whether the selection is incomplete. Default: false
+  @param {boolean} [use_placeholder] - Show a placeholder prompting a choice (overridden by JS upon selection). Default: false
+{% enddoc %}
+
+{%- liquid
+  assign selection_incomplete = selection_incomplete | default: false
+  assign use_placeholder = use_placeholder | default: false, allow_false: true
+
+  assign option_name_escaped = option.name | escape
+  assign select_attr = 'data-option-name="' | append: option_name_escaped | append: '"'
+
+  assign select_placeholder = nil
+  if use_placeholder
+    assign select_placeholder = 'kit.actions.select_option' | t: option: option.name | escape
+  endif
+-%}
+
+{%- capture option_list -%}
+  {%- for value in option.values -%}
+    {%- liquid
+      # With nothing chosen, a value is rated by whether any available variant carries it
+      assign value_unavailable = false
+      if selection_incomplete and availability_map != nil
+        unless availability_map contains value.name
+          assign value_unavailable = true
+        endunless
+      elsif value.available == false
+        assign value_unavailable = true
+      endif
+
+      assign value_escaped = value | escape
+      assign option_label = value_escaped
+      if value_unavailable
+        assign sold_out_label = 'kit.info.sold_out' | t | escape
+        assign option_label = value_escaped | append: ' - ' | append: sold_out_label
+      endif
+    -%}
+    <option
+      value="{{ value_escaped }}"
+      data-option-value-id="{{ value.id }}"
+      {% if value.product_url %}data-product-url="{{ value.product_url }}"{% endif %}
+      {%- comment -%} value.selected can resolve for fallback variants, like first available {%- endcomment -%}
+      {% if value.selected and selection_incomplete == false %}selected{% endif %}
+    >{{ option_label }}</option>
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- render 'kit.select', options: option_list, attr: select_attr, placeholder: select_placeholder, required: true -%}

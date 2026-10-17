@@ -1,0 +1,112 @@
+{%- comment -%}
+  Newsletter form. Shared by the popup, the footer and the newsletter
+  section. snippet_context tells them apart: 'popup', 'footer', 'section'.
+
+  CAPTURE SPLIT, 15 Sep 2026. The three routes used to emit one identical
+  tag string, so the joining-gift audience and the news audience were the
+  same audience as far as Shopify was concerned. They now tag differently:
+
+    popup   -> prospect,gift,popup     the joining gift
+    footer  -> prospect,news,footer    news and broadcasts only
+    section -> prospect,news,section   news and broadcasts only, the Join page
+
+  The else branch defaults to news, not gift, on purpose. A miswired form
+  that hands out a newsletter is cheaper than one that hands out money.
+
+  Shopify customer tags ride across into Klaviyo as a profile property.
+  The Klaviyo segments read that tag, and the flows trigger off the segments.
+
+  SUCCESS STATE. Popup only. Footer and section keep the theme default,
+  because a full success panel in a footer would be absurd.
+
+  THE EMAIL PROMISE IS GONE, 15 Sep 2026. This panel used to say the code
+  was on its way, which was false on a live storefront because the Klaviyo
+  welcome flow has never sent. The code is now printed on screen, so the
+  panel delivers the thing itself and promises nothing. Once the welcome
+  flow is live and proven by a real test signup, a line about the email
+  can be added back. Not before.
+
+  THE EMAIL PROMISE IS BACK, 13 Oct 2026. Operator ruling. The welcome
+  flow is live and sends each first-time signup a one-time £10 code, so the
+  panel says the code is on its way and no longer prints WELCOME. The line
+  opens with "First order with us?" because the gift now works on a first
+  order only. The welcome segment in Klaviyo needs no placed order, and both
+  Shopify discounts are limited to customers who have not purchased. A past
+  buyer who signs up gets no code email, and the opening question keeps the
+  panel true for them. WELCOME itself stays valid to 31 January 2027 for
+  anyone who saw it on screen before this change.
+
+  THE GIFT IS NOW DESCRIBED AS TEN POUNDS PLUS FREE DELIVERY, 15 Sep 2026.
+  Operator ruling. It is true on every case: the cheapest case still clears
+  the free delivery threshold after the ten pounds comes off, so delivery
+  is free on any case the gift can be used on. The geography stays in the
+  line because delivery is not free everywhere. If a case is ever priced
+  low enough that the gift drops it under the threshold, this line becomes
+  false and must be changed back.
+{%- endcomment -%}
+
+{%- liquid
+  case snippet_context
+    when 'popup'
+      assign capture_tags = 'prospect,gift,popup'
+    when 'footer'
+      assign capture_tags = 'prospect,news,footer'
+    else
+      assign capture_tags = 'prospect,news,section'
+  endcase
+-%}
+
+{%- assign nl_placeholder = 'general.newsletter_form.newsletter_email' | t -%}
+{%- assign nl_submit = 'general.newsletter_form.submit' | t -%}
+{%- if placeholder_text != blank -%}{%- assign nl_placeholder = placeholder_text -%}{%- endif -%}
+{%- if submit_text != blank -%}{%- assign nl_submit = submit_text -%}{%- endif -%}
+{%- assign newsletter_form_id = 'newsletter-' | append: section_id -%}
+{% form 'customer', id: newsletter_form_id %}
+  {%- if form.posted_successfully? -%}
+    {%- if snippet_context == 'popup' -%}
+      <div class="tl-joined">
+        <p class="tl-joined__head">You're in.</p>
+        <p class="tl-joined__body">First order with us? Your £10 code is on its way to your inbox.</p>
+        <a href="/collections/cases" class="btn tl-joined__btn">Start with a case</a>
+        <p class="tl-joined__fine">£10 off your first case, delivered free to England, Scotland and Wales. Cases only, one per customer.</p>
+      </div>
+    {%- else -%}
+      <div class="note note--success">
+        {{ 'general.newsletter_form.newsletter_confirmation' | t }}
+      </div>
+    {%- endif -%}
+  {%- endif -%}
+  {%- if form.errors and form.context == snippet_context -%}
+    {{ form.errors | default_errors }}
+  {%- endif -%}
+
+  {%- unless form.posted_successfully? -%}
+    <label for="Email-{{ section_id }}" class="hidden-label">{{ 'general.newsletter_form.newsletter_email' | t }}</label>
+    <label for="newsletter-form-submit-{{ section_id }}" class="hidden-label">{{ 'general.newsletter_form.submit' | t }}</label>
+    <input type="hidden" name="contact[tags]" value="{{ capture_tags }}">
+    <input type="hidden" name="contact[context]" value="{{ snippet_context }}">
+    <div class="input-group newsletter__input-group">
+      <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ nl_placeholder }}" name="contact[email]" id="Email-{{ section_id }}" class="input-group-field newsletter__input" autocorrect="off" autocapitalize="off" required>
+      <div class="input-group-btn">
+        <button type="submit" id="newsletter-form-submit-{{ section_id }}" class="btn" name="commit">
+          <span class="form__submit--large">{{ nl_submit }}</span>
+          <span class="form__submit--small">
+            {%- if submit_text != blank -%}
+              {{ nl_submit }}
+            {%- else -%}
+              <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon--wide icon-arrow-right" viewBox="0 0 50 15"><title>icon-right-arrow</title><path d="M0 9.63V5.38h35V0l15 7.5L35 15V9.63Z"/></svg>
+            {%- endif -%}
+          </span>
+        </button>
+      </div>
+    </div>
+  {%- endunless -%}
+{% endform %}
+
+<style>
+  .tl-joined{text-align:center;padding:4px 0 2px}
+  .tl-joined__head{margin:0 0 8px;font-size:22px;line-height:1.2;font-weight:600}
+  .tl-joined__body{margin:0 0 18px;font-size:14px;line-height:1.5}
+  .tl-joined__btn{display:inline-block;width:100%}
+  .tl-joined__fine{margin:12px 0 0;font-size:12px;line-height:1.4;opacity:.7}
+</style>

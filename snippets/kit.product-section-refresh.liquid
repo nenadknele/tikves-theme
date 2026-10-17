@@ -1,0 +1,194 @@
+{%- doc -%}
+  Replaces marked product-section regions on variant change.
+
+  Place anywhere in the section and mark server-derived chunks with `data-kit-refresh="<name>"`.
+  Regions are replaced wholesale — keep quantity and other inputs outside them. Unmarked markup
+  is left alone. Finds regions under `root`; requires a matching `product-variant-picker`.
+
+  @param {string} product_id - Product this section renders, matched against the picker.
+  @param {string} [root] - Ancestor selector for marked regions. Default: nearest `.shopify-section`, else the parent.
+  @param {string} [section_id] - Section the picker fetches. Required for non-product sections (e.g. quick shop). Default: `section.id`.
+
+  @example
+  <div class="product-details">
+    <div data-kit-refresh="price">{%- render 'price', product: product -%}</div>
+    {%- render 'kit.product-variant-picker', product: product -%}
+    {%- render 'kit.product-section-refresh', product_id: product.id, root: '.product-details' -%}
+  </div>
+{%- enddoc -%}
+
+{%- liquid
+  assign section_id = section_id | default: section.id
+-%}
+
+<kit-section-refresh
+  data-section-id="{{ section_id }}"
+  data-product-id="{{ product_id }}"
+  {%- if root != blank %}
+    data-root="{{ root | escape }}"
+  {% endif %}
+  hidden
+></kit-section-refresh>
+
+{% stylesheet %}
+  [data-kit-refresh-busy] [data-kit-refresh] {
+    opacity: var(--kit-opacity-disabled, 0.5);
+    pointer-events: none;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  /*============================================================================
+    kit-section-refresh
+    - Listens for `shopify:product:select` with `{detail: {html}}` section payload
+    - Supports only server-rendered markup (no inputs or other dynamic content)
+    - Use `data-kit-refresh="<name>"` to mark the regions to replace
+
+    Replaces the variant-dependent regions of a product section with the
+    server-rendered markup the variant picker already fetched, so a theme does
+    not need client-side code to recompute price, inventory, SKU or button state.
+  ==============================================================================*/
+
+  if (!customElements.get('kit-section-refresh')) {
+    class KitSectionRefresh extends HTMLElement {
+      #selectionId = 0;
+      #abortController = null;
+
+      get sectionId() {
+        return this.dataset.sectionId;
+      }
+
+      get productId() {
+        return this.dataset.productId;
+      }
+
+      get root() {
+        const selector = this.dataset.root;
+
+        if (selector) return this.closest(selector);
+
+        return this.closest('.shopify-section');
+      }
+
+      connectedCallback() {
+        this.#abortController = new AbortController();
+
+        document.addEventListener('shopify:product:select', event => this.#select(event), {
+          signal: this.#abortController.signal,
+        });
+      }
+
+      disconnectedCallback() {
+        this.#abortController?.abort();
+      }
+
+      #owns(picker) {
+        if (!(picker instanceof HTMLElement) || !picker.matches('kit-variant-picker')) return false;
+        if (this.sectionId && picker.dataset.sectionId !== this.sectionId) return false;
+        if (this.productId && picker.dataset.productId !== this.productId) return false;
+
+        return true;
+      }
+
+      async #select(event) {
+        const picker = event.target;
+        const root = this.root;
+
+        if (!this.#owns(picker)) return;
+
+        if (!root) {
+          console.warn('Section refresh: no root element to refresh within.', this);
+          return;
+        }
+
+        const selectionId = ++this.#selectionId;
+        this.#setBusy(root, true);
+
+        try {
+          const result = await event.promise;
+
+          // A newer selection owns the outcome
+          if (selectionId !== this.#selectionId) return;
+
+          // Follow the picker to its new product (combined listings)
+          this.dataset.productId = picker.dataset.productId;
+
+          const regionMap = this.#fetchedRegions(result);
+
+          if (!regionMap) {
+            console.warn('Section refresh: the variant picker resolved without a section document.', result);
+            return;
+          }
+
+          this.#apply(root, regionMap, picker);
+        } catch (error) {
+          if (error?.name === 'AbortError') return;
+          if (selectionId !== this.#selectionId) return;
+
+          console.error('Section refresh failed:', error);
+        } finally {
+          if (selectionId === this.#selectionId) this.#setBusy(root, false);
+        }
+      }
+
+      #fetchedRegions(result) {
+        const html = result?.detail?.html;
+
+        if (!html) return null;
+
+        const selector = this.dataset.root;
+        const scope = selector ? html.querySelector(selector) : html;
+
+        if (!scope) {
+          console.warn(`Section refresh: root "${selector}" not found in the fetched section.`, html);
+          return null;
+        }
+
+        const byName = new Map();
+
+        scope.querySelectorAll('[data-kit-refresh]').forEach(element => {
+          const name = element.dataset.kitRefresh;
+
+          if (!byName.has(name)) byName.set(name, []);
+
+          // Instances (e.g. mobile + desktop copies) accessible by index
+          byName.get(name).push(element);
+        });
+
+        return byName;
+      }
+
+      #apply(root, fetchedRegions, picker) {
+        const counts = new Map();
+
+        root.querySelectorAll('[data-kit-refresh]').forEach(target => {
+          const name = target.dataset.kitRefresh;
+          const instanceIndex = counts.get(name) ?? 0;
+          counts.set(name, instanceIndex + 1);
+
+          // Skip picker itself
+          if (picker.contains(target) || target.contains(picker)) return;
+
+          const source = fetchedRegions.get(name)?.[instanceIndex];
+
+          if (!source) return;
+
+          // Cloned to allow re-use of the source element
+          target.replaceWith(source.cloneNode(true));
+        });
+      }
+
+      #setBusy(root, busy) {
+        if (busy) {
+          root.setAttribute('data-kit-refresh-busy', '');
+          root.setAttribute('aria-busy', 'true');
+        } else {
+          root.removeAttribute('data-kit-refresh-busy');
+          root.removeAttribute('aria-busy');
+        }
+      }
+    }
+
+    customElements.define('kit-section-refresh', KitSectionRefresh);
+  }
+{% endjavascript %}

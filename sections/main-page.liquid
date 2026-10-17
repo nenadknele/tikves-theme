@@ -1,0 +1,46 @@
+{%- comment -%}
+  13 Sep 2026, operator ruling: page titles are centred.
+  When a page has no body, the empty text block and its bottom
+  padding are dropped so the title sits close to whatever section
+  follows it, instead of leaving a blank band.
+{%- endcomment -%}
+
+{%- liquid
+  assign has_body = true
+  if page.content == blank
+    assign has_body = false
+  endif
+-%}
+
+<div class="page-width page-width--narrow page-content{% unless has_body %} page-content--title-only{% endunless %}">
+  {%- render 'breadcrumbs' -%}
+  <header class="section-header text-center">
+    <h1 class="section-header__title">{{ page.title }}</h1>
+  </header>
+
+  {%- if has_body -%}
+    <div class="rte rte--nomargin">
+      {{ page.content }}
+    </div>
+  {%- endif -%}
+</div>
+
+{%- style -%}
+  .page-content .section-header.text-center,
+  .page-content .section-header.text-center .section-header__title {
+    text-align: center;
+  }
+  .page-content--title-only {
+    padding-bottom: 0;
+  }
+  .page-content--title-only .section-header {
+    margin-bottom: 0;
+  }
+{%- endstyle -%}
+
+{% schema %}
+{
+  "name": "t:sections.main-page.name",
+  "tag": "section"
+}
+{% endschema %}

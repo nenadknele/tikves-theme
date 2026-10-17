@@ -1,0 +1,217 @@
+{%- comment -%}
+  Cart joining gift · draft · added by Claude on operator instruction.
+  Self-contained. Modifies no Impulse file. Remove by deleting this
+  section from templates/cart.json.
+  The discount code string is a theme setting, not hardcoded, so it can
+  be swapped without a code change.
+{%- endcomment -%}
+
+{%- assign tl_form_id = 'tl-gift-form-' | append: section.id -%}
+
+{%- style -%}
+  .tl-gift-{{ section.id }} {
+    background: {{ section.settings.color_background }};
+    color: {{ section.settings.color_text }};
+    border-radius: 4px;
+    padding: 24px 20px;
+    margin: 24px 0;
+  }
+  .tl-gift-{{ section.id }} .tl-gift__h {
+    margin: 0 0 8px;
+    font-size: 1.25em;
+    line-height: 1.25;
+  }
+  .tl-gift-{{ section.id }} .tl-gift__p {
+    margin: 0 0 16px;
+    font-size: 0.95em;
+    line-height: 1.5;
+  }
+  .tl-gift-{{ section.id }} .tl-gift__row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tl-gift-{{ section.id }} .tl-gift__input {
+    flex: 1 1 200px;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1px solid {{ section.settings.color_text }};
+    background: #fff;
+    color: {{ section.settings.color_text }};
+    font-size: 16px;
+    border-radius: 3px;
+  }
+  .tl-gift-{{ section.id }} .tl-gift__btn {
+    flex: 0 0 auto;
+    padding: 12px 24px;
+    border: 0;
+    cursor: pointer;
+    background: {{ section.settings.color_button }};
+    color: {{ section.settings.color_button_text }};
+    font-size: 16px;
+    border-radius: 3px;
+  }
+  .tl-gift-{{ section.id }} .tl-gift__small {
+    display: block;
+    margin-top: 12px;
+    font-size: 0.8em;
+    opacity: 0.75;
+    line-height: 1.4;
+  }
+  .tl-gift-{{ section.id }} .tl-gift__code {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px dashed {{ section.settings.color_text }};
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+  .tl-gift-{{ section.id }} .tl-gift__err {
+    margin: 0 0 12px;
+    font-size: 0.9em;
+  }
+  @media screen and (max-width: 589px) {
+    .tl-gift-{{ section.id }} .tl-gift__btn { flex: 1 1 100%; }
+  }
+{%- endstyle -%}
+
+<div class="page-width">
+  <div class="tl-gift-{{ section.id }}" id="tl-gift-{{ section.id }}">
+    {%- form 'customer', id: tl_form_id -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+
+      {%- if form.posted_successfully? -%}
+
+        <h2 class="tl-gift__h">{{ section.settings.success_heading }}</h2>
+        <p class="tl-gift__p">
+          <span class="tl-gift__code">{{ section.settings.discount_code }}</span>
+        </p>
+        <div class="tl-gift__p">{{ section.settings.success_text }}</div>
+
+      {%- else -%}
+
+        <h2 class="tl-gift__h">{{ section.settings.heading }}</h2>
+        <div class="tl-gift__p">{{ section.settings.text }}</div>
+
+        {%- if form.errors -%}
+          <p class="tl-gift__err">{{ section.settings.error_text }}</p>
+        {%- endif -%}
+
+        <div class="tl-gift__row">
+          <label class="visually-hidden" for="tl-gift-email-{{ section.id }}">{{ section.settings.placeholder }}</label>
+          <input
+            type="email"
+            class="tl-gift__input"
+            id="tl-gift-email-{{ section.id }}"
+            name="contact[email]"
+            value="{{ form.email }}"
+            placeholder="{{ section.settings.placeholder }}"
+            autocorrect="off"
+            autocapitalize="off"
+            autocomplete="email"
+            required>
+          <button type="submit" class="tl-gift__btn" name="commit">{{ section.settings.button_label }}</button>
+        </div>
+
+        <span class="tl-gift__small">{{ section.settings.consent_text }}</span>
+
+      {%- endif -%}
+    {%- endform -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Cart joining gift",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Shows the joining gift offer in the cart and reveals the discount code once an email is submitted. Draft. Check wording and the code before publishing."
+    },
+    {
+      "type": "text",
+      "id": "discount_code",
+      "label": "Discount code to reveal",
+      "default": "WELCOME",
+      "info": "Must match the code in Discounts exactly. Case sensitive."
+    },
+    { "type": "header", "content": "Before they join" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "£10 off your first case"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Add your email and we'll give you the code. It works on any of our cases.</p>"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Email field placeholder",
+      "default": "Your email"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Join"
+    },
+    {
+      "type": "text",
+      "id": "consent_text",
+      "label": "Consent line",
+      "default": "We'll email you now and then. Unsubscribe any time.",
+      "info": "Unreviewed drafting. Confirm with the solicitor and keep identical across every signup surface."
+    },
+    {
+      "type": "text",
+      "id": "error_text",
+      "label": "Error message",
+      "default": "That email doesn't look right. Have another go."
+    },
+    { "type": "header", "content": "After they join" },
+    {
+      "type": "text",
+      "id": "success_heading",
+      "label": "Success heading",
+      "default": "Your code is"
+    },
+    {
+      "type": "richtext",
+      "id": "success_text",
+      "label": "Success text",
+      "default": "<p>Enter it at checkout. One use per customer.</p>"
+    },
+    { "type": "header", "content": "Colours" },
+    {
+      "type": "color",
+      "id": "color_background",
+      "label": "Background",
+      "default": "#f5efe7"
+    },
+    {
+      "type": "color",
+      "id": "color_text",
+      "label": "Text",
+      "default": "#1f2328"
+    },
+    {
+      "type": "color",
+      "id": "color_button",
+      "label": "Button",
+      "default": "#1f2328"
+    },
+    {
+      "type": "color",
+      "id": "color_button_text",
+      "label": "Button text",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [{ "name": "Cart joining gift" }]
+}
+{% endschema %}

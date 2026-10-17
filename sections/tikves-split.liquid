@@ -1,0 +1,200 @@
+{%- comment -%}
+  TIKVES LONDON . SPLIT BLOCK
+  Image one side, words the other, mirrored down the page.
+
+  7 Sep 2026: rebuilt in the Overtone manner. The image takes half the
+  screen and bleeds to the outer edge, no page gutter, no gap. The words
+  sit in the other half with generous padding. Every block is the same
+  shape and the same width whichever side the image is on, set here
+  rather than per section so the five cannot drift apart.
+
+  On the phone: image full width, words underneath.
+
+  Vertical padding comes from the home page design layer. This section
+  is deliberately NOT inside page-width.
+
+  28 Sep 2026, speed: more sizes in the srcsets, so a phone fetches the
+  size nearest its screen instead of the next one up.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign frames = 0
+  if s.image != blank
+    assign frames = frames | plus: 1
+  endif
+  if s.image_2 != blank
+    assign frames = frames | plus: 1
+  endif
+-%}
+
+<div class="tks tks--{{ section.id }}">
+  <div class="tks__grid">
+    {%- if frames > 0 -%}
+      <div class="tks__media">
+        {%- if s.image != blank -%}
+          <div class="tks__frame">
+            <img
+              src="{{ s.image | image_url: width: 1400 }}"
+              srcset="{{ s.image | image_url: width: 700 }} 700w, {{ s.image | image_url: width: 800 }} 800w, {{ s.image | image_url: width: 1000 }} 1000w, {{ s.image | image_url: width: 1400 }} 1400w"
+              sizes="(min-width: 769px) 50vw, 100vw"
+              alt="{{ s.image.alt | escape }}"
+              width="{{ s.image.width }}"
+              height="{{ s.image.height }}"
+              loading="lazy">
+          </div>
+        {%- endif -%}
+        {%- if s.image_2 != blank -%}
+          <div class="tks__frame">
+            <img
+              src="{{ s.image_2 | image_url: width: 1400 }}"
+              srcset="{{ s.image_2 | image_url: width: 700 }} 700w, {{ s.image_2 | image_url: width: 800 }} 800w, {{ s.image_2 | image_url: width: 1000 }} 1000w, {{ s.image_2 | image_url: width: 1400 }} 1400w"
+              sizes="(min-width: 769px) 50vw, 100vw"
+              alt="{{ s.image_2.alt | escape }}"
+              width="{{ s.image_2.width }}"
+              height="{{ s.image_2.height }}"
+              loading="lazy">
+          </div>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    <div class="tks__body">
+      <div class="tks__inner">
+        {%- if s.title != blank -%}
+          <h2 class="tks__title">{{ s.title | escape }}</h2>
+        {%- endif -%}
+        {%- if s.text != blank -%}
+          <div class="tks__text rte">{{ s.text }}</div>
+        {%- endif -%}
+        {%- if s.link_label != blank -%}
+          <a class="btn tks__btn" href="{{ s.link_url | default: '/collections/all' }}">{{ s.link_label | escape }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% style %}
+  .tks--{{ section.id }} .tks__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    align-items: stretch;
+  }
+  .tks--{{ section.id }} .tks__media {
+    display: grid;
+    grid-template-columns: repeat({{ frames | at_least: 1 }}, minmax(0, 1fr));
+    gap: 0;
+  }
+  .tks--{{ section.id }} .tks__frame {
+    aspect-ratio: 1 / 1 !important;
+    background: #F5EFE7;
+    overflow: hidden;
+  }
+  .tks--{{ section.id }} .tks__frame img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover !important;
+    object-position: center center;
+    display: block;
+  }
+  .tks--{{ section.id }} .tks__body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .tks--{{ section.id }} .tks__inner {
+    width: 100%;
+    padding: 28px 20px 48px;
+    text-align: center;
+  }
+  .tks--{{ section.id }} .tks__title { margin: 0 0 14px; }
+  .tks--{{ section.id }} .tks__text p { margin: 0 0 14px; }
+  .tks--{{ section.id }} .tks__text p:last-child { margin-bottom: 0; }
+  .tks--{{ section.id }} .tks__btn {
+    display: block;
+    width: 100%;
+    margin-top: 22px;
+    padding: 17px 24px;
+    font-size: 15px;
+    text-align: center;
+    border-radius: 0 !important;
+    background: #F5EFE7 !important;
+    background-image: none !important;
+    color: #1F2328 !important;
+    border: 1px solid #1F2328 !important;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .tks--{{ section.id }} .tks__btn:hover,
+  .tks--{{ section.id }} .tks__btn:focus,
+  .tks--{{ section.id }} .tks__btn:focus-visible,
+  .tks--{{ section.id }} .tks__btn:active {
+    background: #1F2328 !important;
+    background-color: #1F2328 !important;
+    background-image: none !important;
+    border-color: #1F2328 !important;
+    color: #F5EFE7 !important;
+  }
+  .tks--{{ section.id }} .tks__btn:hover *,
+  .tks--{{ section.id }} .tks__btn:focus-visible * { color: #F5EFE7 !important; }
+
+  @media only screen and (min-width: 769px) {
+    /* Half and half, image bleeding to the outer edge, no gutter. */
+    .tks--{{ section.id }} .tks__grid {
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+    }
+    {%- if s.media_position == 'right' %}
+    .tks--{{ section.id }} .tks__media { grid-column: 2; grid-row: 1; }
+    .tks--{{ section.id }} .tks__body { grid-column: 1; grid-row: 1; }
+    {%- else %}
+    .tks--{{ section.id }} .tks__media { grid-column: 1; grid-row: 1; }
+    .tks--{{ section.id }} .tks__body { grid-column: 2; grid-row: 1; }
+    {%- endif %}
+    .tks--{{ section.id }} .tks__inner {
+      max-width: 520px;
+      padding: 48px max(48px, 5vw);
+      text-align: left;
+    }
+    .tks--{{ section.id }} .tks__btn {
+      display: inline-block;
+      width: auto;
+      min-width: 260px;
+      margin-top: 26px;
+      padding: 18px 36px;
+      font-size: 16px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Tikves split block",
+  "class": "index-section",
+  "settings": [
+    { "type": "header", "content": "Images" },
+    { "type": "paragraph", "content": "The image fills half the screen, edge to edge, square. Same size whichever side it sits on. Upload 2000 x 2000." },
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "image_picker", "id": "image_2", "label": "Second image", "info": "Use two for a pair of bottles. Leave empty for a single scene." },
+    { "type": "header", "content": "Layout" },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Image side on desktop",
+      "default": "left",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ]
+    },
+    { "type": "header", "content": "Words" },
+    { "type": "text", "id": "title", "label": "Heading" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "text", "id": "link_label", "label": "Button label" },
+    { "type": "url", "id": "link_url", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Tikves split block" }],
+  "disabled_on": { "groups": ["footer", "header", "custom.popups"] }
+}
+{% endschema %}

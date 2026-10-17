@@ -1,0 +1,76 @@
+{%- comment -%}
+  Organization and WebSite structured data for the homepage. 23 Sep 2026.
+  Rendered from layout/theme.liquid, in the head, on the index template only.
+  Product and collection pages already carry Shopify's own Product data.
+  The legal details match the footer. Social links come from theme settings,
+  so a change in Theme settings > Social media carries through here.
+{%- endcomment -%}
+{%- if request.page_type == 'index' -%}
+  {%- liquid
+    assign same_as = ''
+    if settings.social_instagram_link != blank
+      assign same_as = same_as | append: '|' | append: settings.social_instagram_link
+    endif
+    if settings.social_facebook_link != blank
+      assign same_as = same_as | append: '|' | append: settings.social_facebook_link
+    endif
+    if settings.social_linkedin_link != blank
+      assign same_as = same_as | append: '|' | append: settings.social_linkedin_link
+    endif
+    if settings.social_youtube_link != blank
+      assign same_as = same_as | append: '|' | append: settings.social_youtube_link
+    endif
+    if settings.social_tiktok_link != blank
+      assign same_as = same_as | append: '|' | append: settings.social_tiktok_link
+    endif
+    if settings.social_pinterest_link != blank
+      assign same_as = same_as | append: '|' | append: settings.social_pinterest_link
+    endif
+    assign same_as_list = same_as | remove_first: '|' | split: '|'
+    assign logo_url = 'tikves-london-logo-ink-transparent.png' | file_url
+    unless logo_url contains 'https:'
+      assign logo_url = logo_url | prepend: 'https:'
+    endunless
+    assign org_id = shop.url | append: '/#organization'
+    assign site_id = shop.url | append: '/#website'
+  -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "OnlineStore",
+        "@id": {{ org_id | json }},
+        "name": {{ shop.name | json }},
+        "alternateName": "Tikves London",
+        "legalName": "Tikves London Ltd",
+        "url": {{ shop.url | json }},
+        "logo": {
+          "@type": "ImageObject",
+          "url": {{ logo_url | json }}
+        },
+        "image": {{ logo_url | json }},
+        "email": "info@tikveslondon.uk",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "11 Redan House, 23 Redan Place",
+          "addressLocality": "London",
+          "postalCode": "W2 4SA",
+          "addressCountry": "GB"
+        },
+        "vatID": "GB227226129",
+        "sameAs": {{ same_as_list | json }}
+      },
+      {
+        "@type": "WebSite",
+        "@id": {{ site_id | json }},
+        "url": {{ shop.url | json }},
+        "name": {{ shop.name | json }},
+        "alternateName": "Tikves London",
+        "inLanguage": "en-GB",
+        "publisher": { "@id": {{ org_id | json }} }
+      }
+    ]
+  }
+  </script>
+{%- endif -%}

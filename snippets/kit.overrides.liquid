@@ -1,0 +1,342 @@
+{%- doc -%}
+  Kit token overrides to match the Impulse theme.
+  Unlayered so they beat the `@layer kit` defaults in kit.tokens.liquid.
+{%- enddoc -%}
+
+{%- style -%}
+  :root {
+    /* Base colors */
+    --kit-color-primary: var(--colorTextBody);
+    --kit-color-secondary: var(--colorBody);
+    --kit-color-tint: var(--colorImageOverlay);
+
+    /* Absolute colors */
+    --kit-color-focus: var(--colorTextBody);
+
+    /* Color-mix percentages */
+    --kit-color-mix-tint-overlay: calc(var(--colorImageOverlayOpacity) * 100%);
+
+    /* Border radius */
+    --kit-radius-sm: 0;
+    {%- if settings.button_style == 'round-slight' -%}
+    --kit-radius-md: 3px;
+    {%- elsif settings.button_style != 'round' -%}
+    --kit-radius-md: 0;
+    {%- endif -%}
+
+    /* Transitions */
+    --kit-transition-normal: 300ms ease;
+
+    /* Focus */
+    --kit-focus-ring-offset: 2px;
+
+    /* Layout */
+    --kit-section-spacing: 40px;
+    --kit-section-gutter: 17px;
+
+    /* Typography */
+    --kit-font-family-heading: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+    --kit-font-family-body: var(--typeBasePrimary), var(--typeBaseFallback);
+    --kit-font-weight-normal: var(--typeBaseWeight);
+    --kit-heading-font-weight: var(--typeHeaderWeight);
+    --kit-heading-line-height: var(--typeHeaderLineHeight);
+    --kit-body-line-height: var(--typeBaseLineHeight);
+    --kit-heading-letter-spacing: var(--typeHeaderSpacing);
+    --kit-body-letter-spacing: var(--typeBaseSpacing);
+    {%- if settings.type_header_capitalize -%}
+    --kit-heading-text-transform: uppercase;
+    {%- endif -%}
+
+    /* Body font sizes (mobile-first) */
+    --kit-font-size-xs: var(--typeBodyExtraSmallSize);
+    --kit-font-size-sm: var(--typeBodySmallSize);
+    --kit-font-size-base: var(--typeBodySizeMobile);
+    --kit-font-size-lg: var(--typeBaseSize);
+
+    /* Heading font sizes (mobile-first) */
+    --kit-heading-font-size-sm: var(--typeH3SizeMobile);
+    --kit-heading-font-size-md: var(--typeH2SizeMobile);
+    --kit-heading-font-size-lg: var(--typeH1SizeMobile);
+    --kit-heading-font-size-xl: var(--typeH1Size);
+
+    /* Buttons */
+    --kit-color-primary-button: var(--colorBtnPrimary);
+    --kit-color-on-primary-button: var(--colorBtnPrimaryText);
+    --kit-color-primary-button-border: var(--colorBtnPrimary);
+    --kit-color-secondary-button: var(--colorBody);
+    --kit-color-on-secondary-button: var(--colorTextBody);
+    --kit-color-secondary-button-border: var(--colorBorder);
+  }
+
+  @media (min-width: 700px) {
+    :root {
+      --kit-font-size-base: var(--typeBaseSize);
+
+      --kit-heading-font-size-sm: var(--typeH3Size);
+      --kit-heading-font-size-md: var(--typeH2Size);
+      --kit-heading-font-size-lg: var(--typeH1Size);
+      --kit-heading-font-size-xl: var(--typeH1SizeHero);
+    }
+  }
+
+  @media (min-width: 769px) {
+    :root {
+      --kit-section-spacing: 75px;
+      --kit-section-gutter: 40px;
+    }
+  }
+
+  /* swatches — match the 40px the theme's own `.color-swatch` used, and the
+     `swatch_style` setting. Scoped to the picker; filter swatches are not kit. */
+  .kit-product-variant-picker .kit-swatch {
+    width: 40px;
+    height: 40px;
+  }
+
+  .kit-product-variant-picker .kit-radio__input:checked ~ .kit-swatch {
+    outline-width: 2px;
+  }
+
+  /* one diagonal strike, like the picker buttons, instead of kit's cross */
+  .kit-product-variant-picker .kit-swatch--disabled::after {
+    inset: 0 auto;
+    inset-inline-start: 50%;
+    background: none;
+    mask: none;
+    border-inline-start: 1px solid var(--colorBorder);
+    transform: rotate(45deg);
+  }
+
+  {%- if settings.swatch_style != 'round' %}
+  .kit-product-variant-picker .kit-swatch,
+  .grid-product__colors .kit-swatch {
+    border-radius: 0;
+  }
+  {%- endif %}
+
+  /* picker */
+  .kit-product-variant-picker {
+    --kit-button-padding-block-md: 7px;
+    --kit-button-padding-inline-md: 15px;
+  }
+
+  @media (max-width: 768px) {
+    .product-single__meta .kit-product-variant-picker .kit-fieldset .kit-stack {
+      justify-content: center;
+    }
+  }
+
+  .kit-product-variant-picker .kit-fieldset__legend {
+    align-items: center;
+    margin-block-end: 10px;
+  }
+
+  .kit-product-variant-picker .kit-fieldset__legend-extra,
+  .kit-product-variant-picker .kit-fieldset__legend-extra .tool-tip-trigger__title {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .kit-product-variant-picker .kit-fieldset__legend-extra .tool-tip-trigger__title {
+    gap: var(--sizeChartIconMargin);
+  }
+
+  .kit-product-variant-picker .kit-fieldset:has(.kit-select) .kit-fieldset__legend-extra {
+    height: 1em;
+  }
+
+  .kit-product-variant-picker .kit-fieldset__legend-text.kit-text {
+    font-size: var(--typeAccentSmallSize);
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: var(--typeUppercaseSpacing);
+  }
+
+  .kit-product-variant-picker .kit-fieldset__legend-selection.kit-text,
+  .kit-product-variant-picker .kit-fieldset__legend-extra.kit-text {
+    font-size: var(--typeAccentSmallSize);
+    letter-spacing: 0;
+  }
+
+  .kit-product-variant-picker .kit-radio .kit-button,
+  .kit-product-variant-picker .kit-radio .kit-button:hover,
+  .kit-product-variant-picker .kit-radio .kit-button:active,
+  .kit-product-variant-picker .kit-radio__input:focus-visible + .kit-button {
+    background: var(--colorBody);
+    font-weight: normal;
+  }
+
+  .kit-product-variant-picker .kit-radio__input:focus-visible + .kit-button {
+    box-shadow: inset 0 0 0 1px var(--colorTextBody);
+  }
+
+  .kit-product-variant-picker .kit-radio__input:checked + .kit-button {
+    box-shadow: inset 0 0 0 2px var(--colorTextBody);
+  }
+
+  .kit-product-variant-picker .kit-radio .kit-button--disabled {
+    position: relative;
+    overflow: hidden;
+    opacity: 1;
+    color: var(--colorBorder);
+  }
+
+  .kit-product-variant-picker .kit-radio .kit-button--disabled::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    border-inline-start: 1px solid var(--colorBorder);
+    transform: rotate(45deg);
+  }
+
+  /* product card swatches */
+  .grid-product__colors .kit-swatch {
+    width: 15px;
+    height: 15px;
+    margin: 0 4px 4px;
+    border: 0;
+    outline: none;
+    box-shadow: 0 0 0 1px var(--colorBorder);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .grid-product__colors .kit-swatch::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border: {% if settings.swatch_style == 'round' %}3px{% else %}2px{% endif %} solid var(--colorBody);
+    border-radius: inherit;
+  }
+
+  /* element selectors outrank kit's own :hover ring */
+  .grid-product__colors span.kit-swatch:hover {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--colorBorder);
+  }
+
+  .grid-product__colors a.kit-swatch:hover,
+  .grid-product__colors a.kit-swatch:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 1px var(--colorTextBody);
+  }
+
+  @media (min-width: 769px) {
+    .grid-product__colors .kit-swatch {
+      width: 19px;
+      height: 19px;
+    }
+  }
+
+  /* typography */
+  body .kit-text--caption {
+    font-size: var(--kit-font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: var(--typeUppercaseSpacing);
+    color: inherit;
+  }
+{%- endstyle -%}
+
+{%- comment -%}
+  ============================================================
+  TIKVES LONDON - ONE CONTENT COLUMN
+  Added 8 Aug 2026. Layout only. No colours, no typefaces.
+
+  Problem: the homepage explanation blocks sat on three
+  different left edges. Causes, read from the theme:
+    - rich-text sections use .page-width--narrow
+    - the case ladder caps its own list at list_width (820px)
+    - .page-width mobile padding (17px) differs from both
+
+  Fix: one measure, one gutter, applied to every homepage
+  section wrapper. Vendor section files left untouched.
+
+  To centre one thing on purpose, add class="tl-center" to
+  that paragraph in the rich text HTML view. Short lines only.
+  ============================================================
+{%- endcomment -%}
+
+{%- style -%}
+  :root {
+    --tl-measure: 680px;
+    --tl-gutter: 24px;
+  }
+
+  @media only screen and (min-width: 769px) {
+    :root { --tl-gutter: 40px; }
+  }
+
+  /* 1 - one gutter for every homepage section */
+  .index-section > .page-width,
+  .index-section > * > .page-width {
+    padding-left: var(--tl-gutter);
+    padding-right: var(--tl-gutter);
+  }
+
+  /* 2 - one column for the rich text sections */
+  .index-section > .page-width--narrow {
+    max-width: calc(var(--tl-measure) + (var(--tl-gutter) * 2));
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 3 - the case ladder joins the same column.
+     Beats the section's own inline rule on specificity. */
+  .index-section .tkl .tkl__head,
+  .index-section .tkl .tkl__list,
+  .index-section .tkl .tkl__foot {
+    max-width: var(--tl-measure);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* 4 - text inside the column keeps the left edge,
+     including headings, whatever the global heading
+     alignment setting says */
+  .index-section > .page-width--narrow,
+  .index-section > .page-width--narrow .theme-block,
+  .index-section > .page-width--narrow .rte,
+  .index-section .tkl .tkl__head {
+    text-align: left;
+  }
+
+  .index-section > .page-width--narrow h1,
+  .index-section > .page-width--narrow h2,
+  .index-section > .page-width--narrow h3,
+  .index-section .tkl .tkl__head h2 {
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  /* 5 - vertical rhythm does the separating */
+  .index-section > .page-width--narrow .theme-block + .theme-block {
+    margin-top: 20px;
+  }
+
+  .index-section > .page-width--narrow .rte > * + * {
+    margin-top: 16px;
+  }
+
+  /* 6 - reading size floor from 08 DESIGN */
+  .index-section > .page-width--narrow .rte {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  @media only screen and (min-width: 769px) {
+    .index-section > .page-width--narrow .rte {
+      font-size: 17px;
+    }
+  }
+
+  /* 7 - the only opt-in centring */
+  .index-section .tl-center {
+    text-align: center;
+    max-width: 34rem;
+    margin-left: auto;
+    margin-right: auto;
+    text-wrap: balance;
+  }
+{%- endstyle -%}

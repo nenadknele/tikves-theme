@@ -1,0 +1,402 @@
+{%- comment -%}
+  TIKVES LONDON . HOME PAGE DESIGN LAYER
+  Renders nothing. It carries the band system and the type ladder for
+  the home page.
+
+  Every section is addressed by the key it carries in
+  templates/index.json, matched on the end of the section id. This layer
+  renders BEFORE the sections it styles, so anything that has to beat a
+  section's own rule is marked important.
+
+  7 Sep 2026, the type ladder, after reading Overtone and Boom. Both run
+  section heading, then a product or tile heading a clear step below,
+  then one line of body, then a small tracked caps button. Capitals are
+  reserved for buttons.
+
+  Here, adapted to Fraunces rather than their condensed sans:
+    SECTION HEADINGS  capitals, 40 desktop, 28 mobile. They lead.
+    Tile headings     sentence case, 28 desktop, 22 mobile, a step
+                      below, because they are full sentences.
+    Buttons           capitals, tracked, 13. The quietest type.
+  So capitals mean two things only: the section you are in, and the
+  button you press.
+
+  Trust row: tight strip, stacked on the phone, four across on desktop.
+  Keep 'trust' OUT of keys_pad.
+
+  24 Sep 2026: rule 10, the video band type, added.
+
+  TO UNDO: remove this section from templates/index.json.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign keys_all = s.keys_all | replace: ' ', '' | split: ','
+  assign keys_pad = s.keys_pad | replace: ' ', '' | split: ','
+  assign keys_band = s.keys_band | replace: ' ', '' | split: ','
+-%}
+
+{%- capture sel_all -%}
+  {%- for k in keys_all -%}[id$="__{{ k }}"]{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture sel_all_inner -%}
+  {%- for k in keys_all -%}[id$="__{{ k }}"] .index-section{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture sel_pad -%}
+  {%- for k in keys_pad -%}[id$="__{{ k }}"]{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture sel_band -%}
+  {%- for k in keys_band -%}[id$="__{{ k }}"]{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture sel_header -%}
+  {%- for k in keys_all -%}[id$="__{{ k }}"] .section-header{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+{%- endcapture -%}
+
+{%- capture sel_btn -%}
+  {%- for k in keys_all -%}[id$="__{{ k }}"] .btn{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+{%- endcapture -%}
+
+{%- comment -%} Section headings: the ones that lead. {%- endcomment -%}
+{%- capture sel_head_el -%}
+  {{ sel_header }} .section-header__title,
+  {{ sel_header }} h2,
+  [id$="__ladder"] .tkl__head h2,
+  [id$="__mw_voices"] .tkv__head h2,
+  [id$="__tk_chips"] .tk-chips__heading,
+  [id$="__newsletter"] h2
+{%- endcapture -%}
+
+{%- comment -%} Tile headings: a step below, sentence case. {%- endcomment -%}
+{%- capture sel_tile_el -%}
+  [id$="__education"] .tks__title,
+  [id$="__producer_text"] .tks__title,
+  [id$="__tile_precision"] .tks__title,
+  [id$="__tile_checked"] .tks__title,
+  [id$="__tile_start"] .tks__title
+{%- endcapture -%}
+
+{% style %}
+  /* 1 . BANDS TOUCH. */
+  {{ sel_all }},
+  {{ sel_all_inner }} {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* 2 . ONE VERTICAL RHYTHM. */
+  {{ sel_pad }} {
+    padding-top: {{ s.pad_mobile }}px;
+    padding-bottom: {{ s.pad_mobile }}px;
+  }
+
+  [id$="__ladder"] .tkl,
+  [id$="__mw_voices"] .tkv {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* 3 . THE TINTED BAND. */
+  {{ sel_band }} {
+    background-color: {{ s.band_color }};
+  }
+
+  /* 4a . SECTION HEADINGS. Capitals. These lead the page. */
+  {{ sel_head_el }} {
+    text-align: center !important;
+    font-size: {{ s.head_mobile }}px !important;
+    line-height: 1.15;
+    margin: 0 0 {{ s.head_gap_mobile }}px;
+    {%- if s.head_caps %}
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em;
+    {%- else %}
+    letter-spacing: 0.01em;
+    {%- endif %}
+    {%- if s.head_bold %}
+    font-weight: 700 !important;
+    {%- endif %}
+  }
+
+  /* 4b . TILE HEADINGS. A clear step below the section headings.
+     9 Sep 2026, operator: centred on the phone, every word capitalised. */
+  {{ sel_tile_el }} {
+    text-align: center !important;
+    font-size: {{ s.tile_mobile }}px !important;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    text-transform: capitalize !important;
+    font-weight: 600 !important;
+    margin: 0 0 14px;
+  }
+
+  {{ sel_header }},
+  [id$="__ladder"] .tkl__head,
+  [id$="__mw_voices"] .tkv__head {
+    text-align: center;
+  }
+
+  [id$="__ladder"] .tkl__intro {
+    max-width: 46ch;
+    margin: 0 auto;
+    text-align: center !important;
+  }
+
+  /* 5 . BUTTONS. The quietest type on the page, and the only other
+     capitals. */
+  {{ sel_btn }} {
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-size: {{ s.btn_size }}px !important;
+    font-weight: 500;
+  }
+
+  /* 5b . THE KUMOVA BAND. 16 Sep 2026, operator asked for a bigger call
+     to action, then for not full width. That section is not in the scope
+     list above, so it was rendering the stock theme button. Tracked
+     capitals like the rest of the ladder, one step up in label size and
+     padding, still sitting inline. */
+  [id$="__text_and_image_rKq3Y4"] .btn {
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    font-weight: 500;
+    font-size: 14px !important;
+    display: inline-block;
+    width: auto;
+    box-sizing: border-box;
+    padding: 16px 34px !important;
+  }
+
+  /* 6 . The layer itself takes no space. */
+  #shopify-section-{{ section.id }} { display: none; }
+
+  /* 7 . VOICES. */
+  [id$="__mw_voices"] .tkv__grid { align-items: stretch !important; }
+  [id$="__mw_voices"] .tkv__item { display: flex; flex-direction: column; }
+  [id$="__mw_voices"] .tkv__quote { flex: 1 1 auto; }
+
+  /* 8 . LAST BAND air before the footer. */
+  [id$="__newsletter"] {
+    padding-bottom: {{ s.pad_mobile | plus: s.foot_gap_mobile }}px !important;
+  }
+  [id$="__newsletter"] input[type="email"] {
+    text-align: left;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 14px 16px !important;
+  }
+
+  /* 9 . TRUST STRIP. */
+  [id$="__trust"] {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+  [id$="__trust"] .index-section,
+  [id$="__trust"] .text-with-icons {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+  }
+  [id$="__trust"] .section-header { display: none !important; }
+  [id$="__trust"] .text-with-icons__blocks,
+  [id$="__trust"] .grid {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    gap: 0 !important;
+    margin: 0 !important;
+  }
+  [id$="__trust"] .text-with-icons__blocks > *,
+  [id$="__trust"] .grid > .grid__item {
+    width: auto !important;
+    float: none !important;
+    padding: 18px 16px !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+    border-bottom: 1px solid rgba(31, 35, 40, 0.14);
+    border-right: 0 !important;
+  }
+  [id$="__trust"] .text-with-icons__blocks > *:last-child,
+  [id$="__trust"] .grid > .grid__item:last-child {
+    border-bottom: 0;
+  }
+  [id$="__trust"] svg,
+  [id$="__trust"] .icon {
+    width: 30px !important;
+    height: 30px !important;
+    margin: 0 auto 8px !important;
+    display: block;
+  }
+  [id$="__trust"] .text-with-icons__block-icon,
+  [id$="__trust"] .text-with-icons__icon {
+    margin: 0 0 6px !important;
+  }
+  [id$="__trust"] h2,
+  [id$="__trust"] h3,
+  [id$="__trust"] h4,
+  [id$="__trust"] .h3,
+  [id$="__trust"] .h4 {
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+    margin: 0 !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+  }
+  [id$="__trust"] .rte,
+  [id$="__trust"] p {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    margin: 4px auto 0 !important;
+    max-width: 32ch;
+    opacity: 0.8;
+  }
+
+
+  /* 10 . VIDEO BAND. 24 Sep 2026, operator: heading bigger, subheading
+     smaller, after reading Overtone. Heading takes the section-heading
+     capitals one size up; the subheading drops to body size. Marked
+     important because the section writes its own title size inline. */
+  [id$="__video_band"] .hero__title {
+    font-size: 34px !important;
+    line-height: 1.05 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+  [id$="__video_band"] .hero__subtitle {
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+    max-width: 34ch;
+    margin: 0 auto 18px;
+  }
+  /* The theme drops a pause/play button over the video for keyboard
+     users. Operator, 24 Sep 2026: hidden. The only button inside the
+     band is that control; the call to action is a link. */
+  [id$="__video_band"] button,
+  [id$="__video_band"] .video-control,
+  [id$="__video_band"] [class*="pause"],
+  [id$="__video_band"] [class*="video-play"],
+  [id$="__video_band"] [class*="video__play"],
+  [id$="__video_band"] [class*="video-control"] {
+    display: none !important;
+  }
+  /* The AccessEase widget adds its own pause circle over any autoplaying
+     video, outside the section. Its classes all start with accessease.
+     Operator, 24 Sep 2026: hidden. Badge and panel untouched. */
+  [class*="accessease"][class*="pause"],
+  [class*="accessease"][class*="play"],
+  [class*="accessease"][class*="video"],
+  [class*="accessease"][class*="media"],
+  [class*="accessez"][class*="pause"],
+  [class*="accessez"][class*="video"],
+  [class*="accessez"][class*="media"] {
+    display: none !important;
+  }
+
+  @media only screen and (min-width: 769px) {
+    {{ sel_pad }} {
+      padding-top: {{ s.pad_desktop }}px;
+      padding-bottom: {{ s.pad_desktop }}px;
+    }
+
+    [id$="__newsletter"] {
+      padding-bottom: {{ s.pad_desktop | plus: s.foot_gap_desktop }}px !important;
+    }
+
+    {{ sel_head_el }} {
+      font-size: {{ s.head_desktop }}px !important;
+      margin-bottom: {{ s.head_gap_desktop }}px;
+    }
+
+    {{ sel_tile_el }} {
+      font-size: {{ s.tile_desktop }}px !important;
+      text-align: left !important;
+      margin-bottom: 16px;
+    }
+
+    [id$="__text_and_image_rKq3Y4"] .btn {
+      font-size: 15px !important;
+      padding: 17px 40px !important;
+    }
+
+    [id$="__trust"] {
+      padding-top: 10px !important;
+      padding-bottom: 10px !important;
+    }
+    [id$="__trust"] .text-with-icons__blocks,
+    [id$="__trust"] .grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    [id$="__trust"] .text-with-icons__blocks > *,
+    [id$="__trust"] .grid > .grid__item {
+      padding: 18px 16px !important;
+      border-bottom: 0 !important;
+      border-right: 1px solid rgba(31, 35, 40, 0.14) !important;
+    }
+    [id$="__trust"] .text-with-icons__blocks > *:last-child,
+    [id$="__trust"] .grid > .grid__item:last-child {
+      border-right: 0 !important;
+    }
+    [id$="__trust"] svg,
+    [id$="__trust"] .icon {
+      width: 34px !important;
+      height: 34px !important;
+    }
+    [id$="__trust"] h2,
+    [id$="__trust"] h3,
+    [id$="__trust"] h4,
+    [id$="__trust"] .h3,
+    [id$="__trust"] .h4 {
+      font-size: 16px !important;
+    }
+
+    [id$="__video_band"] .hero__title {
+      font-size: 60px !important;
+      margin-bottom: 14px;
+    }
+    [id$="__video_band"] .hero__subtitle {
+      font-size: 16px !important;
+      max-width: 44ch;
+      margin-bottom: 24px;
+    }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Tikves home design",
+  "settings": [
+    { "type": "paragraph", "content": "Design layer for the home page. Renders nothing on its own. Keep it first in the section order." },
+    { "type": "header", "content": "Bands" },
+    { "type": "color", "id": "band_color", "label": "Band colour", "default": "#EAE3D9" },
+    { "type": "text", "id": "keys_band", "label": "Sections on the band", "default": "ladder,singles,trust", "info": "Section keys from templates/index.json, comma separated." },
+    { "type": "header", "content": "Vertical rhythm" },
+    { "type": "text", "id": "keys_pad", "label": "Sections that take the rhythm", "default": "ladder,singles,mw_voices,newsletter", "info": "Leave image bands, the split tiles and the trust strip out. They carry their own height." },
+    { "type": "range", "id": "pad_mobile", "label": "Padding, mobile", "min": 20, "max": 72, "step": 2, "unit": "px", "default": 40 },
+    { "type": "range", "id": "pad_desktop", "label": "Padding, desktop", "min": 32, "max": 120, "step": 4, "unit": "px", "default": 64 },
+    { "type": "range", "id": "foot_gap_mobile", "label": "Extra air above footer, mobile", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "foot_gap_desktop", "label": "Extra air above footer, desktop", "min": 0, "max": 160, "step": 4, "unit": "px", "default": 64 },
+    { "type": "header", "content": "Section headings" },
+    { "type": "paragraph", "content": "These lead the page and are the only headings in capitals." },
+    { "type": "range", "id": "head_mobile", "label": "Heading size, mobile", "min": 20, "max": 40, "step": 1, "unit": "px", "default": 28 },
+    { "type": "range", "id": "head_desktop", "label": "Heading size, desktop", "min": 24, "max": 56, "step": 1, "unit": "px", "default": 40 },
+    { "type": "range", "id": "head_gap_mobile", "label": "Space under heading, mobile", "min": 8, "max": 48, "step": 2, "unit": "px", "default": 20 },
+    { "type": "range", "id": "head_gap_desktop", "label": "Space under heading, desktop", "min": 12, "max": 64, "step": 2, "unit": "px", "default": 32 },
+    { "type": "checkbox", "id": "head_caps", "label": "Section headings in capitals", "default": true },
+    { "type": "checkbox", "id": "head_bold", "label": "Section headings bold", "default": true },
+    { "type": "header", "content": "Tile headings" },
+    { "type": "paragraph", "content": "The five split tiles. Sentence case, a step below the section headings, because they are whole sentences." },
+    { "type": "range", "id": "tile_mobile", "label": "Tile heading, mobile", "min": 18, "max": 32, "step": 1, "unit": "px", "default": 22 },
+    { "type": "range", "id": "tile_desktop", "label": "Tile heading, desktop", "min": 20, "max": 40, "step": 1, "unit": "px", "default": 28 },
+    { "type": "header", "content": "Buttons" },
+    { "type": "range", "id": "btn_size", "label": "Button label size", "min": 11, "max": 16, "step": 1, "unit": "px", "default": 13 },
+    { "type": "header", "content": "Scope" },
+    { "type": "text", "id": "keys_all", "label": "Every section on the page", "default": "hero,ladder,education,region_image,singles,producer_text,mw_voices,trust,newsletter" }
+  ],
+  "presets": [{ "name": "Tikves home design" }],
+  "disabled_on": { "groups": ["footer", "header", "custom.popups"] }
+}
+{% endschema %}

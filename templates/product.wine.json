@@ -1,0 +1,206 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "vintage": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.wine.vintage.value }}"
+          }
+        },
+        "summary": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.wine.summary.value }}"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {}
+        },
+        "quantity": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {
+            "show_dynamic_checkout": false,
+            "surface_pickup_enable": false,
+            "show_gift_card_recipient": false
+          }
+        },
+        "inventory_status": {
+          "type": "inventory_status",
+          "settings": {
+            "inventory_threshold": 0,
+            "inventory_transfers_enable": false
+          }
+        },
+        "back_in_stock": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Back in stock capture, 27 Aug 2026. All logic and copy live in snippets/tikves-back-in-stock.liquid. Renders only when the product is sold out and belongs to a group with a Klaviyo list behind it: tag Rakija or vendor Chateau de Gourdon. Do not duplicate the code here. {% endcomment %}{% render 'tikves-back-in-stock', product: product %}"
+          }
+        },
+        "guarantee": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Guarantee line, 17 Oct 2026, operator. Replaces the sales point that said 14-day returns, unopened, which undersold the guarantee. Words taken from the Returns page. The terms live there, not here. {% endcomment %}<p class=\"tl-pdp-guarantee\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <a href=\"/pages/returns\" style=\"text-decoration:underline;text-underline-offset:3px\">How our guarantee works</a></p>"
+          }
+        },
+        "sales_point-secure": {
+          "type": "sales_point",
+          "settings": {
+            "icon": "lock",
+            "text": "Secure checkout"
+          }
+        },
+        "delivery_link": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Delivery link, 9 Oct 2026, operator instruction. A pointer to the Delivery page and nothing more: no rate, zone, time or carrier is stated here, per tikves-delivery. Same words as the cart. {% endcomment %}<p class=\"tl-pdp-delivery\" style=\"margin:12px 0 0;font-size:13px\"><a href=\"/pages/delivery\" style=\"text-decoration:underline;text-underline-offset:3px\">Delivery costs and timings</a></p>"
+          }
+        },
+        "mw_quote": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Master of Wine quote, 17 Oct 2026. Renders only when custom.mw_quote is set on the product. Same quotes as the homepage. Words and name come from the metafields, never typed here. {% endcomment %}{% assign q = product.metafields.custom.mw_quote.value %}{% if q != blank %}<blockquote class=\"tl-mw-quote\" style=\"margin:18px 0 0;padding:2px 0 2px 14px;border-left:2px solid #A64029;font-size:15px;line-height:1.55\"><p style=\"margin:0\">&ldquo;{{ q }}&rdquo;</p>{% assign qb = product.metafields.custom.mw_quote_by.value %}{% if qb != blank %}<p style=\"margin:6px 0 0;font-size:13px;opacity:0.75\">{{ qb }}</p>{% endif %}</blockquote>{% endif %}"
+          }
+        },
+        "separator-1": {
+          "type": "separator",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "is_tab": false
+          }
+        },
+        "quick_facts": {
+          "type": "custom",
+          "settings": {
+            "code": "<div class=\"wine-facts\" style=\"display:grid;grid-template-columns:1fr 1fr;column-gap:24px;border-top:1px solid rgba(0,0,0,0.08);margin-top:8px\">{% assign g = product.metafields.wine.grape_blend.value %}{% if g != blank %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">Grape</span>{{ g }}</div>{% endif %}{% assign b = product.metafields.wine.body.value %}{% if b != blank %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">Body</span>{{ b }}</div>{% endif %}{% assign sw = product.metafields.wine.sweetness.value %}{% if sw != blank %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">Style</span>{{ sw }}</div>{% endif %}{% assign ab = product.metafields.wine.abv.value %}{% if ab != blank %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">ABV</span>{{ ab }}</div>{% endif %}{% assign st = product.metafields.wine.serving_temperature.value %}{% if st != blank %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">Serve</span>{{ st }}</div>{% endif %}{% assign cl = product.metafields.wine.cellaring.value %}{% if cl != blank %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">Cellar</span>{{ cl }}</div>{% endif %}{% assign cs = product.metafields.wine.closure.value %}{% if cs != blank %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">Closure</span>{{ cs }}</div>{% endif %}{% assign rg = product.metafields.wine.region.value %}{% if rg != blank %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">Region</span>{{ rg }}</div>{% endif %}<div class=\"fact\" style=\"padding:10px 0;border-bottom:1px solid rgba(0,0,0,0.08)\"><span style=\"display:block;font-size:0.8em;opacity:0.65\">Bottle</span>750 ml</div></div>"
+          }
+        },
+        "tasting_notes_tab": {
+          "type": "custom",
+          "settings": {
+            "code": "{% assign tn = product.metafields.wine.tasting_notes.value %}{% if tn != blank %}<div class=\"product-block product-block--tab\">{% capture tnc %}<p>{{ tn | newline_to_br }}</p>{% endcapture %}{% assign tnid = 'tasting-' | append: product.id %}{% render 'tab', id: tnid, title: 'Tasting notes', content: tnc %}</div>{% endif %}"
+          }
+        },
+        "food_occasion": {
+          "type": "custom",
+          "settings": {
+            "code": "{% assign fp = product.metafields.wine.food_pairing.value %}{% if fp != blank %}<div class=\"product-block product-block--tab\">{% capture fpc %}<p>{{ fp | newline_to_br }}</p>{% endcapture %}{% assign fpid = 'food-' | append: product.id %}{% render 'tab', id: fpid, title: 'Food and occasion', content: fpc %}</div>{% endif %}"
+          }
+        },
+        "award_card": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Badge version, 22 Aug 2026. The badge is optional and comes from wine.award_badge, a filename in the theme Assets folder. The five parts of the claim stay in the text; the badge never carries the claim on its own. The footer line is fixed and must not be edited. {% endcomment %}{% assign a = product.metafields.wine.award.value %}{% if a != blank %}{% assign badge = product.metafields.wine.award_badge.value %}<style>.award-card__row{display:flex;align-items:center;gap:20px}.award-card__badge{flex:0 0 auto;width:88px;height:88px;display:block}@media (max-width:600px){.award-card__row{gap:16px}.award-card__badge{width:68px;height:68px}}</style><div class=\"award-card\" style=\"background:#4A0D18;color:#F5EFE7;padding:24px;border-radius:4px;margin:16px 0\"><div class=\"award-card__row\">{% if badge != blank %}<img class=\"award-card__badge\" src=\"{{ badge | asset_url }}\" alt=\"\" aria-hidden=\"true\" width=\"88\" height=\"88\" loading=\"lazy\">{% endif %}<div class=\"award-body\" style=\"line-height:1.5\">{{ a | newline_to_br }}</div></div><p class=\"award-footer\" style=\"margin-top:14px;font-size:0.85em;opacity:0.85\">Medals belong to vintages, not to labels. We tell you which.</p></div>{% endif %}"
+          }
+        },
+        "separator-2": {
+          "type": "separator",
+          "settings": {}
+        },
+        "complementary": {
+          "type": "complementary_products",
+          "settings": {
+            "product_complementary_heading": "Also in these cases",
+            "complementary_count": 2,
+            "per_slide": 2,
+            "control_type": "dots",
+            "image_style": "default"
+          }
+        }
+      },
+      "block_order": [
+        "vintage",
+        "summary",
+        "price",
+        "quantity",
+        "buy_buttons",
+        "inventory_status",
+        "back_in_stock",
+        "guarantee",
+        "sales_point-secure",
+        "delivery_link",
+        "mw_quote",
+        "separator-1",
+        "description",
+        "quick_facts",
+        "tasting_notes_tab",
+        "food_occasion",
+        "award_card",
+        "separator-2",
+        "complementary"
+      ],
+      "settings": {
+        "sku_enable": false,
+        "image_position": "left",
+        "image_size": "medium",
+        "product_zoom_enable": true,
+        "thumbnail_position": "below",
+        "thumbnail_height": "flexible",
+        "thumbnail_arrows": true,
+        "mobile_layout": "full",
+        "enable_video_looping": true,
+        "product_video_style": "muted"
+      }
+    },
+    "sub": {
+      "type": "product-full-width",
+      "blocks": {
+        "producer": {
+          "type": "custom",
+          "settings": {
+            "code": "{% assign pr = product.metafields.wine.producer.value %}{% assign rg = product.metafields.wine.region.value %}{% if pr != blank %}<div class=\"wine-producer\"><h3>The producer</h3><p><strong>{{ pr }}</strong>{% if rg != blank %} · {{ rg }}{% endif %}</p></div>{% endif %}"
+          }
+        },
+        "ask": {
+          "type": "contact",
+          "settings": {
+            "title": "Ask a question",
+            "phone": false
+          }
+        }
+      },
+      "block_order": [
+        "producer",
+        "ask"
+      ],
+      "settings": {
+        "max_width": true
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "product_recommendations_heading": "You may also like",
+        "related_count": 4,
+        "products_per_row": 4
+      }
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "recent_count": 5
+      }
+    },
+    "collection-return": {
+      "type": "collection-return",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "sub",
+    "product-recommendations",
+    "recently-viewed",
+    "collection-return"
+  ]
+}

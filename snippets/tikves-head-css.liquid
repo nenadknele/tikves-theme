@@ -1,0 +1,80 @@
+{%- comment -%}
+  TIKVES LONDON . HEAD CSS
+  28 Sep 2026, speed. Layout rules that must be in place before the page
+  first paints. Rendered from layout/theme.liquid straight after theme.css.
+
+  Why here and not in a footer section: a footer section arrives at the end
+  of the HTML. On a slow connection the phone painted the collection grid in
+  the theme's two columns first, then this rule arrived and flipped it to
+  one, and everything below jumped by a whole card. Measured 28 Sep 2026 as
+  a layout shift of 0.37 on all-wines, failing Google's limit.
+
+  Colour and popup styling can stay in footer sections. Anything that moves
+  content belongs here.
+
+  ONE PER ROW ON MOBILE. Operator ruling 6 Sep 2026: on a phone a collection
+  page shows one bottle per row, not two, so the card, its descriptor line,
+  its price and its Add to cart button all read at full size. Desktop is
+  untouched. Moved here from sections/tikves-one-per-row.liquid, which now
+  renders nothing.
+
+  CARDS CENTRED. Operator ruling 28 Sep 2026: on every product card the
+  title, descriptor line, price and Add to cart button sit centred, on
+  phone and desktop. The button's own size lives in
+  snippets/tikves-grid-add-to-cart.liquid. To undo, delete the second
+  style block below.
+{%- endcomment -%}
+
+{% style %}
+  @media only screen and (max-width: 768px) {
+    .collection-grid .grid-product,
+    .collection__grid .grid-product,
+    .grid--uniform .grid-product,
+    .product-grid .grid-product,
+    .grid .grid-product {
+      width: 100% !important;
+      max-width: 100% !important;
+      flex: 0 0 100% !important;
+      clear: both !important;
+      margin-bottom: 28px !important;
+    }
+    .grid-product .grid-product__content {
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .grid-product .grid-product__title {
+      font-size: 20px !important;
+    }
+  }
+{% endstyle %}
+
+{% style %}
+  .grid-product .grid-product__content,
+  .grid-product .grid-product__meta,
+  .grid-product .tk-gatc {
+    text-align: center;
+  }
+{% endstyle %}
+
+{%- comment -%}
+  AGE GATE FIRST, THEN COOKIES. Operator ruling 28 Sep 2026. While the age
+  gate is open, Shopify's cookie banner stays hidden, so a first visit asks
+  one question at a time. When the visitor answers Yes the gate closes and
+  the banner appears as normal. Nothing optional loads before cookie consent
+  either way. To undo, delete the style block below.
+{%- endcomment -%}
+
+{% style %}
+  html:has(age-verification-popup.modal--is-active) #shopify-pc__banner {
+    display: none !important;
+  }
+{% endstyle %}
+
+{%- comment -%}
+  ONE POP-UP AT A TIME. Operator ruling 17 Oct 2026. On the first page a
+  visitor opens, only the age check shows. The sign-up pop-up waits for the
+  second page, then shows after 10 seconds. The script sets the delay once
+  the page is parsed, before theme.js reads it. To undo, delete this comment
+  and the script below.
+{%- endcomment -%}
+<script>document.addEventListener('readystatechange',function(){if(document.readyState!=='interactive')return;var n=2;try{n=+(sessionStorage.getItem('tl_pv')||0)+1;sessionStorage.setItem('tl_pv',String(n))}catch(e){}document.querySelectorAll('[data-delay-seconds]').forEach(function(el){el.setAttribute('data-delay-seconds',n<2?'86400':'10')})});</script>

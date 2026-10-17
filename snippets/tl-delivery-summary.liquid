@@ -1,0 +1,271 @@
+{% comment %}
+  Cart and cart drawer delivery block. Rebuilt 28 Aug 2026.
+  Amended 30 Aug 2026: THE SUGGESTION NO LONGER DISAPPEARS ONCE THE
+  THRESHOLD IS CLEARED. See the SUGGESTION note below.
+  Amended 9 Oct 2026, operator instruction: WHEN NO SINGLE BOTTLE CLOSES
+  THE GAP, THE SUGGESTION IS NOW THE CHEAPEST IN-STOCK CASE. Before, it fell
+  back to the cheapest bottle, so a basket far below the threshold was
+  offered a bottle that changed nothing. If no case is in stock it offers
+  the dearest bottle, which closes the most of the gap.
+
+  WHY THERE IS JAVASCRIPT HERE. theme.js buildCart() only replaces [data-products],
+  [data-discounts], [data-savings], [data-subtotal] and the bubble. It does NOT
+  re-render this snippet. A server-rendered threshold line therefore FREEZES at page
+  load and lies the moment a bottle is added. The script below re-reads /cart.js on
+  cart:updated and ajaxProduct:added and rewrites the numbers. If you ever remove the
+  script, remove the countdown with it. A stale number is worse than no number.
+
+  RATES: threshold 100 to England, Scotland and Wales ONLY, per SHIPPING POLICY v7,
+  24 Aug 2026. The cart cannot know the destination and Isle of Man never qualifies,
+  so the three nations are named every time. Never shorten to free UK delivery.
+  No rate, zone, timing or carrier is restated here. Those live on /pages/delivery.
+
+  BOTTLE COUNT: read live from bundleComponents 28 Aug 2026, all five cases are
+  exactly 6 bottles. The map is built from the cases collection, so a new case is
+  picked up automatically. A case whose component count is NOT 6 will be counted
+  wrongly. If a 3-bottle or 12-bottle case is ever created, this map needs a real
+  per-product bottle field instead.
+
+  SUGGESTION, REWRITTEN 30 Aug 2026, AMENDED 9 Oct 2026. It ALWAYS shows while there
+  is anything in the cart, and only the label changes. Below the threshold it names
+  the cheapest bottle that closes the gap; if none does, the cheapest in-stock case,
+  which always clears the threshold. Above it, it pairs with the dearest bottle.
+  Never suggests a gift card, something out of stock, or something already in the
+  cart. A case is suggested only below the threshold and only when no bottle closes it.
+{% endcomment %}
+
+{%- assign tl_threshold = 10000 -%}
+{%- assign tl_case_bottles = 6 -%}
+
+{%- capture tl_case_ids -%}
+  {%- for p in collections.cases.products -%}{{ p.id }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+{%- endcapture -%}
+
+<div class="tl-cart-delivery"
+     data-tl-delivery
+     data-threshold="{{ tl_threshold }}"
+     data-case-bottles="{{ tl_case_bottles }}"
+     data-case-ids="{{ tl_case_ids | strip }}">
+
+  <p class="tl-cart-delivery__count" data-tl-count></p>
+  <p class="tl-cart-delivery__threshold" data-tl-threshold></p>
+
+  <div class="tl-suggest" data-tl-suggest hidden>
+    <p class="tl-suggest__label" data-tl-suggest-label></p>
+    <div class="tl-suggest__row">
+      <a class="tl-suggest__link" data-tl-suggest-link href="#">
+        <img class="tl-suggest__img" data-tl-suggest-img alt="" width="44" height="44" loading="lazy">
+        <span class="tl-suggest__name" data-tl-suggest-name></span>
+      </a>
+      <button type="button" class="tl-suggest__add" data-tl-suggest-add>Add</button>
+    </div>
+  </div>
+
+  <p class="tl-cart-delivery__link"><a href="/pages/delivery">Delivery costs and timings</a></p>
+
+  <script type="application/json" data-tl-pool>
+    [
+      {%- assign tl_pool = collections.all-wines.products | sort: 'price' -%}
+      {%- assign tl_first = true -%}
+      {%- for p in tl_pool -%}
+        {%- unless p.available -%}{%- continue -%}{%- endunless -%}
+        {%- assign tl_is_case = false -%}
+        {%- for c in collections.cases.products -%}
+          {%- if c.id == p.id -%}{%- assign tl_is_case = true -%}{%- endif -%}
+        {%- endfor -%}
+        {%- if tl_is_case -%}{%- continue -%}{%- endif -%}
+        {%- assign tl_v = p.selected_or_first_available_variant -%}
+        {%- unless tl_v -%}{%- continue -%}{%- endunless -%}
+        {%- unless tl_first -%},{%- endunless -%}{%- assign tl_first = false -%}
+        {
+          "id": {{ p.id }},
+          "vid": {{ tl_v.id }},
+          "title": {{ p.title | json }},
+          "price": {{ tl_v.price }},
+          "url": {{ p.url | json }},
+          "img": {{ p.featured_image | image_url: width: 88 | json }}
+        }
+      {%- endfor -%}
+    ]
+  </script>
+
+  <script type="application/json" data-tl-cases>
+    [
+      {%- assign tl_cases = collections.cases.products | sort: 'price' -%}
+      {%- assign tl_cfirst = true -%}
+      {%- for p in tl_cases -%}
+        {%- unless p.available -%}{%- continue -%}{%- endunless -%}
+        {%- assign tl_cv = p.selected_or_first_available_variant -%}
+        {%- unless tl_cv -%}{%- continue -%}{%- endunless -%}
+        {%- unless tl_cfirst -%},{%- endunless -%}{%- assign tl_cfirst = false -%}
+        {
+          "id": {{ p.id }},
+          "vid": {{ tl_cv.id }},
+          "title": {{ p.title | json }},
+          "price": {{ tl_cv.price }},
+          "url": {{ p.url | json }},
+          "img": {{ p.featured_image | image_url: width: 88 | json }}
+        }
+      {%- endfor -%}
+    ]
+  </script>
+</div>
+
+<style>
+  .tl-cart-delivery{border-top:1px solid #B9AC9B;margin-top:18px;padding-top:14px;font-size:13px;line-height:1.5}
+  .tl-cart-delivery p{margin:0 0 6px}
+  .tl-cart-delivery p:last-child{margin:0}
+  .tl-cart-delivery__count{opacity:.75}
+  .tl-suggest{border-top:1px solid rgba(0,0,0,.08);margin-top:10px;padding-top:10px}
+  .tl-suggest[hidden]{display:none}
+  .tl-suggest__label{margin:0 0 6px}
+  .tl-suggest__row{display:flex;align-items:center;gap:10px}
+  .tl-suggest__link{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0;text-decoration:none}
+  .tl-suggest__img{width:44px;height:44px;object-fit:contain;flex:0 0 auto}
+  .tl-suggest__name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tl-suggest__add{flex:0 0 auto;border:1px solid currentColor;background:none;color:inherit;font:inherit;font-size:12px;padding:5px 12px;cursor:pointer;border-radius:2px}
+  .tl-suggest__add[disabled]{opacity:.5;cursor:default}
+  .tl-note__help{font-size:13px;line-height:1.5;margin:4px 0 6px;opacity:.8}
+</style>
+
+<script>
+(function () {
+  var roots = document.querySelectorAll('[data-tl-delivery]');
+  if (!roots.length) return;
+
+  function money(cents) {
+    try {
+      if (window.theme && theme.Currency && theme.settings && theme.settings.moneyFormat) {
+        return theme.Currency.formatMoney(cents, theme.settings.moneyFormat);
+      }
+    } catch (e) {}
+    return '£' + (cents / 100).toFixed(2);
+  }
+
+  function readJson(root, sel) {
+    var el = root.querySelector(sel);
+    if (!el) return [];
+    try { return JSON.parse(el.textContent) || []; } catch (e) { return []; }
+  }
+
+  function render(root, cart) {
+    var threshold = parseInt(root.dataset.threshold, 10) || 0;
+    var perCase = parseInt(root.dataset.caseBottles, 10) || 6;
+    var caseIds = (root.dataset.caseIds || '').split(',').filter(Boolean).map(Number);
+
+    var pool = readJson(root, '[data-tl-pool]');
+    var cases = readJson(root, '[data-tl-cases]');
+
+    var items = (cart && cart.items) || [];
+    var inCart = {};
+    var bottles = 0;
+
+    items.forEach(function (item) {
+      inCart[item.product_id] = true;
+      if (item.gift_card) return;
+      var per = caseIds.indexOf(item.product_id) > -1 ? perCase : 1;
+      bottles += per * item.quantity;
+    });
+
+    var countEl = root.querySelector('[data-tl-count]');
+    if (countEl) {
+      countEl.textContent = bottles === 0 ? '' : (bottles === 1 ? '1 bottle' : bottles + ' bottles');
+    }
+
+    var total = (cart && cart.total_price) || 0;
+    var remaining = threshold - total;
+    var threshEl = root.querySelector('[data-tl-threshold]');
+
+    if (threshEl) {
+      if (remaining <= 0) {
+        threshEl.innerHTML = '<strong>Free delivery<\/strong> to England, Scotland and Wales.';
+      } else {
+        threshEl.innerHTML = '<strong>' + money(remaining) + ' more<\/strong> for free delivery to England, Scotland and Wales.';
+      }
+    }
+
+    var box = root.querySelector('[data-tl-suggest]');
+    if (!box) return;
+
+    if (!items.length) { box.hidden = true; return; }
+
+    var available = pool.filter(function (p) { return !inCart[p.id]; });
+    var availableCases = cases.filter(function (p) { return !inCart[p.id]; });
+
+    var pick = null, label = '';
+
+    if (remaining > 0) {
+      // Below the threshold. First choice: the cheapest bottle that closes the gap.
+      var closers = available.filter(function (p) { return p.price >= remaining; });
+      if (closers.length) {
+        pick = closers[0];
+        label = 'Add this and delivery is free';
+      } else if (availableCases.length) {
+        // 9 Oct 2026: no single bottle closes it, so offer the cheapest case.
+        // Every case is over the threshold on its own.
+        pick = availableCases[0];
+        label = 'Add a case of six and delivery is free';
+      } else if (available.length) {
+        // No case to offer: the dearest bottle closes the most of the gap.
+        pick = available[available.length - 1];
+        label = 'Closer to free delivery';
+      }
+    } else if (available.length) {
+      // Above it: pair with the dearest bottle not already in the bag.
+      pick = available[available.length - 1];
+      label = 'Pairs with this';
+    }
+
+    if (!pick) { box.hidden = true; return; }
+
+    box.querySelector('[data-tl-suggest-label]').textContent = label;
+    box.querySelector('[data-tl-suggest-name]').textContent = pick.title + ' · ' + money(pick.price);
+    box.querySelector('[data-tl-suggest-link]').href = pick.url;
+
+    var img = box.querySelector('[data-tl-suggest-img]');
+    if (pick.img) { img.src = pick.img; img.hidden = false; } else { img.hidden = true; }
+
+    var btn = box.querySelector('[data-tl-suggest-add]');
+    btn.disabled = false;
+    btn.textContent = 'Add';
+    btn.onclick = function () {
+      btn.disabled = true;
+      btn.textContent = 'Adding';
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [{ id: pick.vid, quantity: 1 }] })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function () {
+          document.dispatchEvent(new CustomEvent('cart:build'));
+          refresh();
+        })
+        .catch(function () { btn.disabled = false; btn.textContent = 'Add'; });
+    };
+
+    box.hidden = false;
+  }
+
+  function refresh() {
+    fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (cart) {
+        roots.forEach(function (root) { render(root, cart); });
+      })
+      .catch(function () {});
+  }
+
+  document.addEventListener('cart:updated', function (evt) {
+    if (evt.detail && evt.detail.cart && evt.detail.cart.items) {
+      roots.forEach(function (root) { render(root, evt.detail.cart); });
+    } else {
+      refresh();
+    }
+  });
+  document.addEventListener('ajaxProduct:added', refresh);
+  document.addEventListener('cart:build', refresh);
+
+  refresh();
+})();
+</script>

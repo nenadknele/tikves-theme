@@ -1,0 +1,38 @@
+{%- comment -%}
+  RETIRED 30 AUGUST 2026. Operator decision.
+
+  This snippet used to put the joining gift in the cart drawer: an offer
+  line and a button that opened the newsletter popup. It is removed, not
+  because it failed, but because a discount prompt at the moment of
+  purchase sends people out of the bag to hunt for a code. The operator
+  did exactly that himself while testing on 30 August. Neither reference
+  brand carries any capture inside the cart.
+
+  NOTHING IS LOST BY REMOVING IT. The newsletter popup captures on every
+  page and is the only capture on this site proven to work. And since
+  30 August the discount attaches itself by cookie through
+  /discount/WELCOME, so the bag never needs to mention a code.
+
+  THE DRAWER SPACE RULES BELOW ARE STILL LIVE and are the only reason
+  this file still renders anything. They stop the footer crushing the
+  product list on a phone. If they are ever moved into a stylesheet,
+  this file can be deleted and its render line removed from
+  snippets/cart-drawer.liquid.
+
+  DO NOT REBUILD A CAPTURE HERE. Shopify refuses POST /contact from
+  anything that is not a real browser form navigation: 400 from fetch in
+  the browser, 403 from curl using the popup's own exact payload. The
+  drawer is also inside CartDrawerForm, so a nested <form> is dropped by
+  the parser. Five versions proved this on 30 August.
+{%- endcomment -%}
+
+<style>
+  /* Drawer space, 30 Aug 2026. The footer had grown so tall that the
+     product list collapsed to a single row on a phone. Presentation
+     only. No wording is touched, including the age and terms label,
+     which is with the solicitor. */
+  #CartDrawer .drawer__scrollable{min-height:38vh}
+  #CartDrawer .cart__terms label{letter-spacing:0;text-transform:none;font-size:13px;line-height:1.35}
+  #CartDrawer .cart__item-row{padding-top:6px;padding-bottom:6px}
+  #CartDrawer .cart__checkout-wrapper{margin-top:8px}
+</style>

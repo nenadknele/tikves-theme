@@ -1,0 +1,85 @@
+{% if block.settings.reminder_label != blank %}
+  {% comment %}
+    The reminder tab. It sits bottom left once the joining gift popup has been
+    closed and reopens the popup on tap.
+
+    24 Sep 2026, operator: too big on phones. The first fix, in theme.liquid,
+    shrank the box padding and the type but missed the theme's own 40px padding
+    on the label itself, set through --newsletterReminderPadding, so the tab
+    stayed tall and the label wrapped onto two lines.
+
+    25 Sep 2026: every rule for the tab now lives here. Label padding zeroed,
+    one line of small type, a pill to match the buttons, and a close button
+    that fills the right end so the tap area stays a full height.
+  {% endcomment %}
+  {% style %}
+    newsletter-reminder {
+      --newsletterReminderPadding: 0;
+      left: 16px;
+      bottom: 16px;
+      max-width: calc(100% - 32px);
+      border-radius: var(--buttonRadius, 50px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+    }
+
+    newsletter-reminder .newsletter-reminder__content {
+      padding: 0;
+    }
+
+    newsletter-reminder .newsletter-reminder__message.h3 {
+      margin: 0;
+      padding: 11px 46px 11px 18px;
+      font-size: 14px;
+      line-height: 1.2;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+    }
+
+    newsletter-reminder.modal--square .modal__close {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 40px;
+      min-width: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0;
+      line-height: 0;
+      overflow: hidden;
+      border-radius: 0 var(--buttonRadius, 50px) var(--buttonRadius, 50px) 0;
+    }
+
+    newsletter-reminder.modal--square .modal__close::after {
+      content: none;
+    }
+
+    newsletter-reminder.modal--square .modal__close .icon {
+      width: 12px;
+      height: 12px;
+      display: block;
+    }
+  {% endstyle %}
+
+  <newsletter-reminder
+    class="modal--square"
+    data-section-id="{{ section.id }}"
+    data-enabled="false"
+    data-delay-days="{{ section.settings.popup_days }}"
+    data-delay-seconds="{{ section.settings.popup_seconds }}"
+    {{ block.shopify_attributes }}
+  >
+    <div class="newsletter-reminder__content">
+
+      <div class="newsletter-reminder__message h3" data-message>
+        {{ block.settings.reminder_label }}
+      </div>
+    </div>
+
+    <button type="button" data-close-button class="modal__close js-modal-close text-link" aria-label="Close">
+      <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-close" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"><path d="m19 17.61 27.12 27.13m0-27.12L19 44.74"/></svg>
+    </button>
+  </newsletter-reminder>
+{% endif %}

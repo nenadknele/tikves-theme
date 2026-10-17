@@ -1,0 +1,82 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "t:sections.footer-group.name",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "newsletter_tl01": {
+          "type": "newsletter",
+          "settings": {
+            "show_footer_title": true,
+            "title": "News from Tikveš",
+            "text": "<p>New releases, what has just landed, and now and then something about where the wine comes from.</p>",
+            "container_width": 40
+          }
+        },
+        "menu_ApeaKc": {
+          "type": "menu",
+          "settings": {
+            "show_footer_title": true,
+            "menu": "footer-shop",
+            "container_width": 25
+          }
+        },
+        "menu_about": {
+          "type": "menu",
+          "settings": {
+            "show_footer_title": true,
+            "menu": "footer-about",
+            "container_width": 25
+          }
+        },
+        "menu_help": {
+          "type": "menu",
+          "settings": {
+            "show_footer_title": true,
+            "menu": "footer",
+            "container_width": 25
+          }
+        },
+        "menu_legal": {
+          "type": "menu",
+          "settings": {
+            "show_footer_title": true,
+            "menu": "footer-legal",
+            "container_width": 25
+          }
+        }
+      },
+      "block_order": [
+        "newsletter_tl01",
+        "menu_ApeaKc",
+        "menu_about",
+        "menu_help",
+        "menu_legal"
+      ],
+      "settings": {
+        "show_currency_selector": false,
+        "show_currency_flags": false,
+        "show_locale_selector": false,
+        "contact_phone": "020 7243 5000",
+        "contact_email": "info@tikveslondon.uk",
+        "show_payment_icons": false,
+        "legal_line": "Tikves London Ltd, 11 Redan House, 23 Redan Place, London W2 4SA. Registered in England and Wales, company no. 07356331. VAT 227226129.",
+        "show_copyright": true,
+        "copyright_text": "· All rights reserved"
+      }
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

@@ -1,0 +1,145 @@
+{%- comment -%}
+  Tikves London - Collection chips
+  Pill navigation between collections, read from a navigation menu
+  (collection-chips), so add, remove or reorder chips under Navigation,
+  never in code. The chip for the page you are on renders filled.
+
+  Operator rulings 4 Sep 2026: a grid of large pills, two across on
+  mobile with an odd last chip spanning the width, and ONE row on
+  desktop however many chips there are. Heading renders in capitals.
+  5 Sep 2026: no hover colour change.
+  6 Sep 2026: the chip for the page you are on fills Ink, not Wine, so
+  the chips stay in the Ink on Paper family and Terra Rossa keeps
+  meaning buy.
+{%- endcomment -%}
+
+{%- liquid
+  assign chip_menu = linklists[section.settings.menu]
+  assign outline_alpha = section.settings.outline_strength | divided_by: 100.0
+  assign outline_color = section.settings.outline_color | color_modify: 'alpha', outline_alpha
+  assign chip_count = chip_menu.links.size
+  assign active_bg = section.settings.active_bg | default: '#1F2328'
+  assign active_text = section.settings.active_text | default: '#F5EFE7'
+-%}
+
+{%- if chip_count > 0 -%}
+<nav class="tk-chips page-width" id="tk-chips-{{ section.id }}" aria-label="{{ section.settings.heading | default: 'Shop by collection' | escape }}">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="tk-chips__heading">{{ section.settings.heading | escape }}</h2>
+  {%- endif -%}
+  <ul class="tk-chips__grid">
+    {%- for link in chip_menu.links -%}
+      {%- assign is_current = false -%}
+      {%- if link.active -%}
+        {%- assign is_current = true -%}
+      {%- elsif collection and link.url == collection.url -%}
+        {%- assign is_current = true -%}
+      {%- endif -%}
+      <li class="tk-chips__item">
+        <a href="{{ link.url }}"
+           class="tk-chips__chip{% if is_current %} is-current{% endif %}"
+           {%- if is_current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</nav>
+
+{%- style -%}
+  #tk-chips-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+  #tk-chips-{{ section.id }} .tk-chips__heading {
+    margin: 0 0 28px;
+    font-weight: 400;
+    font-size: 26px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #tk-chips-{{ section.id }} .tk-chips__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  #tk-chips-{{ section.id }} .tk-chips__item { margin: 0; }
+  #tk-chips-{{ section.id }} .tk-chips__item:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip,
+  #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip:hover,
+  #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip:focus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 84px;
+    padding: 18px 20px;
+    border: 1px solid {{ outline_color }};
+    border-radius: 999px;
+    background-color: transparent;
+    color: #1F2328;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: {{ section.settings.text_size }}px;
+    line-height: 1.35;
+    text-align: center;
+  }
+  #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip.is-current,
+  #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip.is-current:hover {
+    background-color: {{ active_bg }};
+    border-color: {{ active_bg }};
+    color: {{ active_text }};
+  }
+  #tk-chips-{{ section.id }} .tk-chips__chip:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+  @media (min-width: 769px) {
+    #tk-chips-{{ section.id }} .tk-chips__heading { font-size: 32px; margin-bottom: 36px; }
+    #tk-chips-{{ section.id }} .tk-chips__grid {
+      grid-template-columns: repeat({{ chip_count }}, minmax(0, 1fr));
+      gap: 14px;
+      max-width: none;
+      margin: 0;
+    }
+    #tk-chips-{{ section.id }} .tk-chips__item:last-child:nth-child(odd) { grid-column: auto; }
+    #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip,
+    #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip:hover {
+      min-height: 76px;
+      padding: 16px 12px;
+      font-size: {{ section.settings.text_size_desktop }}px;
+      letter-spacing: 0.08em;
+      hyphens: none;
+    }
+  }
+{%- endstyle -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Collection chips",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "info": "Chips mirror this menu. Edit it under Navigation, never in code. On desktop they all sit in one row, so keep the list short."
+    },
+    { "type": "text", "id": "heading", "label": "Heading", "info": "Renders in capitals." },
+    { "type": "color", "id": "outline_color", "label": "Chip outline", "default": "#1F2328" },
+    { "type": "range", "id": "outline_strength", "label": "Outline strength", "min": 10, "max": 100, "step": 10, "unit": "%", "default": 100 },
+    { "type": "color", "id": "active_bg", "label": "Current chip fill", "default": "#1F2328", "info": "No hover colour. This is only the chip for the page you are on." },
+    { "type": "color", "id": "active_text", "label": "Current chip text", "default": "#F5EFE7" },
+    { "type": "range", "id": "text_size", "label": "Label size, mobile", "min": 10, "max": 14, "step": 1, "unit": "px", "default": 12 },
+    { "type": "range", "id": "text_size_desktop", "label": "Label size, desktop", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 13 },
+    { "type": "checkbox", "id": "stretch_desktop", "label": "Stretch row to page width on desktop", "default": true, "info": "Kept for older templates. The grid fills the page width on its own." },
+    { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 12 },
+    { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 28 }
+  ],
+  "presets": [
+    { "name": "Collection chips", "category": "Navigation", "settings": { "heading": "Shop by collection" } }
+  ]
+}
+{% endschema %}
