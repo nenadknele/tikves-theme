@@ -99,6 +99,29 @@
 {% endstyle %}
 
 {%- comment -%}
+  COMPACT COOKIE BANNER ON PHONES. 18 Oct 2026, operator request. On a
+  phone the banner filled the bottom 353px and covered Add to cart. Same
+  words, same three buttons; Accept all and Reject all now sit side by
+  side at equal size (44px tall), Choose cookies below them. About 240px
+  tall on an iPhone 13. Desktop unchanged. To undo, delete the style
+  block below.
+{%- endcomment -%}
+{% style %}
+  @media only screen and (max-width: 768px) {
+    #shopify-pc__banner.shopify-pc__banner__dialog { padding: 16px 16px calc(14px + env(safe-area-inset-bottom)) !important; }
+    #shopify-pc__banner .shopify-pc__banner__wrapper { gap: 12px !important; }
+    #shopify-pc__banner #shopify-pc__banner__body-title { font-size: 16px !important; margin: 0 0 4px !important; }
+    #shopify-pc__banner .shopify-pc__banner__body p { font-size: 13px !important; line-height: 1.45 !important; margin: 0 !important; }
+    #shopify-pc__banner .shopify-pc__banner__btns { flex-direction: row !important; flex-wrap: wrap !important; gap: 8px !important; margin: 0 !important; }
+    #shopify-pc__banner #shopify-pc__banner__btn-accept,
+    #shopify-pc__banner #shopify-pc__banner__btn-decline { flex: 1 1 0 !important; width: auto !important; min-width: 0 !important; min-height: 44px !important; margin: 0 !important; padding: 8px 10px !important; }
+    #shopify-pc__banner #shopify-pc__banner__btn-accept { order: 1 !important; }
+    #shopify-pc__banner #shopify-pc__banner__btn-decline { order: 2 !important; }
+    #shopify-pc__banner #shopify-pc__banner__btn-manage-prefs { order: 3 !important; flex: 1 1 100% !important; width: 100% !important; min-height: 36px !important; margin: 0 !important; padding: 6px !important; }
+  }
+{% endstyle %}
+
+{%- comment -%}
   ONE POP-UP AT A TIME. Operator ruling 17 Oct 2026, revised 18 Oct 2026.
   The second-page rule is gone: the sign-up pop-up can show on the first
   page. It never shows over the age gate, the cookie banner, a drawer or
