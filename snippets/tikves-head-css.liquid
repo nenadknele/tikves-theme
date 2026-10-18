@@ -45,6 +45,34 @@
     .grid-product .grid-product__title {
       font-size: 20px !important;
     }
+    /* 18 Oct 2026: the rule above also caught the swipe rows on a product
+       page ("You may also like", "Recently viewed"), showing one card with
+       no sign of the next. In those rows a card takes 78% so the next one
+       peeks in. Collection and search grids are untouched. */
+    /* 18 Oct 2026: the quantity - and + measured 30px on a phone, below a
+       comfortable tap. Widen the box so each button is a 40px target. */
+    .js-qty__wrapper,
+    .drawer .js-qty__wrapper {
+      max-width: 124px !important;
+      min-width: 124px !important;
+    }
+    .js-qty__num,
+    .drawer .js-qty__num {
+      min-height: 40px;
+      padding-left: 40px !important;
+      padding-right: 40px !important;
+    }
+    .js-qty__adjust {
+      width: 40px;
+      padding: 0 !important;
+    }
+    .grid-overflow-wrapper .grid .grid-product {
+      width: 78% !important;
+      max-width: 78% !important;
+      flex: 0 0 78% !important;
+      clear: none !important;
+      margin-bottom: 0 !important;
+    }
   }
 {% endstyle %}
 
@@ -71,10 +99,10 @@
 {% endstyle %}
 
 {%- comment -%}
-  ONE POP-UP AT A TIME. Operator ruling 17 Oct 2026. On the first page a
-  visitor opens, only the age check shows. The sign-up pop-up waits for the
-  second page, then shows after 10 seconds. The script sets the delay once
-  the page is parsed, before theme.js reads it. To undo, delete this comment
-  and the script below.
+  ONE POP-UP AT A TIME. Operator ruling 17 Oct 2026, revised 18 Oct 2026.
+  The second-page rule is gone: the sign-up pop-up can show on the first
+  page. It never shows over the age gate, the cookie banner, a drawer or
+  another modal, and it waits the full delay (popup_seconds in
+  sections/popup-group.json, 15) after the last of those is answered or
+  closed. The waiting lives in theme.NewsletterPopup in assets/theme.js.
 {%- endcomment -%}
-<script>document.addEventListener('readystatechange',function(){if(document.readyState!=='interactive')return;var n=2;try{n=+(sessionStorage.getItem('tl_pv')||0)+1;sessionStorage.setItem('tl_pv',String(n))}catch(e){}document.querySelectorAll('[data-delay-seconds]').forEach(function(el){el.setAttribute('data-delay-seconds',n<2?'86400':'10')})});</script>

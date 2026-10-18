@@ -33,7 +33,9 @@ no index is passed and every card waits, as before.
 
   if grid_index == 1
     assign img_loading = false
-  elsif grid_index and grid_index <= 4
+  elsif grid_index and grid_index <= 2
+    # 18 Oct 2026, speed: was 4. Phones stack one card per row, so cards
+    # 3 and 4 sit far below the screen and only competed with the first.
     assign img_loading = 'eager'
   else
     assign img_loading = 'lazy'

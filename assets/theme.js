@@ -2218,8 +2218,9 @@ theme.recentlyViewed = {
         btn.addEventListener('click', this.close.bind(this));
       });
   
-      // Close modal if a drawer is opened
+      // Close modal if a drawer is opened. A locked modal (the age gate) stays.
       document.addEventListener('drawerOpen', function() {
+        if (this.config.locked) return;
         this.close();
       }.bind(this));
     };
@@ -2328,7 +2329,8 @@ theme.recentlyViewed = {
   
     Modal.prototype.bindEvents = function() {
       window.on('keyup.modal', function(evt) {
-        if (evt.keyCode === 27) {
+        // A locked modal (the age gate) only closes from its own Yes button
+        if (evt.keyCode === 27 && !this.config.locked) {
           this.close();
         }
       }.bind(this));
@@ -4632,8 +4634,12 @@ theme.recentlyViewed = {
   
     init() {
       this.modal = new theme.Modals(this.id, 'age-verification-popup-modal', {
-        closeOffContentClick: false
+        closeOffContentClick: false,
+        locked: true
       });
+
+      // 18 Oct 2026: other popups wait on this flag. See theme.NewsletterPopup.
+      window.tlAgeGateOpen = true;
   
       if (this.backgroundImage) {
         this.backgroundImage.style.display = 'block';
@@ -4694,6 +4700,9 @@ theme.recentlyViewed = {
           this.modal.close();
   
           theme.a11y.unlockMobileScrolling(`#${this.id}`, document.querySelector('#MainContent'));
+
+          window.tlAgeGateOpen = false;
+          document.dispatchEvent(new CustomEvent('tl:agegate:passed'));
         })
       }
     }
@@ -4959,12 +4968,12 @@ theme.recentlyViewed = {
       }
   
       // Open modal if errors or success message exist
-      if (container.querySelector('.errors') || container.querySelector('.note--success')) {
+      if (container.querySelector('.errors') || container.querySelector('.note--success, .tl-joined')) {
         this.modal.open();
       }
   
       // Set cookie as opened if success message
-      if (container.querySelector('.note--success')) {
+      if (container.querySelector('.note--success, .tl-joined')) {
         this.closePopup(true);
         return;
       }
@@ -4987,16 +4996,53 @@ theme.recentlyViewed = {
           return;
         }
         setTimeout(function () {
-          const newsletterAppeared = (sessionStorage.getItem('newsletterAppeared') === 'true');
-          if (newsletterAppeared) {
-            const openReminder = new CustomEvent('newsletter:openReminder', { bubbles: true });
-            this.container.dispatchEvent(openReminder);
-          } else {
-            this.modal.open();
-            sessionStorage.setItem('newsletterAppeared', true);
+          // 18 Oct 2026: never open over the age gate. Wait for Yes, then
+          // start the delay again so the visitor gets a clean look first.
+          if (window.tlAgeGateOpen) {
+            document.addEventListener('tl:agegate:passed', this.initPopupDelay.bind(this), { once: true });
+            return;
           }
-  
+          // 18 Oct 2026: on a phone Shopify's cookie banner covered the email
+          // box and the claim button. Wait until it has been answered, and
+          // never open over the cart drawer, the menu or another modal: the
+          // modal closes any open drawer, which threw away a visitor's cart.
+          if (!this.popupClear()) {
+            var wait = setInterval(function () {
+              if (!this.popupClear()) return;
+              clearInterval(wait);
+              this.initPopupDelay();
+            }.bind(this), 1000);
+            return;
+          }
+          this.showPopup();
         }.bind(this), this.data.secondsBeforeShow * 1000);
+      },
+
+      popupClear: function () {
+        var html = document.documentElement;
+        if (html.classList.contains('js-drawer-open') || html.classList.contains('modal-open')) return false;
+        // Any other open dialog, such as a Klaviyo back in stock form.
+        var dialogs = document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+        for (var i = 0; i < dialogs.length; i++) {
+          if (this.container.contains(dialogs[i])) continue;
+          var ds = window.getComputedStyle(dialogs[i]);
+          if (ds.display !== 'none' && ds.visibility !== 'hidden' && dialogs[i].getClientRects().length) return false;
+        }
+        var banner = document.getElementById('shopify-pc__banner');
+        if (!banner) return true;
+        var cs = window.getComputedStyle(banner);
+        return cs.display === 'none' || cs.visibility === 'hidden' || banner.offsetHeight === 0;
+      },
+
+      showPopup: function () {
+        const newsletterAppeared = (sessionStorage.getItem('newsletterAppeared') === 'true');
+        if (newsletterAppeared) {
+          const openReminder = new CustomEvent('newsletter:openReminder', { bubbles: true });
+          this.container.dispatchEvent(openReminder);
+        } else {
+          this.modal.open();
+          sessionStorage.setItem('newsletterAppeared', true);
+        }
       },
   
       closePopup: function (success) {

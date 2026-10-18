@@ -106,6 +106,12 @@
               </div>
             {% endif %}
             {% if section.settings.decline_button_label != blank and section.settings.approve_button_label != blank %}
+              {% style %}
+                /* 18 Oct 2026: Yes and No measured 35px tall on a phone. 44px is the minimum comfortable tap target. */
+                #AgeVerificationPopup-{{ section.id }} .age-verification-popup__btns-wrapper .btn {
+                  min-height: 44px;
+                }
+              {% endstyle %}
               <div class="age-verification-popup__btns-wrapper">
             {% endif %}
               {% if section.settings.decline_button_label != blank %}
