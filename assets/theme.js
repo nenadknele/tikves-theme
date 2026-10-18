@@ -5021,6 +5021,13 @@ theme.recentlyViewed = {
       popupClear: function () {
         var html = document.documentElement;
         if (html.classList.contains('js-drawer-open') || html.classList.contains('modal-open')) return false;
+        // Any other open dialog, such as a Klaviyo back in stock form.
+        var dialogs = document.querySelectorAll('[role="dialog"][aria-modal="true"]');
+        for (var i = 0; i < dialogs.length; i++) {
+          if (this.container.contains(dialogs[i])) continue;
+          var ds = window.getComputedStyle(dialogs[i]);
+          if (ds.display !== 'none' && ds.visibility !== 'hidden' && dialogs[i].getClientRects().length) return false;
+        }
         var banner = document.getElementById('shopify-pc__banner');
         if (!banner) return true;
         var cs = window.getComputedStyle(banner);
