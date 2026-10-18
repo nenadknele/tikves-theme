@@ -240,14 +240,10 @@
                         <span data-unit-price>{{ current_variant.unit_price | money }}</span>/{{ unit_price_base_unit }}
                       </div>
 
-                      {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+                      {%- comment -%} 18 Oct 2026, operator: no delivery information on product pages, so the shipping line is gone. Tax line stays. {%- endcomment -%}
+                      {%- if shop.taxes_included -%}
                         <div class="product__policies rte small--text-center">
-                          {%- if shop.taxes_included -%}
-                            {{ 'products.product.include_taxes' | t }}
-                          {%- endif -%}
-                          {%- if shop.shipping_policy.body != blank -%}
-                            {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
-                          {%- endif -%}
+                          {{ 'products.product.include_taxes' | t }}
                         </div>
                       {%- endif -%}
                     </div>

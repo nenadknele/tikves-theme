@@ -57,12 +57,6 @@
             "text": "Secure checkout"
           }
         },
-        "delivery_link": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Delivery link, 9 Oct 2026, operator instruction. A pointer to the Delivery page and nothing more: no rate, zone, time or carrier is stated here, per tikves-delivery. Same words as the cart. {% endcomment %}<p class=\"tl-pdp-delivery\" style=\"margin:12px 0 0;font-size:13px\"><a href=\"/pages/delivery\" style=\"text-decoration:underline;text-underline-offset:3px\">Delivery costs and timings</a></p>"
-          }
-        },
         "mw_quote": {
           "type": "custom",
           "settings": {
@@ -128,7 +122,6 @@
         "back_in_stock",
         "guarantee",
         "sales_point-secure",
-        "delivery_link",
         "mw_quote",
         "separator-1",
         "description",
