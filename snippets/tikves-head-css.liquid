@@ -78,3 +78,20 @@
   and the script below.
 {%- endcomment -%}
 <script>document.addEventListener('readystatechange',function(){if(document.readyState!=='interactive')return;var n=2;try{n=+(sessionStorage.getItem('tl_pv')||0)+1;sessionStorage.setItem('tl_pv',String(n))}catch(e){}document.querySelectorAll('[data-delay-seconds]').forEach(function(el){el.setAttribute('data-delay-seconds',n<2?'86400':'10')})});</script>
+
+{%- comment -%}
+  NO SECOND FADE ON PHOTOS ALREADY SHOWING. 18 Oct 2026, speed.
+  A photo the page loads eagerly (the first product photos, the first grid
+  cards, the header logo) is visible from first paint. When theme.js later
+  marks it .aos-animate, the theme's fade-in animation restarted it from
+  opacity 0, so it blinked out and faded back over about half a second.
+  Measured on a 4x slowed phone: the first photo on /collections/sets and
+  /products/the-alexandria vanished at about 2.1s and was back at 2.6 to 3.2s.
+  Lazy photos further down keep their fade. To undo, delete this block.
+{%- endcomment -%}
+{% style %}
+  .aos-animate[data-aos=image-fade-in] .image-element[loading=eager] {
+    animation: none;
+    opacity: 1;
+  }
+{% endstyle %}
