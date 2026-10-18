@@ -4959,12 +4959,12 @@ theme.recentlyViewed = {
       }
   
       // Open modal if errors or success message exist
-      if (container.querySelector('.errors') || container.querySelector('.note--success')) {
+      if (container.querySelector('.errors') || container.querySelector('.note--success, .tl-joined')) {
         this.modal.open();
       }
   
       // Set cookie as opened if success message
-      if (container.querySelector('.note--success')) {
+      if (container.querySelector('.note--success, .tl-joined')) {
         this.closePopup(true);
         return;
       }

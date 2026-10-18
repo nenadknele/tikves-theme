@@ -60,6 +60,7 @@
                   {{ 'cart.general.terms' | t }}
                 {% endif %}
               </label>
+              <p class="cart__terms-error" data-tl-terms-error hidden>Please tick the box above to continue.</p>
             </div>
           {% endif %}
 
@@ -84,7 +85,7 @@
 
           <div class="cart__item-row text-center">
             <small>
-              {{ 'cart.general.shipping_at_checkout' | t }}<br />
+              Delivery calculated at checkout.<br />
             </small>
           </div>
 
