@@ -5,7 +5,7 @@
 
     {%- render 'breadcrumbs' -%}
 
-    <header class="section-header{% if section.settings.blog_show_tag_filter and blog.tags.size > 0 %}{% unless settings.type_headers_align_text == 'center' %} section-header--with-link{% endunless %}{% endif %}">
+    <header class="section-header">
       <h1 class="section-header__title">
         {{ blog.title }}
 
@@ -17,16 +17,49 @@
         {%- endif -%}
       </h1>
 
-      {%- if section.settings.blog_show_tag_filter and blog.tags.size > 0 -%}
-        <select id="BlogTagFilter">
-          <option value="/blogs/{{ blog.handle }}">All</option>
-          {%- for tag in blog.all_tags -%}
-            {% if tag contains "_" %}{%- assign tag_starts_with = tag | slice: 0 -%}{% if tag_starts_with == "_" %}{% if tag_count %}{%- assign tag_count = tag_count | minus: 1 | at_least: 0 -%}{% endif %}{% continue %}{% endif %}{% endif %}
-            <option value="/blogs/{{ blog.handle }}/tagged/{{ tag | handleize }}" {% if current_tags contains tag %}selected{% endif %}>{{ tag }}</option>
-          {%- endfor -%}
-        </select>
-      {%- endif -%}
     </header>
+
+      {%- comment -%}
+        JOURNAL TOPIC CHIPS. Operator ruling 18 Oct 2026: readers pick a topic
+        from a row of pills, in the same family as the collection chips
+        (Ink outline on Paper, the current topic filled Ink). Replaces the
+        theme's dropdown. The topics are the article tags, so a new topic
+        appears here once an article carries it. Tags starting with an
+        underscore stay hidden, as before. Switched by the "show tag
+        filter" setting on this section.
+      {%- endcomment -%}
+      {%- if section.settings.blog_show_tag_filter and blog.all_tags.size > 0 -%}
+        <nav class="tl-topics" aria-label="Journal topics">
+          <ul class="tl-topics__list">
+            <li><a href="{{ blog.url }}" class="tl-topics__chip{% if current_tags == blank %} is-current{% endif %}"{% if current_tags == blank %} aria-current="page"{% endif %}>All</a></li>
+            {%- for tag in blog.all_tags -%}
+              {%- assign tag_first = tag | slice: 0 -%}
+              {%- if tag_first == '_' -%}{%- continue -%}{%- endif -%}
+              {%- assign is_current = false -%}
+              {%- if current_tags contains tag -%}{%- assign is_current = true -%}{%- endif -%}
+              <li><a href="{{ blog.url }}/tagged/{{ tag | handleize }}" class="tl-topics__chip{% if is_current %} is-current{% endif %}"{% if is_current %} aria-current="page"{% endif %}>{{ tag | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+        <style>
+          .tl-topics{margin:0 0 36px}
+          .tl-topics__list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0;padding:0;list-style:none}
+          .tl-topics__list li{margin:0}
+          .tl-topics__list li:last-child:nth-child(odd){grid-column:1 / -1}
+          .tl-topics a.tl-topics__chip,
+          .tl-topics a.tl-topics__chip:hover{
+            display:flex;align-items:center;justify-content:center;min-height:48px;padding:10px 14px;
+            border:1px solid rgba(31,35,40,.35);border-radius:999px;background:transparent;color:#1F2328;
+            text-decoration:none;text-transform:uppercase;letter-spacing:.1em;font-size:12px;line-height:1.3;text-align:center;
+          }
+          .tl-topics a.tl-topics__chip.is-current{background:#1F2328;border-color:#1F2328;color:#F5EFE7}
+          .tl-topics a.tl-topics__chip:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+          @media (min-width:769px){
+            .tl-topics__list{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+            .tl-topics a.tl-topics__chip{min-height:44px;padding:10px 22px}
+          }
+        </style>
+      {%- endif -%}
 
     <div class="grid grid--uniform">
       {%- for article in blog.articles -%}

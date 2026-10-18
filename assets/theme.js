@@ -5010,7 +5010,7 @@ theme.recentlyViewed = {
             var wait = setInterval(function () {
               if (!this.popupClear()) return;
               clearInterval(wait);
-              setTimeout(this.showPopup.bind(this), 1500);
+              this.initPopupDelay();
             }.bind(this), 1000);
             return;
           }

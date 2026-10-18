@@ -64,6 +64,13 @@
     assign preload = false
   endif
 
+  # 18 Oct 2026, speed: a preloaded image is the likely LCP, so the img tag
+  # asks for high priority too, not only the preload link.
+  assign fetch_priority = 'auto'
+  if preload
+    assign fetch_priority = 'high'
+  endif
+
   # Image sizes https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/sizes
    # Can explicitly pass in sizes. For example: sizes: '200px' or '(min-width: 769px) 400px, 30vw'
    # Can pass in only a sizeVariable
@@ -113,6 +120,7 @@
     {{ img
       | image_url: width: img_width, format: format
       | image_tag: preload: preload,
+                  fetchpriority: fetch_priority,
                   height: img_tag_height,
                   width: img_tag_width,
                   class: classes,
@@ -138,6 +146,7 @@
     {{ img
       | image_url: width: img_width, format: format
       | image_tag: preload: preload,
+                  fetchpriority: fetch_priority,
                   height: img_tag_height,
                   width: img_tag_width,
                   class: classes,

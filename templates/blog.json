@@ -1,1 +1,1 @@
-{"sections":{"main":{"type":"blog-template","settings":{"blog_show_date":true,"blog_show_excerpt":true,"blog_image_size":"wide"}}},"order":["main"]}
+{"sections":{"main":{"type":"blog-template","settings":{"blog_show_date":true,"blog_show_excerpt":true,"blog_image_size":"wide","blog_show_tag_filter":true}}},"order":["main"]}
