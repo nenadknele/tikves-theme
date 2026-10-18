@@ -20,6 +20,21 @@
         classes: 'age-verification-popup__background-image',
       -%}
     </div>
+    {%- comment -%}
+      18 Oct 2026, speed: a first-time visitor sees this photograph before anything else,
+      but it is lazy and the gate only opens once theme.js runs. If the visitor has not
+      passed the gate yet, start the download now. Returning visitors download nothing.
+      The cookie name matches this.id in AgeVerificationPopup (theme.js).
+    {%- endcomment -%}
+    <script>
+      (function () {
+        if (document.cookie.indexOf('AgeVerificationPopup-{{ section.id }}=') !== -1) return;
+        var img = document.querySelector('#AgeVerificationPopup-{{ section.id }} .age-verification-popup__background-image');
+        if (!img) return;
+        img.loading = 'eager';
+        img.fetchPriority = 'high';
+      })();
+    </script>
     {% style %}
       .age-verification-popup__background-image {
         {% if section.settings.blur_image %}
