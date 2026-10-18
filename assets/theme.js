@@ -5003,10 +5003,12 @@ theme.recentlyViewed = {
             return;
           }
           // 18 Oct 2026: on a phone Shopify's cookie banner covered the email
-          // box and the claim button. Wait until it has been answered.
-          if (!this.cookieBannerClear()) {
+          // box and the claim button. Wait until it has been answered, and
+          // never open over the cart drawer, the menu or another modal: the
+          // modal closes any open drawer, which threw away a visitor's cart.
+          if (!this.popupClear()) {
             var wait = setInterval(function () {
-              if (!this.cookieBannerClear()) return;
+              if (!this.popupClear()) return;
               clearInterval(wait);
               setTimeout(this.showPopup.bind(this), 1500);
             }.bind(this), 1000);
@@ -5016,7 +5018,9 @@ theme.recentlyViewed = {
         }.bind(this), this.data.secondsBeforeShow * 1000);
       },
 
-      cookieBannerClear: function () {
+      popupClear: function () {
+        var html = document.documentElement;
+        if (html.classList.contains('js-drawer-open') || html.classList.contains('modal-open')) return false;
         var banner = document.getElementById('shopify-pc__banner');
         if (!banner) return true;
         var cs = window.getComputedStyle(banner);
