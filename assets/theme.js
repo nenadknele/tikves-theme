@@ -2218,8 +2218,9 @@ theme.recentlyViewed = {
         btn.addEventListener('click', this.close.bind(this));
       });
   
-      // Close modal if a drawer is opened
+      // Close modal if a drawer is opened. A locked modal (the age gate) stays.
       document.addEventListener('drawerOpen', function() {
+        if (this.config.locked) return;
         this.close();
       }.bind(this));
     };
@@ -2328,7 +2329,8 @@ theme.recentlyViewed = {
   
     Modal.prototype.bindEvents = function() {
       window.on('keyup.modal', function(evt) {
-        if (evt.keyCode === 27) {
+        // A locked modal (the age gate) only closes from its own Yes button
+        if (evt.keyCode === 27 && !this.config.locked) {
           this.close();
         }
       }.bind(this));
@@ -4632,8 +4634,12 @@ theme.recentlyViewed = {
   
     init() {
       this.modal = new theme.Modals(this.id, 'age-verification-popup-modal', {
-        closeOffContentClick: false
+        closeOffContentClick: false,
+        locked: true
       });
+
+      // 18 Oct 2026: other popups wait on this flag. See theme.NewsletterPopup.
+      window.tlAgeGateOpen = true;
   
       if (this.backgroundImage) {
         this.backgroundImage.style.display = 'block';
@@ -4694,6 +4700,9 @@ theme.recentlyViewed = {
           this.modal.close();
   
           theme.a11y.unlockMobileScrolling(`#${this.id}`, document.querySelector('#MainContent'));
+
+          window.tlAgeGateOpen = false;
+          document.dispatchEvent(new CustomEvent('tl:agegate:passed'));
         })
       }
     }
@@ -4987,6 +4996,12 @@ theme.recentlyViewed = {
           return;
         }
         setTimeout(function () {
+          // 18 Oct 2026: never open over the age gate. Wait for Yes, then
+          // start the delay again so the visitor gets a clean look first.
+          if (window.tlAgeGateOpen) {
+            document.addEventListener('tl:agegate:passed', this.initPopupDelay.bind(this), { once: true });
+            return;
+          }
           const newsletterAppeared = (sessionStorage.getItem('newsletterAppeared') === 'true');
           if (newsletterAppeared) {
             const openReminder = new CustomEvent('newsletter:openReminder', { bubbles: true });
