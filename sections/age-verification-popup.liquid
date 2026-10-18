@@ -88,7 +88,8 @@
                 alt="{{ shop.name | escape }}"
                 width="{{ section.settings.logo.width }}"
                 height="{{ section.settings.logo.height }}"
-                loading="eager"
+                loading="lazy"
+                data-tl-gate-eager
                 style="width: {{ section.settings.logo_width }}px; max-width: 100%; height: auto; display: inline-block;">
             </div>
           {%- endif -%}
@@ -160,6 +161,23 @@
     </div>
   </div>
 </age-verification-popup>
+{%- comment -%}
+  18 Oct 2026, speed: the gate photograph and logo are lazy, so a visitor who has already
+  passed the gate downloads neither (the modal stays hidden). A visitor who has not passed
+  it yet sees both first, so start those downloads now instead of waiting for theme.js.
+  The cookie name matches this.id in AgeVerificationPopup (theme.js).
+{%- endcomment -%}
+<script>
+  (function () {
+    if (document.cookie.indexOf('AgeVerificationPopup-{{ section.id }}=') !== -1) return;
+    var root = document.getElementById('AgeVerificationPopup-{{ section.id }}');
+    if (!root) return;
+    root.querySelectorAll('.age-verification-popup__background-image, [data-tl-gate-eager]').forEach(function (img) {
+      img.fetchPriority = 'high';
+      img.loading = 'eager';
+    });
+  })();
+</script>
 
 
 {% schema %}
