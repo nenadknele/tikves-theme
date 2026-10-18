@@ -19,6 +19,7 @@
                 class="grid__image-ratio grid__image-ratio--{{ image_size }}">
                 {%- render 'image-element',
                   img: article.image,
+                  alt_fallback: article.title,
                   sizes: '(min-width: 769px) 33vw, 100vw',
                   widths: '360, 540, 720, 900, 1080, 1296',
                   loading: img_loading,
@@ -29,6 +30,7 @@
             <div class="image-wrap" style="height: 0; padding-bottom: {{ 100 | divided_by: article.image.aspect_ratio }}%;">
               {%- render 'image-element',
                 img: article.image,
+                alt_fallback: article.title,
                 sizes: '(min-width: 769px) 33vw, 100vw',
                 widths: '180, 360, 540, 720, 900, 1080, 1296',
                 loading: img_loading,

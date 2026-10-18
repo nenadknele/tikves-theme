@@ -38,6 +38,7 @@
               featured_media: featured_media,
               loopIndex0: forloop.index0,
               loopIndex: forloop.index,
+              product_title: product.title,
               product_zoom_enable: product_zoom_enable,
               product_zoom_size: product_zoom_size,
               product_image_size: product_image_size,
@@ -123,7 +124,7 @@
                     {%- capture image_classes -%}
                       appear-delay-{{ forloop.index | times: 3 }}
                     {%- endcapture -%}
-                    {%- assign media_alt = media.alt | escape | split: '#' | first -%}
+                    {%- assign media_alt = media.alt | split: '#' | first | strip | default: product.title -%}
 
                     {%- render 'image-element',
                       img: media.preview_image,

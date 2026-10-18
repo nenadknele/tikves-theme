@@ -5,7 +5,14 @@
     <div class="theme-block" {{ block.shopify_attributes }}>
       {%- case block.type -%}
         {%- when 'heading' -%}
-          <h2 class="{{ block.settings.heading_size }}">{{ block.settings.title | escape }}</h2>
+          {%- comment -%} Oct 2026, SEO: on a content page whose first section is this one, the first heading is the page H1. {%- endcomment -%}
+          {%- liquid
+            assign rt_tag = 'h2'
+            if section.index == 1 and request.page_type == 'page' and forloop.first
+              assign rt_tag = 'h1'
+            endif
+          -%}
+          <{{ rt_tag }} class="{{ block.settings.heading_size }}">{{ block.settings.title | escape }}</{{ rt_tag }}>
         {%- when 'page' -%}
           <div class="rte">
             {%- if block.settings.page_text != blank -%}

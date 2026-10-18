@@ -88,6 +88,7 @@
                       {% if product.media != blank %}
                         {%- render 'image-element',
                           img: product.featured_media,
+                          alt_fallback: product.title,
                           widths: '80, 160, 240',
                         -%}
                       {% endif %}

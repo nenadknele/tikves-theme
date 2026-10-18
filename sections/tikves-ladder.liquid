@@ -40,7 +40,7 @@
                   src="{{ p.featured_image | image_url: width: 800 }}"
                   srcset="{{ p.featured_image | image_url: width: 400 }} 400w, {{ p.featured_image | image_url: width: 800 }} 800w"
                   sizes="(min-width: 769px) 22vw, 46vw"
-                  alt="{{ p.featured_image.alt | escape }}"
+                  alt="{{ p.featured_image.alt | default: p.title | escape }}"
                   loading="lazy"
                   width="400" height="500">
               </span>
@@ -71,7 +71,7 @@
             {%- if s.show_thumbs -%}
               <span class="tkl__thumb{% if p.featured_image == blank %} tkl__thumb--empty{% endif %}">
                 {%- if p.featured_image != blank -%}
-                  <img src="{{ p.featured_image | image_url: width: 260 }}" alt="{{ p.featured_image.alt | escape }}" loading="lazy" width="130" height="130">
+                  <img src="{{ p.featured_image | image_url: width: 260 }}" alt="{{ p.featured_image.alt | default: p.title | escape }}" loading="lazy" width="130" height="130">
                 {%- endif -%}
               </span>
             {%- endif -%}

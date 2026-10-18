@@ -1,7 +1,10 @@
 {%- comment -%}
   Organization and WebSite structured data for the homepage. 23 Sep 2026.
-  Rendered from layout/theme.liquid, in the head, on the index template only.
-  Product and collection pages already carry Shopify's own Product data.
+  Rendered from layout/theme.liquid, in the head.
+  Product pages carry Shopify's own Product data (snippets/product-template),
+  collections a CollectionPage and articles an Article in their own sections.
+  Oct 2026, SEO: a BreadcrumbList on product, collection, article, blog and
+  content pages, so search results show the path instead of the bare URL.
   The legal details match the footer. Social links come from theme settings,
   so a change in Theme settings > Social media carries through here.
 {%- endcomment -%}
@@ -70,6 +73,61 @@
         "inLanguage": "en-GB",
         "publisher": { "@id": {{ org_id | json }} }
       }
+    ]
+  }
+  </script>
+{%- endif -%}
+
+{%- liquid
+  assign crumb_names = ''
+  assign crumb_urls = ''
+  case request.page_type
+    when 'product'
+      if collection
+        assign crumb_names = collection.title
+        assign crumb_urls = collection.url
+        assign crumb_names = crumb_names | append: '|~|' | append: product.title
+        assign crumb_urls = crumb_urls | append: '|~|' | append: product.url
+      else
+        assign crumb_names = product.title
+        assign crumb_urls = product.url
+      endif
+    when 'collection'
+      assign crumb_names = collection.title
+      assign crumb_urls = collection.url
+    when 'blog'
+      assign crumb_names = blog.title
+      assign crumb_urls = blog.url
+    when 'article'
+      assign crumb_names = blog.title | append: '|~|' | append: article.title
+      assign crumb_urls = blog.url | append: '|~|' | append: article.url
+    when 'page'
+      assign crumb_names = page.title
+      assign crumb_urls = page.url
+  endcase
+-%}
+{%- if crumb_names != blank -%}
+  {%- assign crumb_name_list = crumb_names | split: '|~|' -%}
+  {%- assign crumb_url_list = crumb_urls | split: '|~|' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": {{ shop.url | append: routes.root_url | json }}
+      }
+      {%- for crumb_name in crumb_name_list -%}
+        ,{
+          "@type": "ListItem",
+          "position": {{ forloop.index | plus: 1 }},
+          "name": {{ crumb_name | strip_html | json }},
+          "item": {{ shop.url | append: crumb_url_list[forloop.index0] | json }}
+        }
+      {%- endfor %}
     ]
   }
   </script>

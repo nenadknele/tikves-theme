@@ -105,7 +105,11 @@
           endif
         -%}
         {%- comment -%} 28 Sep 2026: split before escape. Escaping first turned an apostrophe into &#39; and the split on # then cut the alt text short. {%- endcomment -%}
-        {%- assign media_alt = media.alt | split: '#' | first -%}
+        {%- assign media_alt = media.alt | split: '#' | first | strip -%}
+        {%- comment -%} Oct 2026, SEO: a photo with no alt text in admin falls back to the product name. {%- endcomment -%}
+        {%- if media_alt == blank -%}
+          {%- assign media_alt = product_title -%}
+        {%- endif -%}
 
         {%- render 'image-element',
           img: media.preview_image,

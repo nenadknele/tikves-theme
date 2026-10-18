@@ -45,6 +45,7 @@
         {% assign classes = 'collection-image--' | append: indicator %}
         {%- render 'image-element',
           img: collection_image,
+          alt_fallback: collection.title,
           widths: '360, 540, 720, 900, 1080',
           classes: classes,
           sizes: sizes,

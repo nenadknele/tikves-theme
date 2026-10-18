@@ -83,8 +83,10 @@
     assign sizes = sizes
   endif
 
+  # Oct 2026, SEO: alt_fallback (a product, collection or article name) is
+  # used only when neither the caller nor the image itself has alt text.
   if alt == blank
-    assign alt = img.alt | default: ''
+    assign alt = img.alt | default: alt_fallback | default: ''
   endif
 
   if animation == blank
@@ -175,7 +177,7 @@
     class="{{ classes }}"
     loading="{{ loading }}"
     {%- if preload %} fetchpriority="high"{% endif %}
-    alt="{{ alt }}"
+    alt="{{ alt | escape }}"
     srcset="{{ img_widths }}"
     data-photoswipe-src="{{ img | image_url: width: product_zoom_size, format: format }}"
     data-photoswipe-width="{{ media_width }}"
@@ -203,7 +205,7 @@
        height="{{ img_height }}"
        class="{{ classes }}"
        loading="{{ loading }}"
-       alt="{{ alt }}"
+       alt="{{ alt | escape }}"
        {% if img_widths != blank %}srcset="{{ img_widths }}"{% endif %}
        {% if data-name and data-value %}data-{{ data-name }}="{{ data-value }}"{% endif %}
        sizes="{{ sizes }}"

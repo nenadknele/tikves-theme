@@ -107,6 +107,7 @@ no index is passed and every card waits, as before.
             {%- if preview_image != blank -%}
               {%- render 'image-element',
                 img: preview_image,
+                alt_fallback: product.title,
                 classes: image_classes,
                 sizes: sizes,
                 sizeVariable: sizeVariable,
@@ -131,6 +132,7 @@ no index is passed and every card waits, as before.
               {%- endcapture -%}
               {%- render 'image-element',
                 img: preview_image,
+                alt_fallback: product.title,
                 classes: image_classes,
                 sizes: sizes,
                 sizeVariable: sizeVariable,
@@ -155,6 +157,7 @@ no index is passed and every card waits, as before.
             {%- endcapture -%}
             {%- render 'image-element',
               img: second_image,
+              alt_fallback: product.title,
               classes: image_classes,
               sizes: sizes,
               sizeVariable: sizeVariable,

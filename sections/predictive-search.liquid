@@ -52,6 +52,7 @@
                 class="grid__image-ratio grid__image-ratio--square">
                 {%- render 'image-element',
                   img: article.image,
+                  alt_fallback: article.title,
                   widths: '360, 540, 720, 900, 1080',
                   sizes: '80px',
                 -%}

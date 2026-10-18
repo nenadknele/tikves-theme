@@ -241,11 +241,18 @@
                           </div>
                         {%- endunless -%}
                         {%- unless block.settings.title == blank -%}
-                          <h2 class="h1 hero__title">
+                          {%- comment -%} Oct 2026, SEO: a slideshow at the top of a content page carries the page H1 on its first slide. {%- endcomment -%}
+                          {%- liquid
+                            assign slide_tag = 'h2'
+                            if section.index == 1 and request.page_type == 'page' and forloop.first
+                              assign slide_tag = 'h1'
+                            endif
+                          -%}
+                          <{{ slide_tag }} class="h1 hero__title">
                             <div class="animation-cropper"><div class="animation-contents">
                             {{ block.settings.title | newline_to_br }}
                             </div></div>
-                          </h2>
+                          </{{ slide_tag }}>
                         {%- endunless -%}
                         {%- if block.settings.subheading or block.settings.link or block.settings.link_2 -%}
                           {%- unless block.settings.subheading == blank -%}
