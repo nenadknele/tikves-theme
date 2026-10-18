@@ -5002,16 +5002,36 @@ theme.recentlyViewed = {
             document.addEventListener('tl:agegate:passed', this.initPopupDelay.bind(this), { once: true });
             return;
           }
-          const newsletterAppeared = (sessionStorage.getItem('newsletterAppeared') === 'true');
-          if (newsletterAppeared) {
-            const openReminder = new CustomEvent('newsletter:openReminder', { bubbles: true });
-            this.container.dispatchEvent(openReminder);
-          } else {
-            this.modal.open();
-            sessionStorage.setItem('newsletterAppeared', true);
+          // 18 Oct 2026: on a phone Shopify's cookie banner covered the email
+          // box and the claim button. Wait until it has been answered.
+          if (!this.cookieBannerClear()) {
+            var wait = setInterval(function () {
+              if (!this.cookieBannerClear()) return;
+              clearInterval(wait);
+              setTimeout(this.showPopup.bind(this), 1500);
+            }.bind(this), 1000);
+            return;
           }
-  
+          this.showPopup();
         }.bind(this), this.data.secondsBeforeShow * 1000);
+      },
+
+      cookieBannerClear: function () {
+        var banner = document.getElementById('shopify-pc__banner');
+        if (!banner) return true;
+        var cs = window.getComputedStyle(banner);
+        return cs.display === 'none' || cs.visibility === 'hidden' || banner.offsetHeight === 0;
+      },
+
+      showPopup: function () {
+        const newsletterAppeared = (sessionStorage.getItem('newsletterAppeared') === 'true');
+        if (newsletterAppeared) {
+          const openReminder = new CustomEvent('newsletter:openReminder', { bubbles: true });
+          this.container.dispatchEvent(openReminder);
+        } else {
+          this.modal.open();
+          sessionStorage.setItem('newsletterAppeared', true);
+        }
       },
   
       closePopup: function (success) {
