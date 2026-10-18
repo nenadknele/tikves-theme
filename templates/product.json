@@ -42,12 +42,6 @@
             "code": "{% comment %} Guarantee line, 17 Oct 2026, operator. Words taken from the Returns page. The terms live there, not here. {% endcomment %}{% unless product.gift_card? %}<p class=\"tl-pdp-guarantee\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <a href=\"/pages/returns\" style=\"text-decoration:underline;text-underline-offset:3px\">How our guarantee works</a></p>{% endunless %}"
           }
         },
-        "delivery_link": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Delivery link, 9 Oct 2026, operator instruction. A pointer to the Delivery page and nothing more: no rate, zone, time or carrier is stated here, per tikves-delivery. Same words as the cart. {% endcomment %}{% unless product.gift_card? %}<p class=\"tl-pdp-delivery\" style=\"margin:12px 0 0;font-size:13px\"><a href=\"/pages/delivery\" style=\"text-decoration:underline;text-underline-offset:3px\">Delivery costs and timings</a></p>{% endunless %}"
-          }
-        },
         "separator-1": {
           "type": "separator",
           "settings": {}
@@ -66,7 +60,6 @@
         "inventory_status",
         "back_in_stock",
         "guarantee",
-        "delivery_link",
         "separator-1",
         "description"
       ],

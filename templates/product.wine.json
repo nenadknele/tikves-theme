@@ -57,12 +57,6 @@
             "text": "Secure checkout"
           }
         },
-        "delivery_link": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Delivery link, 9 Oct 2026, operator instruction. A pointer to the Delivery page and nothing more: no rate, zone, time or carrier is stated here, per tikves-delivery. Same words as the cart. {% endcomment %}<p class=\"tl-pdp-delivery\" style=\"margin:12px 0 0;font-size:13px\"><a href=\"/pages/delivery\" style=\"text-decoration:underline;text-underline-offset:3px\">Delivery costs and timings</a></p>"
-          }
-        },
         "mw_quote": {
           "type": "custom",
           "settings": {
@@ -97,10 +91,10 @@
             "code": "{% assign fp = product.metafields.wine.food_pairing.value %}{% if fp != blank %}<div class=\"product-block product-block--tab\">{% capture fpc %}<p>{{ fp | newline_to_br }}</p>{% endcapture %}{% assign fpid = 'food-' | append: product.id %}{% render 'tab', id: fpid, title: 'Food and occasion', content: fpc %}</div>{% endif %}"
           }
         },
-        "award_card": {
+        "awards": {
           "type": "custom",
           "settings": {
-            "code": "{% comment %} Badge version, 22 Aug 2026. The badge is optional and comes from wine.award_badge, a filename in the theme Assets folder. The five parts of the claim stay in the text; the badge never carries the claim on its own. The footer line is fixed and must not be edited. {% endcomment %}{% assign a = product.metafields.wine.award.value %}{% if a != blank %}{% assign badge = product.metafields.wine.award_badge.value %}<style>.award-card__row{display:flex;align-items:center;gap:20px}.award-card__badge{flex:0 0 auto;width:88px;height:88px;display:block}@media (max-width:600px){.award-card__row{gap:16px}.award-card__badge{width:68px;height:68px}}</style><div class=\"award-card\" style=\"background:#4A0D18;color:#F5EFE7;padding:24px;border-radius:4px;margin:16px 0\"><div class=\"award-card__row\">{% if badge != blank %}<img class=\"award-card__badge\" src=\"{{ badge | asset_url }}\" alt=\"\" aria-hidden=\"true\" width=\"88\" height=\"88\" loading=\"lazy\">{% endif %}<div class=\"award-body\" style=\"line-height:1.5\">{{ a | newline_to_br }}</div></div><p class=\"award-footer\" style=\"margin-top:14px;font-size:0.85em;opacity:0.85\">Medals belong to vintages, not to labels. We tell you which.</p></div>{% endif %}"
+            "code": "{% comment %} Awards dropdown, 18 Oct 2026, operator. Replaces the award card and its badge. Reads wine.award, the verified five-part text, word for word. The value is HTML, so no newline_to_br. The footer line is fixed and must not be edited. {% endcomment %}{% assign a = product.metafields.wine.award.value %}{% if a != blank %}<div class=\"product-block product-block--tab\">{% capture awc %}{{ a }}<p class=\"award-footer\" style=\"margin:14px 0 0;font-size:0.85em;opacity:0.75\">Medals belong to vintages, not to labels. We tell you which.</p>{% endcapture %}{% assign awid = 'awards-' | append: product.id %}{% render 'tab', id: awid, title: 'Awards', content: awc %}</div>{% endif %}"
           }
         },
         "separator-2": {
@@ -128,14 +122,13 @@
         "back_in_stock",
         "guarantee",
         "sales_point-secure",
-        "delivery_link",
         "mw_quote",
         "separator-1",
         "description",
         "quick_facts",
         "tasting_notes_tab",
         "food_occasion",
-        "award_card",
+        "awards",
         "separator-2",
         "complementary"
       ],
