@@ -43,6 +43,16 @@
   line because delivery is not free everywhere. If a case is ever priced
   low enough that the gift drops it under the threshold, this line becomes
   false and must be changed back.
+
+  THE GIFT MOVED FROM A FIRST CASE TO A FIRST ORDER OF 110 POUNDS OR MORE,
+  operator instruction 19 Oct 2026, after the Shopify joining gift of
+  18 Oct 2026: ten pounds off a first order of 110 pounds or more, on
+  everything but the gift card, no end date. The popup's third line, this
+  panel, its button and its fine print now say that. "Cases only" is gone.
+  Free delivery stays true: the 110 pound floor less ten is 100, and the
+  free delivery condition reads 100 or more, so a qualifying basket never
+  drops below it. If the floor, the threshold or the scope ever moves,
+  re-read this panel before changing anything.
 {%- endcomment -%}
 
 {%- liquid
@@ -67,8 +77,8 @@
       <div class="tl-joined">
         <p class="tl-joined__head">You're in.</p>
         <p class="tl-joined__body">First order with us? Your £10 code is on its way to your inbox.</p>
-        <a href="/collections/cases" class="btn tl-joined__btn">Start with a case</a>
-        <p class="tl-joined__fine">£10 off your first case, delivered free to England, Scotland and Wales. Cases only, one per customer.</p>
+        <a href="/collections/all-wines" class="btn tl-joined__btn">Start shopping</a>
+        <p class="tl-joined__fine">£10 off your first order of £110 or more, delivered free to England, Scotland and Wales. One per customer. Not on the gift card.</p>
       </div>
     {%- else -%}
       <div class="note note--success">
