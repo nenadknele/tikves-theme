@@ -1,0 +1,44 @@
+{%- comment -%}
+  TIKVES LONDON . AGE GATE PHOTOGRAPH, ANNOUNCED EARLY
+  19 Oct 2026, speed. Rendered from layout/theme.liquid, in the head,
+  before theme.css.
+
+  The problem it fixes. On a first visit the age gate covers the whole
+  screen and its photograph is the largest thing on it. The photograph is
+  lazy in the HTML and a script in sections/age-verification-popup.liquid
+  turns it eager when there is no gate cookie. That script sits in the
+  body, and a script in the body cannot run until theme.css and the other
+  stylesheets have arrived. On a slow phone connection that was over a
+  second of waiting before the photograph was even asked for. PageSpeed
+  on 19 Oct 2026 put the largest paint at about five seconds on the home
+  page and on product pages.
+
+  What this does. A script here runs at once, because nothing above it
+  blocks it. If there is no gate cookie it adds a preload link for the
+  photograph with the same candidate widths and the same sizes as the
+  img tag, so the phone picks the same file and the download starts in
+  parallel with the stylesheets. A visitor who has already passed the
+  gate has the cookie and downloads nothing.
+
+  The filename below must be the photograph set on the age gate in the
+  theme editor (sections/popup-group.json, age-verification-popup,
+  image). If the gate picture ever changes, change the name here too.
+  If the name does not match a file in Content, Files, nothing renders.
+
+  TO UNDO: delete this snippet and its render line in layout/theme.liquid.
+{%- endcomment -%}
+{%- assign tl_gate_img = images['age-gate-vineyard-sunset.jpg'] -%}
+{%- if tl_gate_img -%}
+<script>
+  (function () {
+    if (document.cookie.indexOf('AgeVerificationPopup-') !== -1) return;
+    var l = document.createElement('link');
+    l.rel = 'preload';
+    l.as = 'image';
+    l.setAttribute('fetchpriority', 'high');
+    l.setAttribute('imagesrcset', '{{ tl_gate_img | image_url: width: 352 }} 352w, {{ tl_gate_img | image_url: width: 832 }} 832w, {{ tl_gate_img | image_url: width: 1200 }} 1200w, {{ tl_gate_img | image_url: width: 1920 }} 1920w, {{ tl_gate_img | image_url: width: 2400 }} 2400w');
+    l.setAttribute('imagesizes', '100vw');
+    document.head.appendChild(l);
+  })();
+</script>
+{%- endif -%}
