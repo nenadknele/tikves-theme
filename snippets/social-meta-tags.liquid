@@ -36,7 +36,9 @@
     <meta property="og:image:height" content="{{ page_image.height }}">
   {%- endif -%}
   {%- if settings.social_twitter_link != blank -%}
-  <meta name="twitter:site" content="{{ settings.social_twitter_link | split: 'twitter.com/' | last | prepend: '@' }}">
+  {%- comment -%} 19 Oct 2026: the link is an x.com URL with a query string, so the old split on twitter.com/ printed the whole URL as the handle. Take the last path segment, without the query. {%- endcomment -%}
+  {%- assign tl_tw_handle = settings.social_twitter_link | split: '?' | first | split: '/' | last | remove: '@' -%}
+  <meta name="twitter:site" content="@{{ tl_tw_handle }}">
   {%- endif -%}
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ og_title }}">
