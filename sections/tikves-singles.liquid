@@ -54,14 +54,28 @@
           <article class="tksg__card" data-product-handle="{{ product.handle }}">
             <a class="tksg__frame" href="{{ product.url | within: col }}">
               {%- if img != blank -%}
+                {%- capture tk_src -%}{{ img | image_url: width: 800 }}{%- endcapture -%}
+                {%- capture tk_set -%}{{ img | image_url: width: 400 }} 400w, {{ img | image_url: width: 600 }} 600w, {{ img | image_url: width: 800 }} 800w, {{ img | image_url: width: 1000 }} 1000w, {{ img | image_url: width: 1200 }} 1200w{%- endcapture -%}
+                {%- if forloop.first -%}
                 <img
-                  src="{{ img | image_url: width: 800 }}"
-                  srcset="{{ img | image_url: width: 400 }} 400w, {{ img | image_url: width: 600 }} 600w, {{ img | image_url: width: 800 }} 800w, {{ img | image_url: width: 1000 }} 1000w, {{ img | image_url: width: 1200 }} 1200w"
+                  src="{{ tk_src }}"
+                  srcset="{{ tk_set }}"
                   sizes="(min-width: 769px) 22vw, 82vw"
                   alt="{{ img.alt | default: product.title | escape }}"
                   width="{{ img.width }}"
                   height="{{ img.height }}"
                   loading="lazy">
+                {%- else -%}
+                <img
+                  data-tksg-src="{{ tk_src }}"
+                  data-tksg-srcset="{{ tk_set }}"
+                  sizes="(min-width: 769px) 22vw, 82vw"
+                  alt="{{ img.alt | default: product.title | escape }}"
+                  width="{{ img.width }}"
+                  height="{{ img.height }}"
+                  loading="lazy">
+                <noscript><img src="{{ tk_src }}" srcset="{{ tk_set }}" sizes="(min-width: 769px) 22vw, 82vw" alt="{{ img.alt | default: product.title | escape }}" width="{{ img.width }}" height="{{ img.height }}" loading="lazy"></noscript>
+                {%- endif -%}
               {%- endif -%}
             </a>
             <div class="tksg__meta">
@@ -96,6 +110,46 @@
 </div>
 
 {%- render 'tikves-gatc-handler' -%}
+{%- comment -%}
+  19 Oct 2026, speed. On a phone this row is a swipe track, so cards two
+  onwards sit off to the right, but the phone still downloaded all of them
+  straight away, on the same slow line as the hero photo. Their pictures
+  now wait: each one loads as soon as it comes into view (desktop, where
+  the row is a grid, or a swipe on a phone), and all of them load once
+  the page has finished loading anyway, so a swipe never finds a blank.
+  The first card loads as before. Without JavaScript the noscript copy shows.
+  TO UNDO: put src and srcset back on every img and delete this script.
+{%- endcomment -%}
+<script>
+  (function () {
+    var root = document.getElementById('tksg-{{ section.id }}');
+    if (!root) return;
+    var imgs = [].slice.call(root.querySelectorAll('img[data-tksg-srcset]'));
+    if (!imgs.length) return;
+    function show(img) {
+      if (!img.hasAttribute('data-tksg-srcset')) return;
+      img.setAttribute('srcset', img.getAttribute('data-tksg-srcset'));
+      img.setAttribute('src', img.getAttribute('data-tksg-src'));
+      img.removeAttribute('data-tksg-srcset');
+      img.removeAttribute('data-tksg-src');
+    }
+    function showAll() { imgs.forEach(show); }
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) { if (e.isIntersecting) { show(e.target); io.unobserve(e.target); } });
+      });
+      imgs.forEach(function (i) { io.observe(i); });
+    } else { showAll(); }
+    var track = root.querySelector('.tksg__track');
+    if (track) {
+      track.addEventListener('scroll', showAll, { once: true, passive: true });
+      track.addEventListener('touchstart', showAll, { once: true, passive: true });
+    }
+    if (document.readyState === 'complete') showAll();
+    else window.addEventListener('load', showAll, { once: true });
+  })();
+</script>
+
 
 {% style %}
   #tksg-{{ section.id }} .tksg__intro {
