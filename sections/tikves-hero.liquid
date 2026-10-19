@@ -101,9 +101,10 @@
     {%- capture desk_set -%}{{ main_img | image_url: width: 800 }} 800w, {{ main_img | image_url: width: 1000 }} 1000w, {{ main_img | image_url: width: 1200 }} 1200w, {{ main_img | image_url: width: 1400 }} 1400w, {{ main_img | image_url: width: 1600 }} 1600w, {{ main_img | image_url: width: 1920 }} 1920w, {{ main_img | image_url: width: 2400 }} 2400w{%- endcapture -%}
     {%- if s.image != blank and s.image_mobile != blank -%}
       {%- comment -%} 18 Oct 2026, speed: the phone set stops at 900w. At 3x a phone always took the 1200w file (282 KB against 151 KB) for no visible gain on a photograph. The 450 and 750 steps come from the live theme's speed pass the same morning. {%- endcomment -%}
-      {%- capture mob_set -%}{{ s.image_mobile | image_url: width: 450 }} 450w, {{ s.image_mobile | image_url: width: 600 }} 600w, {{ s.image_mobile | image_url: width: 750 }} 750w, {{ s.image_mobile | image_url: width: 900 }} 900w{%- endcapture -%}
+      {%- comment -%} 19 Oct 2026, speed: the phone set now stops at 750w. On a slow phone the 900w file (about a third heavier) held the largest paint back by most of a second; a 750w photograph still looks sharp across a phone screen. {%- endcomment -%}
+      {%- capture mob_set -%}{{ s.image_mobile | image_url: width: 450 }} 450w, {{ s.image_mobile | image_url: width: 600 }} 600w, {{ s.image_mobile | image_url: width: 750 }} 750w{%- endcapture -%}
       {%- if s.lcp -%}
-        {{ s.image_mobile | image_url: width: 900 | preload_tag: as: 'image', imagesrcset: mob_set, imagesizes: '100vw', media: '(max-width: 768px)', fetchpriority: 'high' }}
+        {{ s.image_mobile | image_url: width: 750 | preload_tag: as: 'image', imagesrcset: mob_set, imagesizes: '100vw', media: '(max-width: 768px)', fetchpriority: 'high' }}
         {{ main_img | image_url: width: 2400 | preload_tag: as: 'image', imagesrcset: desk_set, imagesizes: '100vw', media: '(min-width: 769px)', fetchpriority: 'high' }}
       {%- endif -%}
     {%- elsif s.lcp -%}
