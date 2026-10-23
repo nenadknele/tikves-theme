@@ -16,6 +16,17 @@
 
   28 Sep 2026, speed: two more sizes in the srcset, so a phone fetches the
   size nearest its screen instead of the next one up.
+
+  23 Oct 2026, operator: on a phone the card fills the width (no peek of
+  the next bottle) and a row of dashes sits under the cards, one per
+  bottle. The current one is Ink, the rest a warm grey. The dashes follow
+  the swipe and a tap on one goes to that bottle. Hidden on desktop, where
+  the row is a grid. On a phone the picture frame is a little wider than
+  it is tall, so the whole card, dashes included, fits on one screen under
+  the header. Desktop keeps the 4:5 frame.
+  TO UNDO: set the card back to flex 0 0 82%, sizes back to 82vw, the
+  frame back to 4 / 5 everywhere, and delete the tksg__dots block, its
+  styles and its script.
 {%- endcomment -%}
 
 {%- liquid
@@ -60,7 +71,7 @@
                 <img
                   src="{{ tk_src }}"
                   srcset="{{ tk_set }}"
-                  sizes="(min-width: 769px) 22vw, 82vw"
+                  sizes="(min-width: 769px) 22vw, 100vw"
                   alt="{{ img.alt | default: product.title | escape }}"
                   width="{{ img.width }}"
                   height="{{ img.height }}"
@@ -69,12 +80,12 @@
                 <img
                   data-tksg-src="{{ tk_src }}"
                   data-tksg-srcset="{{ tk_set }}"
-                  sizes="(min-width: 769px) 22vw, 82vw"
+                  sizes="(min-width: 769px) 22vw, 100vw"
                   alt="{{ img.alt | default: product.title | escape }}"
                   width="{{ img.width }}"
                   height="{{ img.height }}"
                   loading="lazy">
-                <noscript><img src="{{ tk_src }}" srcset="{{ tk_set }}" sizes="(min-width: 769px) 22vw, 82vw" alt="{{ img.alt | default: product.title | escape }}" width="{{ img.width }}" height="{{ img.height }}" loading="lazy"></noscript>
+                <noscript><img src="{{ tk_src }}" srcset="{{ tk_set }}" sizes="(min-width: 769px) 22vw, 100vw" alt="{{ img.alt | default: product.title | escape }}" width="{{ img.width }}" height="{{ img.height }}" loading="lazy"></noscript>
                 {%- endif -%}
               {%- endif -%}
             </a>
@@ -100,6 +111,14 @@
         {%- endfor -%}
       {%- endif -%}
     </div>
+
+    {%- if s.collection != blank and col.products_count > 1 -%}
+      <div class="tksg__dots" aria-label="Choose a bottle">
+        {%- for product in col.products limit: limit -%}
+          <button type="button" class="tksg__dot{% if forloop.first %} is-active{% endif %}" data-tksg-dot="{{ forloop.index0 }}" aria-label="Show {{ product.title | escape }}"{% if forloop.first %} aria-current="true"{% endif %}></button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
   </div>
 
   {%- if s.link_label != blank and col != blank -%}
@@ -149,6 +168,46 @@
     else window.addEventListener('load', showAll, { once: true });
   })();
 </script>
+{%- comment -%} 23 Oct 2026: the dashes under the row follow the swipe; a tap goes to that bottle. {%- endcomment -%}
+<script>
+  (function () {
+    var root = document.getElementById('tksg-{{ section.id }}');
+    if (!root) return;
+    var track = root.querySelector('.tksg__track');
+    var dots = [].slice.call(root.querySelectorAll('.tksg__dot'));
+    var cards = track ? [].slice.call(track.querySelectorAll('.tksg__card')) : [];
+    if (!track || !dots.length || !cards.length) return;
+    function step() {
+      return cards.length > 1 ? (cards[1].offsetLeft - cards[0].offsetLeft) : track.clientWidth;
+    }
+    function current() {
+      if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) return dots.length - 1;
+      var i = Math.round(track.scrollLeft / (step() || 1));
+      return Math.max(0, Math.min(dots.length - 1, i));
+    }
+    function set(i) {
+      dots.forEach(function (d, k) {
+        var on = k === i;
+        d.classList.toggle('is-active', on);
+        if (on) d.setAttribute('aria-current', 'true'); else d.removeAttribute('aria-current');
+      });
+    }
+    var ticking = false;
+    track.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      window.requestAnimationFrame(function () { ticking = false; set(current()); });
+    }, { passive: true });
+    dots.forEach(function (d, k) {
+      d.addEventListener('click', function () {
+        var c = cards[k];
+        if (!c) return;
+        track.scrollTo({ left: c.offsetLeft - cards[0].offsetLeft, behavior: 'smooth' });
+        set(k);
+      });
+    });
+  })();
+</script>
 
 
 {% style %}
@@ -174,13 +233,13 @@
     scrollbar-width: none;
   }
   #tksg-{{ section.id }} .tksg__track::-webkit-scrollbar { display: none; }
-  #tksg-{{ section.id }} .tksg__card { flex: 0 0 82%; scroll-snap-align: start; }
-  #tksg-{{ section.id }} .tksg__frame { display: block; aspect-ratio: 4 / 5; background: #F5EFE7; overflow: hidden; }
+  #tksg-{{ section.id }} .tksg__card { flex: 0 0 100%; scroll-snap-align: start; }
+  #tksg-{{ section.id }} .tksg__frame { display: block; aspect-ratio: 7 / 6; background: #F5EFE7; overflow: hidden; }
   #tksg-{{ section.id }} .tksg__frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
-  #tksg-{{ section.id }} .tksg__meta { padding: 14px 0 0; }
+  #tksg-{{ section.id }} .tksg__meta { padding: 12px 0 0; }
   #tksg-{{ section.id }} .tksg__title { display: block; text-decoration: none; margin: 0 0 4px; }
   #tksg-{{ section.id }} .tksg__line { font-size: 14px; opacity: 0.75; margin: 0 0 6px; }
-  #tksg-{{ section.id }} .tksg__price { font-size: 16px; margin: 0 0 12px; }
+  #tksg-{{ section.id }} .tksg__price { font-size: 16px; margin: 0 0 10px; }
   #tksg-{{ section.id }} .tksg__form { margin: 0; }
   #tksg-{{ section.id }} .tksg__btn {
     display: block;
@@ -202,6 +261,32 @@
   }
   #tksg-{{ section.id }} .tksg__btn:hover { background: #8E3623; border-color: #8E3623; color: #FFFFFF; }
   #tksg-{{ section.id }} .tksg__btn[disabled] { background: transparent; color: #1F2328; border-color: #B9AC9B; opacity: 0.7; cursor: default; }
+  #tksg-{{ section.id }} .tksg__dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 6px 0 0;
+  }
+  #tksg-{{ section.id }} .tksg__dot {
+    flex: 0 1 32px;
+    min-width: 16px;
+    padding: 12px 0;
+    margin: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #tksg-{{ section.id }} .tksg__dot::before {
+    content: "";
+    display: block;
+    height: 4px;
+    border-radius: 2px;
+    background: #B9AC9B;
+    transition: background-color 0.2s ease;
+  }
+  #tksg-{{ section.id }} .tksg__dot.is-active::before { background: #1F2328; }
+  #tksg-{{ section.id }} .tksg__dot:focus-visible { outline: 2px solid #1F2328; outline-offset: 2px; }
   #tksg-{{ section.id }} .tksg__link { margin-top: 24px; }
   #tksg-{{ section.id }} .tksg__browse {
     display: inline-block;
@@ -234,6 +319,10 @@
       padding: 0;
     }
     #tksg-{{ section.id }} .tksg__card { flex: none; }
+    #tksg-{{ section.id }} .tksg__frame { aspect-ratio: 4 / 5; }
+    #tksg-{{ section.id }} .tksg__meta { padding-top: 14px; }
+    #tksg-{{ section.id }} .tksg__price { margin-bottom: 12px; }
+    #tksg-{{ section.id }} .tksg__dots { display: none; }
     #tksg-{{ section.id }} .tksg__link { margin-top: 32px; }
   }
 {% endstyle %}
@@ -243,7 +332,7 @@
   "name": "Tikves singles",
   "class": "index-section",
   "settings": [
-    { "type": "paragraph", "content": "One bottle per view on mobile with an Add to cart button on every card. A grid on desktop." },
+    { "type": "paragraph", "content": "One bottle per view on mobile with an Add to cart button on every card and a row of dashes under it. A grid on desktop." },
     { "type": "text", "id": "title", "label": "Heading" },
     {
       "type": "select",
