@@ -62,7 +62,23 @@
   }
 {% endstyle %}
 
-{% unless section.settings.disable_for_account_holders and customer %}
+{%- comment -%}
+  22 Oct 2026, operator instruction. NO JOINING GIFT POPUP ON BROADCAST OFFER PAGES.
+  An offer page carries a code that combines with nothing, so a second offer
+  popping up over it would hand the customer a code that cannot be used with
+  the one they came for. Add a page handle to tl_offer_pages to keep the popup
+  off another offer page. The popup still runs everywhere else, unchanged.
+{%- endcomment -%}
+{%- assign tl_offer_pages = 'babuna-six' | split: ',' -%}
+{%- assign tl_hide_popup = false -%}
+{%- if section.settings.disable_for_account_holders and customer -%}
+  {%- assign tl_hide_popup = true -%}
+{%- endif -%}
+{%- if request.page_type == 'page' and tl_offer_pages contains page.handle -%}
+  {%- assign tl_hide_popup = true -%}
+{%- endif -%}
+
+{% unless tl_hide_popup %}
 
 {% for block in section.blocks %}
   {% if block.type == 'header' %}
