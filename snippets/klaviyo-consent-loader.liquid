@@ -1,0 +1,115 @@
+{%- comment -%}
+  TIKVES LONDON . KLAVIYO, LOADED ONLY AFTER CONSENT
+  24 Oct 2026, consent test. Rendered from layout/theme.liquid, last thing
+  in the body.
+
+  The problem it fixes. The Klaviyo onsite app embed loads klaviyo.js and
+  its forms on every page before any banner choice, and still after a
+  "Reject all". It does hold back __kla_id until a yes, but the browser
+  has already contacted Klaviyo, and it leaves Klaviyo storage behind. On
+  a later no it leaves __kla_id and the viewed-items list in place. The
+  cookie page, section 7 and 9, says Klaviyo runs only after a yes to both
+  Analytics and Marketing and sends nothing before that.
+
+  What this does. klaviyo.js loads only once the banner says yes to both
+  Analytics and Marketing, the same rule as the cookie page. On a product
+  page it queues the same Viewed Product event the embed sent. On a later
+  no it clears Klaviyo's cookie and storage and reloads the page, so the
+  script is gone.
+
+  Before consent the Klaviyo signup popup and the two back-in-stock
+  flyouts do not show, because they are part of klaviyo.js. The footer
+  sign-up is a Shopify form and still works.
+
+  KEEP THE KLAVIYO ONSITE APP EMBED OFF while this is in use (theme
+  editor, App embeds). If the embed is on, this stays out of the way and
+  only does the clearing on a no, so nothing loads twice.
+
+  TO UNDO: turn the embed back on, delete this snippet and its render line.
+{%- endcomment -%}
+<script>
+(function () {
+  var SRC = 'https://static.klaviyo.com/onsite/js/XP7Hid/klaviyo.js?company_id=XP7Hid';
+  var embedOn = !!document.querySelector('script[src*="klaviyo.com/onsite/js/"][src*="klaviyo.js"]');
+  var loaded = embedOn;
+
+  function clearKL() {
+    var host = location.hostname;
+    ['__kla_id'].forEach(function (n) {
+      document.cookie = n + '=; Max-Age=0; path=/';
+      document.cookie = n + '=; Max-Age=0; path=/; domain=' + host;
+      document.cookie = n + '=; Max-Age=0; path=/; domain=.' + host;
+    });
+    var isKL = function (k) {
+      return k.indexOf('__kla') === 0 || k.indexOf('__kl_') === 0 || k.indexOf('klaviyo') === 0 ||
+        k.indexOf('kl-') === 0 || k === '$referrer' || k === '$last_referrer';
+    };
+    try {
+      Object.keys(localStorage).forEach(function (k) { if (isKL(k)) localStorage.removeItem(k); });
+      Object.keys(sessionStorage).forEach(function (k) { if (isKL(k)) sessionStorage.removeItem(k); });
+    } catch (e) {}
+  }
+
+  function load() {
+    if (loaded) return;
+    loaded = true;
+    {%- if template.name == 'product' %}
+    var _learnq = window._learnq = window._learnq || [];
+    var item = {
+      Name: {{ product.title | json }},
+      ProductID: {{ product.id | json }},
+      Categories: {{ product.collections | map: 'title' | json }},
+      ImageURL: {{ product.featured_image | image_url: width: 600 | prepend: 'https:' | json }},
+      URL: {{ shop.url | append: product.url | json }},
+      Brand: {{ product.vendor | json }},
+      Price: {{ product.price | money | json }},
+      Value: {{ product.price | money_without_currency | remove: ',' | json }},
+      CompareAtPrice: {{ product.compare_at_price_max | money | json }}
+    };
+    _learnq.push(['track', 'Viewed Product', item]);
+    _learnq.push(['trackViewedItem', {
+      Title: item.Name,
+      ItemId: item.ProductID,
+      Categories: item.Categories,
+      ImageUrl: item.ImageURL,
+      Url: item.URL,
+      Metadata: { Brand: item.Brand, Price: item.Price, Value: item.Value, CompareAtPrice: item.CompareAtPrice }
+    }]);
+    {%- endif %}
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = SRC;
+    document.head.appendChild(s);
+  }
+
+  function decide(analytics, marketing) {
+    if (analytics === true && marketing === true) {
+      load();
+    } else {
+      clearKL();
+      if (loaded && !embedOn) location.reload();
+    }
+  }
+
+  document.addEventListener('visitorConsentCollected', function (e) {
+    var d = e.detail || {};
+    decide(d.analyticsAllowed, d.marketingAllowed);
+  });
+
+  function check() {
+    var cp = window.Shopify && window.Shopify.customerPrivacy;
+    if (!cp) return;
+    var c = cp.currentVisitorConsent ? cp.currentVisitorConsent() : {};
+    // No choice yet: wait for the banner. Nothing to clear.
+    if (!c || (c.analytics === '' && c.marketing === '')) return;
+    decide(cp.analyticsProcessingAllowed(), cp.marketingAllowed());
+  }
+
+  if (window.Shopify && typeof window.Shopify.loadFeatures === 'function') {
+    window.Shopify.loadFeatures(
+      [{ name: 'consent-tracking-api', version: '0.1' }],
+      function (err) { if (!err) check(); }
+    );
+  }
+})();
+</script>
