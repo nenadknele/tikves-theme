@@ -391,5 +391,8 @@
       </image-element>
     </div>
   </template>
+
+  {%- comment -%} 24 Oct 2026, consent: Klaviyo loads only after a yes to Analytics and Marketing. Keep the Klaviyo app embed off. See the snippet. {%- endcomment -%}
+  {%- render 'klaviyo-consent-loader' -%}
 </body>
 </html>
