@@ -27,6 +27,12 @@
   TO UNDO: set the card back to flex 0 0 82%, sizes back to 82vw, the
   frame back to 4 / 5 everywhere, and delete the tksg__dots block, its
   styles and its script.
+
+  24 Oct 2026, operator: By the bottle shows every wine. The How many
+  products range now goes higher, and on a phone the dashes narrow and
+  sit closer so a long row still fits on one line.
+  TO UNDO: range max back to 12, dot min-width back to 16px, dots gap
+  back to 8px.
 {%- endcomment -%}
 
 {%- liquid
@@ -264,12 +270,12 @@
   #tksg-{{ section.id }} .tksg__dots {
     display: flex;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     margin: 6px 0 0;
   }
   #tksg-{{ section.id }} .tksg__dot {
     flex: 0 1 32px;
-    min-width: 16px;
+    min-width: 6px;
     padding: 12px 0;
     margin: 0;
     border: 0;
@@ -347,7 +353,7 @@
     },
     { "type": "textarea", "id": "intro", "label": "Line under the heading" },
     { "type": "collection", "id": "collection", "label": "Collection" },
-    { "type": "range", "id": "limit", "label": "How many products", "min": 2, "max": 12, "step": 1, "default": 8 },
+    { "type": "range", "id": "limit", "label": "How many products", "min": 2, "max": 24, "step": 1, "default": 8 },
     { "type": "range", "id": "per_row", "label": "Products per row, desktop", "min": 2, "max": 5, "step": 1, "default": 4 },
     { "type": "text", "id": "link_label", "label": "Button label under the row", "info": "Links to the collection. Leave empty for no button." }
   ],
