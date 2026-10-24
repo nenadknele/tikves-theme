@@ -126,3 +126,31 @@ This is what happens if the code goes live before the embed is switched off. Kla
   - On the copy, after "Accept all": the button shows, the form opens, and submitting sends the same requests as live after accept.
   - My test stopped those requests so no real profile was made. So the final save was not proved end to end. One real submit on the preview link will prove it.
 - **Footer sign-up.** A Shopify form. It works whatever the banner choice.
+
+## Final: preview copy 209468719449, Klaviyo embed switched off in the theme editor
+
+Run on 24 Oct 2026 with no simulation. The embed was switched off by hand in the editor and read back. Nothing is stripped from the page.
+
+| Run | Step | Page | Klaviyo | Google | Meta | Pinterest | Lucky Orange | AccessEaze | Tracking cookies | Tracking storage | Consent (mkt/an) | Result |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 No choice | no choice | home | · | · | · | · | · | · | · | · | unset/unset | PASS |
+| 1 No choice | no choice | babuna-red | · | · | · | · | · | · | · | · | unset/unset | PASS |
+| 1 No choice | no choice | all-wines | · | · | · | · | · | · | · | · | unset/unset | PASS |
+| 1 No choice | no choice | cookie-policy | · | · | · | · | · | · | · | · | unset/unset | PASS |
+| 2 Reject all | after choice | home | · | · | · | · | · | · | · | · | no/no | PASS |
+| 2 Reject all | after choice | babuna-red | · | · | · | · | · | · | · | · | no/no | PASS |
+| 2 Reject all | after choice | all-wines | · | · | · | · | · | · | · | · | no/no | PASS |
+| 2 Reject all | after choice | cookie-policy | · | · | · | · | · | · | · | · | no/no | PASS |
+| 3 Accept all | after choice | home | **4 hosts** | **1 host** | **1 host** | **1 host** | · | · | __kla_id | ls:klaviyoOnsite, ss:klaviyoPagesVisitCountV2 | yes/yes | n/a (consented) |
+| 3 Accept all | after choice | babuna-red | **4 hosts** | **1 host** | **1 host** | **1 host** | · | · | __kla_id | ls:klaviyoOnsite, ls:__kla_viewed, ls:__kla_viewed_reviewed_items, ss:klaviyoPagesVisitCountV2 | yes/yes | n/a (consented) |
+| 3 Accept all | after choice | all-wines | **4 hosts** | **1 host** | **1 host** | **1 host** | · | · | __kla_id | ls:klaviyoOnsite, ls:__kla_viewed, ls:__kla_viewed_reviewed_items, ss:klaviyoPagesVisitCountV2 | yes/yes | n/a (consented) |
+| 3 Accept all | after choice | cookie-policy | **4 hosts** | **1 host** | **1 host** | **1 host** | · | · | __kla_id | ls:klaviyoOnsite, ls:__kla_viewed, ls:__kla_viewed_reviewed_items, ss:klaviyoPagesVisitCountV2 | yes/yes | n/a (consented) |
+| 4 Accept, then Decline all | after accept | home | **4 hosts** | **1 host** | **1 host** | **1 host** | · | · | __kla_id | ls:klaviyoOnsite, ss:klaviyoPagesVisitCountV2 | yes/yes | n/a (consented) |
+| 4 Accept, then Decline all | after accept | babuna-red | **4 hosts** | **1 host** | **1 host** | **1 host** | · | · | __kla_id | ls:klaviyoOnsite, ls:__kla_viewed, ls:__kla_viewed_reviewed_items, ss:klaviyoPagesVisitCountV2 | yes/yes | n/a (consented) |
+| 4 Accept, then Decline all | after accept | all-wines | **4 hosts** | **1 host** | **1 host** | **1 host** | · | · | __kla_id | ls:klaviyoOnsite, ls:__kla_viewed, ls:__kla_viewed_reviewed_items, ss:klaviyoPagesVisitCountV2 | yes/yes | n/a (consented) |
+| 4 Accept, then Decline all | after accept | cookie-policy | **4 hosts** | **1 host** | **1 host** | **1 host** | · | · | __kla_id | ls:klaviyoOnsite, ls:__kla_viewed, ls:__kla_viewed_reviewed_items, ss:klaviyoPagesVisitCountV2 | yes/yes | n/a (consented) |
+| 4 Accept, then Decline all | after later decline | home | · | · | · | · | · | · | · | · | no/no | PASS |
+| 4 Accept, then Decline all | after later decline | babuna-red | · | · | · | · | · | · | · | · | no/no | PASS |
+| 4 Accept, then Decline all | after later decline | all-wines | · | · | · | · | · | · | · | · | no/no | PASS |
+| 4 Accept, then Decline all | after later decline | cookie-policy | · | · | · | · | · | · | · | · | no/no | PASS |
+
