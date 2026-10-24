@@ -120,7 +120,7 @@ This is what happens if the code goes live before the embed is switched off. Kla
 ## Sign-up popup and back-in-stock form
 
 - **Joining Gift popup.** It is the theme's own popup, a Shopify customer form. It is not Klaviyo, so the fix does not touch it. It opens after a banner choice, the same as on live.
-- **Back in stock** ("Email me when it lands"). This is a Klaviyo form, so it now waits for a yes.
+- **Back in stock** ("Email me when it lands"). This is a Klaviyo form, so it now waits for a yes. Operator accepted this cost, 24 Oct 2026.
   - On live, before consent: the button shows and the form submits.
   - On the copy, before consent or after a no: the button does not show.
   - On the copy, after "Accept all": the button shows, the form opens, and submitting sends the same requests as live after accept.
