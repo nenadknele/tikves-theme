@@ -110,7 +110,7 @@ This is what happens if the code goes live before the embed is switched off. Kla
 ## Other checks
 
 - **Google & YouTube, Facebook & Instagram.** Load only after "Accept all": gtag.js for GT-NS8RRB9K and AW-18463933576, and fbevents.js. Nothing before, nothing after a no. No `_ga`, `_gcl`, `_fbp` or `_fbc` cookie showed up in any run. In about 20 seconds after accept I saw no Google Analytics collect hit either. That may be headless Chrome. Julian's phone check settles it.
-- **Pinterest.** Live, but only after "Accept all". It loads from a Shopify app pixel in Customer events (the requests are tagged `shopify-web-pixel`). It is not in the theme and has no app embed. It is a fifth app pixel, outside the four ruled ones. The cookie page already lists Pinterest. No Pinterest cookie was set in our domain. Not touched.
+- **Pinterest.** Live, but only after "Accept all". It loads from a Shopify app pixel in Customer events (the requests are tagged `shopify-web-pixel`). It is not in the theme and has no app embed. Kept on operator instruction, 24 Oct 2026. No Pinterest cookie was set on our domain.
 - **Lucky Orange.** Not seen in any run, including after "Accept all". Its theme loader was removed on 18 Oct (commit 37c956c, "Lucky Orange is retired") and there is no embed. If its app pixel is still in Customer events, it is not firing.
 - **AccessEaze.** Loads from cdn.shopify.com (a Shopify app extension). No third-party host, no cookie, no storage key. PASS.
 - **Shopify Inbox.** Talks only to shop.app and sets `_shop_app_essential`. Shopify essential. PASS.
