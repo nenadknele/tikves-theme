@@ -13,6 +13,10 @@ image wrapper. Operator ruling: Add to cart everywhere, on all products.
 loads at once and is preloaded, cards two to four load at once, the rest
 wait until the reader scrolls near them. Anywhere else the grid is used,
 no index is passed and every card waits, as before.
+
+24 Oct 2026: the card line now carries the ABV from wine.abv after the
+tile line, so every grid an ad can land on shows it. Google's alcohol
+policy asks for ABV on the landing page. Operator approved in chat.
 {% endcomment %}
 
 {%- liquid
@@ -201,8 +205,16 @@ no index is passed and every card waits, as before.
       <a href="{{ product.url | within: collection }}" class="grid-product__link">
         <div class="grid-product__meta">
           <div class="grid-product__title grid-product__title--{{ settings.type_product_style }}">{{ product.title }}</div>
-          {%- if product.metafields.custom.tile_line != blank -%}
-            <div class="grid-product__tile-line" style="font-size: 0.85em; opacity: 0.75; margin-top: 2px;">{{ product.metafields.custom.tile_line }}</div>
+          {%- liquid
+            assign tile_line = product.metafields.custom.tile_line.value
+            assign card_abv = product.metafields.wine.abv.value
+          -%}
+          {%- if tile_line != blank or card_abv != blank -%}
+            <div class="grid-product__tile-line" style="font-size: 0.85em; opacity: 0.75; margin-top: 2px;">
+              {{- tile_line -}}
+              {%- if tile_line != blank and card_abv != blank %} · {% endif -%}
+              {%- if card_abv != blank -%}{{ card_abv }} ABV{%- endif -%}
+            </div>
           {%- endif -%}
           {%- if settings.vendor_enable -%}
             <div class="grid-product__vendor">{{ product.vendor }}</div>
