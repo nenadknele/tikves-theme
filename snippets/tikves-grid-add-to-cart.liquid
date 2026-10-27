@@ -16,6 +16,11 @@
   More than one variant: sends the customer to the product page.
   Out of stock: the button stays, greyed, reading Sold out.
 
+  27 Oct 2026, operator: a product on the coming-soon template is not on
+  sale and has no price. Its card hides the price and the sold out tag,
+  and the button reads Coming soon and links to the page. The switch is
+  the product's template, nothing else.
+
   The CSS and the click handler live in snippets/tikves-gatc-handler.liquid,
   injected once per page, guarded by window.tkGridAtc. The same handler drives the Add to cart buttons in
   the tikves-singles rows, which use the same data-tk-gatc hook.
@@ -33,7 +38,10 @@
 -%}
 
 <div class="tk-gatc">
-  {%- if product.available == false -%}
+  {%- if product.template_suffix == 'coming-soon' -%}
+    <style>.grid-product[data-product-id="{{ product.id }}"] .grid-product__price,.grid-product[data-product-id="{{ product.id }}"] .grid-product__tag--sold-out{display:none}</style>
+    <a class="tk-gatc__btn" href="{{ product.url | within: collection }}">Coming soon</a>
+  {%- elsif product.available == false -%}
     <button type="button" class="tk-gatc__btn" disabled aria-disabled="true">{{ 'products.product.sold_out' | t }}</button>
   {%- elsif many -%}
     <a class="tk-gatc__btn" href="{{ product.url | within: collection }}">{{ 'products.product.add_to_cart' | t }}</a>
