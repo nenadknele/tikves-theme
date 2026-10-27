@@ -41,13 +41,19 @@
             another sort gets that sort untouched. Works within a page; every
             collection fits on one page. To undo, set items back to
             collection.products below and delete this block.
+
+            COMING SOON LAST. Operator ruling 27 Oct 2026. Products on the
+            coming-soon template (LYXA VS and VSOP for now) go after the sold-out
+            bottles, at the very bottom, whatever their stock says.
           {%- endcomment -%}
           {%- liquid
             assign tl_items = collection.products
             if collection.sort_by == blank or collection.sort_by == collection.default_sort_by
-              assign tl_in = collection.products | where: 'available', true
-              assign tl_out = collection.products | where: 'available', false
-              assign tl_items = tl_in | concat: tl_out
+              assign tl_soon = collection.products | where: 'template_suffix', 'coming-soon'
+              assign tl_rest = collection.products | reject: 'template_suffix', 'coming-soon'
+              assign tl_in = tl_rest | where: 'available', true
+              assign tl_out = tl_rest | where: 'available', false
+              assign tl_items = tl_in | concat: tl_out | concat: tl_soon
             endif
           -%}
           {%- for block in section.blocks -%}

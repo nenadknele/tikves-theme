@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "coming_soon": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Coming soon, 27 Oct 2026, operator: LYXA VS and VSOP are not on sale yet and carry no price. This template shows no price, no Add to cart and no sold out line. A product leaves it by clearing its template back to the default. {% endcomment %}<p class=\"product__price tl-coming-soon\" style=\"margin:0 0 6px;letter-spacing:0.08em;text-transform:uppercase\">Coming soon</p><p style=\"margin:0;font-size:14px;line-height:1.5;opacity:0.8\">Not in the shop yet.</p>"
+          }
+        },
+        "separator-1": {
+          "type": "separator",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {
+            "is_tab": false
+          }
+        }
+      },
+      "block_order": [
+        "coming_soon",
+        "separator-1",
+        "description"
+      ],
+      "settings": {
+        "sku_enable": false,
+        "image_position": "left",
+        "image_size": "medium",
+        "product_zoom_enable": true,
+        "thumbnail_position": "below",
+        "thumbnail_height": "flexible",
+        "thumbnail_arrows": true,
+        "mobile_layout": "full",
+        "enable_video_looping": true,
+        "product_video_style": "muted"
+      }
+    },
+    "product-recommendations": {
+      "type": "product-recommendations",
+      "settings": {
+        "product_recommendations_heading": "You may also like",
+        "related_count": 4,
+        "products_per_row": 4
+      }
+    },
+    "recently-viewed": {
+      "type": "recently-viewed",
+      "settings": {
+        "recent_count": 5
+      }
+    },
+    "collection-return": {
+      "type": "collection-return",
+      "settings": {}
+    }
+  },
+  "order": [
+    "main",
+    "product-recommendations",
+    "recently-viewed",
+    "collection-return"
+  ]
+}
