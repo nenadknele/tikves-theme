@@ -20,6 +20,9 @@
     Buttons           capitals, tracked, 13. The quietest type.
   So capitals mean two things only: the section you are in, and the
   button you press.
+  28 Oct 2026, operator: section headings move to sentence case too,
+  per 08 · DESIGN v4. The head_caps setting is off in templates/index.json.
+  Capitals now mean one thing: the button you press.
 
   Trust row: tight strip, stacked on the phone, four across on desktop.
   Keep 'trust' OUT of keys_pad.
@@ -122,13 +125,16 @@
   }
 
   /* 4b . TILE HEADINGS. A clear step below the section headings.
-     9 Sep 2026, operator: centred on the phone, every word capitalised. */
+     9 Sep 2026, operator: centred on the phone, every word capitalised.
+     28 Oct 2026, operator: sentence case, per 08 · DESIGN v4. The words
+     are written in sentence case in templates/index.json; nothing is
+     transformed here. */
   {{ sel_tile_el }} {
     text-align: center !important;
     font-size: {{ s.tile_mobile }}px !important;
     line-height: 1.2;
     letter-spacing: 0.01em;
-    text-transform: capitalize !important;
+    text-transform: none !important;
     font-weight: 600 !important;
     margin: 0 0 14px;
   }
@@ -256,14 +262,15 @@
 
   /* 10 . VIDEO BAND. 24 Sep 2026, operator: heading bigger, subheading
      smaller, after reading Overtone. Heading takes the section-heading
-     capitals one size up; the subheading drops to body size. Marked
-     important because the section writes its own title size inline. */
+     size one step up; the subheading drops to body size. Marked
+     important because the section writes its own title size inline.
+     28 Oct 2026, operator: sentence case, per 08 · DESIGN v4. */
   [id$="__video_band"] .hero__title {
     font-size: 34px !important;
     line-height: 1.05 !important;
     font-weight: 700 !important;
-    text-transform: uppercase !important;
-    letter-spacing: 0.04em;
+    text-transform: none !important;
+    letter-spacing: 0.01em;
     margin-bottom: 10px;
   }
   [id$="__video_band"] .hero__subtitle {

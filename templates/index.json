@@ -13,8 +13,8 @@
       "type": "tikves-home-design",
       "settings": {
         "band_color": "#eae3d9",
-        "keys_band": "ladder,singles,mw_voices,tk_kumova,tk_chips",
-        "keys_pad": "ladder,singles,mw_voices,newsletter,tk_chips,tk_kumova",
+        "keys_band": "ladder,best,mw_voices,tk_kumova,tk_chips",
+        "keys_pad": "ladder,best,mw_voices,newsletter,tk_chips,tk_kumova",
         "pad_mobile": 40,
         "pad_desktop": 64,
         "foot_gap_mobile": 48,
@@ -23,58 +23,57 @@
         "head_desktop": 32,
         "head_gap_mobile": 20,
         "head_gap_desktop": 32,
-        "head_caps": true,
+        "head_caps": false,
         "head_bold": true,
         "tile_mobile": 22,
         "tile_desktop": 28,
         "btn_size": 13,
-        "keys_all": "hero,ladder,education,region_image,singles,producer_text,mw_voices,trust,newsletter,tk_chips,tk_kumova,tile_precision,tile_checked,tile_start,video_band"
+        "keys_all": "hero,ladder,best,education,producer_text,mw_voices,trust,newsletter,tk_chips,tk_kumova,tile_precision,tile_checked,tile_start,video_band"
       }
     },
     "hero": {
       "type": "tikves-hero",
       "settings": {
-        "image": "shopify://shop_images/hero-desktop-shadows_2.jpg",
-        "image_mobile": "shopify://shop_images/hero-mobile-shadows.jpg",
+        "image": "shopify://shop_images/barovo-red-scene.jpg",
+        "image_mobile": "shopify://shop_images/barovo-red-scene.jpg",
         "lcp": true,
-        "image_link": "shopify://products/the-single-vineyards",
-        "image_link_label": "Shop the three single vineyard wines",
+        "image_link": "shopify://products/barovo-red",
+        "image_link_label": "Shop Barovo Red",
         "focal_desktop": "center center",
         "focal_mobile": "center center",
-        "heading": "One Vineyard Per Bottle",
+        "heading": "If you buy one bottle, buy this one.",
         "heading_tag": "h1",
-        "title_caps": true,
-        "subheading": "Barovo, Bela Voda, and Babuna. Two reds and a white from Tikveš. Each from one named vineyard.",
-        "text_panel": false,
+        "title_caps": false,
+        "subheading": "Barovo Red. Our most bought wine. Kratošija and Vranec from one vineyard. £39 a bottle.",
+        "text_panel": true,
         "stack_mobile": true,
         "valign": "flex-end",
-        "button_label": "Shop the three",
-        "button_link": "shopify://products/the-single-vineyards",
+        "button_label": "Shop Barovo Red",
+        "button_link": "shopify://products/barovo-red",
         "button_style": "solid",
         "button_size": "large",
         "text_width_mobile": 58,
         "text_width_desktop": 380,
-        "title_size_mobile": 22,
+        "title_size_mobile": 26,
         "title_size_desktop": 42,
-        "sub_size_mobile": 14,
+        "sub_size_mobile": 15,
         "sub_size_desktop": 17,
-        "height_mobile": 290,
+        "height_mobile": 330,
         "ratio_desktop": "fixed",
         "height_desktop": 760,
-        "scrim": 50
+        "scrim": 0
       }
     },
-    "babuna_marquee": {
-      "type": "scrolling-text",
+    "best": {
+      "type": "tikves-singles",
       "settings": {
-        "text": "Babuna Red 2023 · Gold · International Wine Challenge 2026 · £29 a bottle",
-        "link": "shopify://products/babuna-red",
-        "text_size": 26,
-        "text_size_mobile": 16,
-        "color_scheme": "button",
-        "text_spacing": true,
-        "direction": "left",
-        "speed": 180
+        "title": "Best sellers",
+        "heading_size": "h3",
+        "intro": "The five bottles people buy most.",
+        "collection": "best-sellers",
+        "limit": 5,
+        "per_row": 5,
+        "link_label": ""
       }
     },
     "ladder": {
@@ -82,7 +81,7 @@
       "settings": {
         "title": "Sets",
         "heading_size": "h3",
-        "intro": "",
+        "intro": "Pairs and trios. Two or three bottles in one box.",
         "collection": "sets",
         "limit": 5,
         "per_row": 5,
@@ -94,7 +93,7 @@
       "settings": {
         "image": "shopify://shop_images/homepage-thetable-3.jpg",
         "media_position": "left",
-        "title": "Grapes You Have Not Met Yet",
+        "title": "Grapes you have not met yet",
         "text": "<p>Vranec, Temjanika, Smederevka. Names that mean nothing in London and everything where they come from. Every page tells you what it tastes like and what to eat with it, so you can order one without knowing the word.</p>",
         "link_label": "Shop all wines",
         "link_url": "shopify://collections/all-wines"
@@ -105,22 +104,10 @@
       "settings": {
         "image": "shopify://shop_images/homepage-winery-2.jpg",
         "media_position": "right",
-        "title": "Straight From The Winery",
+        "title": "Straight from the winery",
         "text": "<p>Most wine from this part of Europe reaches a UK shelf through an importer, then a distributor, then a retailer. Ours does not. We buy it at the winery and we ship it here. That is the whole chain.</p>",
         "link_label": "How we buy our wine",
         "link_url": "shopify://pages/about-us"
-      }
-    },
-    "singles": {
-      "type": "tikves-singles",
-      "settings": {
-        "title": "By the bottle",
-        "heading_size": "h3",
-        "intro": "",
-        "collection": "all-wines",
-        "limit": 12,
-        "per_row": 4,
-        "link_label": ""
       }
     },
     "tile_precision": {
@@ -128,7 +115,7 @@
       "settings": {
         "image": "shopify://shop_images/HOME-TILE-precision-bela-voda-label-2000x2000.jpg",
         "media_position": "left",
-        "title": "Medals Belong To Vintages, Not Labels",
+        "title": "Medals belong to vintages, not labels",
         "text": "<p>A wine wins a medal in one year, in one competition, for one vintage. We name which. When the bottle we are selling does not carry the award, we say so on the page.</p>",
         "link_label": "How we name medals",
         "link_url": "shopify://pages/about-us"
@@ -139,7 +126,7 @@
       "settings": {
         "image": "shopify://shop_images/homepage-hero-1.jpg",
         "media_position": "right",
-        "title": "Every Bottle Checked By Hand",
+        "title": "Every bottle checked by hand",
         "text": "<p>Every case is opened and read before it ships. Vintage on the label, condition of the bottle, the lot. One person does it and he does it by hand.</p>",
         "link_label": "How we deliver",
         "link_url": "shopify://pages/delivery"
@@ -148,12 +135,12 @@
     "tile_start": {
       "type": "tikves-split",
       "settings": {
-        "image": "shopify://shop_images/SET-single-vineyards-2000x2000-v2.jpg",
+        "image": "shopify://shop_images/case-the-table-square_f4317a9b-08db-42d4-9e2f-19ec59f8ea5a.jpg",
         "media_position": "left",
         "title": "Not sure where to start?",
-        "text": "<p>A small set built to be a first order. Enough to find out what you like without guessing at a single bottle.</p>",
-        "link_label": "Start here",
-        "link_url": "shopify://collections/sets"
+        "text": "<p>The Table. Three reds and three whites in one six-bottle case, chosen to carry a meal from the first glass to the last. The choosing is done for you. £159 for the six.</p>",
+        "link_label": "Shop The Table",
+        "link_url": "shopify://products/the-table"
       }
     },
     "mw_voices": {
@@ -201,10 +188,10 @@
         "image2": "shopify://shop_images/IMG_6277.jpg",
         "image2_mask": "portrait",
         "subtitle": "Kumova rakija",
-        "title": "A Small Glass With Dessert",
+        "title": "A small glass with dessert",
         "heading_size": "h2",
         "text": "<p>Kumova Žolta is the golden one. Dried apricot, honeyed citrus and vanilla, with a long toasted finish. Grape brandy from the Tikveš winery.</p>",
-        "button_label": "Shop Now",
+        "button_label": "Shop Kumova Žolta",
         "button_link": "shopify://products/kumova-zolta",
         "button_style": "primary",
         "align_text": "center",
@@ -228,43 +215,10 @@
         "link_label": ""
       }
     },
-    "region_image": {
-      "type": "tikves-hero",
-      "settings": {
-        "image": "shopify://shop_images/Tikves_-_Barovo_-3744_1_1.jpg",
-        "image_mobile": "shopify://shop_images/Untitled_design_ea8d3c36-c320-40f4-96b8-63e987bceabe.jpg",
-        "lcp": false,
-        "image_link": "shopify://collections/all-wines",
-        "image_link_label": "Shop the range",
-        "focal_desktop": "center center",
-        "focal_mobile": "center top",
-        "heading": "Wine Worth Knowing",
-        "heading_tag": "h2",
-        "title_caps": true,
-        "subheading": "Macedonian and Rhône wines, delivered across Great Britain. We tell you which vintage won which medal, and when it didn't.",
-        "text_panel": true,
-        "stack_mobile": true,
-        "valign": "flex-end",
-        "button_label": "Shop the range",
-        "button_link": "shopify://collections/all-wines",
-        "button_style": "solid",
-        "button_size": "medium",
-        "text_width_mobile": 66,
-        "text_width_desktop": 380,
-        "title_size_mobile": 22,
-        "title_size_desktop": 32,
-        "sub_size_mobile": 14,
-        "sub_size_desktop": 15,
-        "height_mobile": 330,
-        "ratio_desktop": "21 / 9",
-        "height_desktop": 690,
-        "scrim": 0
-      }
-    },
     "video_band": {
       "type": "hero-video",
       "settings": {
-        "title": "First Light Over Tikveš",
+        "title": "First light over Tikveš",
         "title_size": 60,
         "subheading": "The valley behind our Macedonian wines. One bottle of Alexandria white, on a barrel, at sunrise.",
         "link_text": "Shop the whites",
@@ -362,7 +316,7 @@
           "type": "text",
           "disabled": true,
           "settings": {
-            "text": "<p>A few emails a month. New releases, what has just landed, and now and then something about where the wine comes from.</p>"
+            "text": "<p>New releases, what has just landed, and now and then a story from where the wine comes from.</p>"
           }
         },
         "form": {
@@ -400,19 +354,17 @@
   "order": [
     "tk_design",
     "hero",
-    "babuna_marquee",
+    "best",
     "ladder",
     "education",
     "producer_text",
     "tk_chips",
-    "singles",
     "tile_precision",
     "tile_checked",
     "tile_start",
     "mw_voices",
     "text_and_image_rKq3Y4",
     "tk_kumova",
-    "region_image",
     "video_band",
     "trust",
     "newsletter"
