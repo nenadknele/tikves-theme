@@ -13,8 +13,8 @@
       "type": "tikves-home-design",
       "settings": {
         "band_color": "#eae3d9",
-        "keys_band": "ladder,best,mw_voices,tk_kumova,tk_chips",
-        "keys_pad": "ladder,best,mw_voices,newsletter,tk_chips,tk_kumova",
+        "keys_band": "ladder,best,mw_voices,tk_kumova,trust",
+        "keys_pad": "ladder,best,mw_voices,newsletter,tk_kumova",
         "pad_mobile": 40,
         "pad_desktop": 64,
         "foot_gap_mobile": 48,
@@ -234,9 +234,79 @@
     },
     "tk_chips": {
       "type": "tikves-collection-chips",
+      "blocks": {
+        "tile_reds": {
+          "type": "tile",
+          "settings": {
+            "collection": "reds",
+            "image": "shopify://shop_images/tikves-barovo-red-square.jpg",
+            "label": "Reds",
+            "zoom": 220,
+            "focus_y": 55
+          }
+        },
+        "tile_whites": {
+          "type": "tile",
+          "settings": {
+            "collection": "whites",
+            "image": "shopify://shop_images/tikves-bela-voda-white-square.jpg",
+            "label": "Whites",
+            "zoom": 220,
+            "focus_y": 55
+          }
+        },
+        "tile_rose": {
+          "type": "tile",
+          "settings": {
+            "collection": "rose",
+            "image": "shopify://shop_images/tikves-alexandria-cuve-rose-premium-square.jpg",
+            "label": "Rosé",
+            "zoom": 220,
+            "focus_y": 55
+          }
+        },
+        "tile_cases": {
+          "type": "tile",
+          "settings": {
+            "collection": "cases",
+            "image": "shopify://shop_images/case-the-table-square_f4317a9b-08db-42d4-9e2f-19ec59f8ea5a.jpg",
+            "label": "Cases",
+            "zoom": 150,
+            "focus_y": 55
+          }
+        },
+        "tile_sets": {
+          "type": "tile",
+          "settings": {
+            "collection": "sets",
+            "image": "shopify://shop_images/set-single-vineyards-2048x2048_2006adb3-83bf-4c2d-abbb-3a289f8e775b.jpg",
+            "label": "Sets",
+            "zoom": 170,
+            "focus_y": 55
+          }
+        },
+        "tile_spirits": {
+          "type": "tile",
+          "settings": {
+            "collection": "spirits",
+            "image": "shopify://shop_images/tikves-kumova-zolta.jpg",
+            "label": "Spirits",
+            "zoom": 220,
+            "focus_y": 55
+          }
+        }
+      },
+      "block_order": [
+        "tile_reds",
+        "tile_whites",
+        "tile_rose",
+        "tile_cases",
+        "tile_sets",
+        "tile_spirits"
+      ],
       "settings": {
         "menu": "collection-chips",
-        "heading": "Shop by collection",
+        "heading": "",
         "outline_color": "#1f2328",
         "outline_strength": 100,
         "active_bg": "#1f2328",
@@ -244,8 +314,9 @@
         "text_size": 12,
         "text_size_desktop": 13,
         "stretch_desktop": true,
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 10,
+        "padding_bottom": 2,
+        "layout": "photos"
       }
     },
     "trust": {
@@ -353,20 +424,20 @@
   },
   "order": [
     "tk_design",
+    "tk_chips",
+    "trust",
     "hero",
     "best",
-    "ladder",
     "education",
-    "producer_text",
-    "tk_chips",
-    "tile_precision",
-    "tile_checked",
     "tile_start",
-    "mw_voices",
+    "tile_precision",
     "text_and_image_rKq3Y4",
-    "tk_kumova",
+    "producer_text",
+    "tile_checked",
+    "mw_voices",
+    "ladder",
     "video_band",
-    "trust",
+    "tk_kumova",
     "newsletter"
   ]
 }

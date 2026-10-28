@@ -24,7 +24,8 @@
   per 08 · DESIGN v4. The head_caps setting is off in templates/index.json.
   Capitals now mean one thing: the button you press.
 
-  Trust row: tight strip, stacked on the phone, four across on desktop.
+  Trust row: one thin line of four titles under the collection row.
+  Swipes on the phone, one centred line on desktop (28 Oct 2026).
   Keep 'trust' OUT of keys_pad.
 
   24 Sep 2026: rule 10, the video band type, added.
@@ -195,10 +196,15 @@
     padding: 14px 16px !important;
   }
 
-  /* 9 . TRUST STRIP. */
+  /* 9 . TRUST STRIP. 28 Oct 2026, operator, homepage rebuild: titles
+     only, one thin line under the collection row, where Overtone and
+     Boom put theirs. On the phone the four sit in one row that swipes;
+     on desktop all four sit on one line, centred. The body text of each
+     block is hidden here, not deleted, so the full strip can come back
+     by removing this rule. */
   [id$="__trust"] {
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
   }
   [id$="__trust"] .index-section,
   [id$="__trust"] .text-with-icons {
@@ -209,55 +215,58 @@
   [id$="__trust"] .section-header { display: none !important; }
   [id$="__trust"] .text-with-icons__blocks,
   [id$="__trust"] .grid {
-    display: grid !important;
-    grid-template-columns: 1fr;
+    display: flex !important;
+    flex-wrap: nowrap;
     gap: 0 !important;
-    margin: 0 !important;
+    margin: 0 -17px !important;
+    padding: 0 17px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  [id$="__trust"] .text-with-icons__blocks::-webkit-scrollbar { display: none; }
   [id$="__trust"] .text-with-icons__blocks > *,
   [id$="__trust"] .grid > .grid__item {
+    flex: 0 0 auto;
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
     width: auto !important;
     float: none !important;
-    padding: 18px 16px !important;
+    padding: 11px 22px 11px 0 !important;
     margin: 0 !important;
     box-sizing: border-box;
-    border-bottom: 1px solid rgba(31, 35, 40, 0.14);
-    border-right: 0 !important;
-  }
-  [id$="__trust"] .text-with-icons__blocks > *:last-child,
-  [id$="__trust"] .grid > .grid__item:last-child {
-    border-bottom: 0;
+    border: 0 !important;
+    text-align: left !important;
   }
   [id$="__trust"] svg,
   [id$="__trust"] .icon {
-    width: 30px !important;
-    height: 30px !important;
-    margin: 0 auto 8px !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
     display: block;
   }
   [id$="__trust"] .text-with-icons__block-icon,
   [id$="__trust"] .text-with-icons__icon {
-    margin: 0 0 6px !important;
+    margin: 0 !important;
+    display: flex;
   }
   [id$="__trust"] h2,
   [id$="__trust"] h3,
   [id$="__trust"] h4,
   [id$="__trust"] .h3,
   [id$="__trust"] .h4 {
-    font-size: 15px !important;
+    font-family: var(--typeBasePrimary), var(--typeBaseFallback) !important;
+    font-weight: 500 !important;
+    font-size: 13px !important;
     line-height: 1.25 !important;
     margin: 0 !important;
     text-transform: none !important;
     letter-spacing: 0 !important;
+    white-space: nowrap;
   }
-  [id$="__trust"] .rte,
-  [id$="__trust"] p {
-    font-size: 13px !important;
-    line-height: 1.4 !important;
-    margin: 4px auto 0 !important;
-    max-width: 32ch;
-    opacity: 0.8;
-  }
+  [id$="__trust"] .text-with-icons__block-text,
+  [id$="__trust"] .text-with-icons__button { display: none !important; }
 
 
   /* 10 . VIDEO BAND. 24 Sep 2026, operator: heading bigger, subheading
@@ -329,35 +338,29 @@
       padding: 17px 40px !important;
     }
 
-    [id$="__trust"] {
-      padding-top: 10px !important;
-      padding-bottom: 10px !important;
-    }
     [id$="__trust"] .text-with-icons__blocks,
     [id$="__trust"] .grid {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      justify-content: center;
+      gap: 44px !important;
+      margin: 0 !important;
+      padding: 0;
+      overflow: visible;
     }
     [id$="__trust"] .text-with-icons__blocks > *,
     [id$="__trust"] .grid > .grid__item {
-      padding: 18px 16px !important;
-      border-bottom: 0 !important;
-      border-right: 1px solid rgba(31, 35, 40, 0.14) !important;
-    }
-    [id$="__trust"] .text-with-icons__blocks > *:last-child,
-    [id$="__trust"] .grid > .grid__item:last-child {
-      border-right: 0 !important;
+      padding: 13px 0 !important;
     }
     [id$="__trust"] svg,
     [id$="__trust"] .icon {
-      width: 34px !important;
-      height: 34px !important;
+      width: 22px !important;
+      height: 22px !important;
     }
     [id$="__trust"] h2,
     [id$="__trust"] h3,
     [id$="__trust"] h4,
     [id$="__trust"] .h3,
     [id$="__trust"] .h4 {
-      font-size: 16px !important;
+      font-size: 14px !important;
     }
 
     [id$="__video_band"] .hero__title {
