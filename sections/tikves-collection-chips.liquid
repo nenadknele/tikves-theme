@@ -5,7 +5,8 @@
   never in code.
 
   Operator ruling 28 Oct 2026, second pass: shop by collection as a
-  swipeable row of drawn tiles with a short label under each, after the
+  row of six small drawn tiles, about six across a phone like Overtone,
+  swiping for the rest with a short label under each, after the
   Overtone shop by category block, placed on the homepage after the
   grapes section. Dots under the row on mobile. On desktop all tiles sit
   in one row with no scrolling.
@@ -120,8 +121,8 @@
   #tk-chips-{{ section.id }} .tk-chips__rail {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: calc((100% - 24px) / 3.3);
-    gap: 12px;
+    grid-auto-columns: max-content;
+    gap: 14px;
     margin: 0 -17px;
     padding: 0 17px 4px;
     list-style: none;
@@ -139,7 +140,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     color: #1F2328;
     text-decoration: none;
   }
@@ -152,6 +153,7 @@
     background-color: #EAE3D9;
   }
   #tk-chips-{{ section.id }} .tk-tile__media--art {
+    width: 58px;
     aspect-ratio: auto;
     border-radius: 0;
     overflow: visible;
@@ -170,9 +172,10 @@
   }
   #tk-chips-{{ section.id }} .tk-tile__label {
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.08em;
     font-weight: 500;
-    font-size: {{ section.settings.text_size }}px;
+    font-size: 11px;
+    white-space: nowrap;
     line-height: 1.2;
     text-align: center;
     padding-bottom: 3px;
@@ -245,7 +248,7 @@
 
   @media (min-width: 769px) {
     #tk-chips-{{ section.id }} .tk-chips__heading { font-size: 32px; margin-bottom: 32px; }
-    #tk-chips-{{ section.id }} .tk-tile__media--art { max-width: 132px; }
+    #tk-chips-{{ section.id }} .tk-tile__media--art { width: 100%; max-width: 132px; }
     #tk-chips-{{ section.id }} .tk-chips__rail {
       grid-auto-flow: row;
       grid-template-columns: repeat({{ chip_count }}, minmax(0, 1fr));
