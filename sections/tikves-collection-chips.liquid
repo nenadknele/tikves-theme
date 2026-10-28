@@ -4,9 +4,10 @@
   (collection-chips), so add, remove or reorder chips under Navigation,
   never in code. The chip for the page you are on renders filled.
 
-  Operator rulings 4 Sep 2026: a grid of large pills, two across on
-  mobile with an odd last chip spanning the width, and ONE row on
-  desktop however many chips there are. Heading renders in capitals.
+  Operator ruling 28 Oct 2026: six chips, thin pills, after the Overtone
+  shop by category block. This replaces the large pills of 4 Sep 2026.
+  Two across on mobile, one row on desktop. An odd last chip still spans
+  the width on mobile if the menu ever goes odd.
   5 Sep 2026: no hover colour change.
   6 Sep 2026: the chip for the page you are on fills Ink, not Wine, so
   the chips stay in the Ink on Paper family and Terra Rossa keeps
@@ -50,7 +51,7 @@
     padding-bottom: {{ section.settings.padding_bottom }}px;
   }
   #tk-chips-{{ section.id }} .tk-chips__heading {
-    margin: 0 0 28px;
+    margin: 0 0 24px;
     font-weight: 400;
     font-size: 26px;
     text-align: center;
@@ -60,7 +61,7 @@
   #tk-chips-{{ section.id }} .tk-chips__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+    gap: 12px 14px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -73,17 +74,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 84px;
-    padding: 18px 20px;
+    min-height: 44px;
+    padding: 10px 16px;
     border: 1px solid {{ outline_color }};
     border-radius: 999px;
     background-color: transparent;
     color: #1F2328;
     text-decoration: none;
     text-transform: uppercase;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
+    font-weight: 500;
     font-size: {{ section.settings.text_size }}px;
-    line-height: 1.35;
+    line-height: 1.2;
     text-align: center;
   }
   #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip.is-current,
@@ -97,7 +99,7 @@
     outline-offset: 2px;
   }
   @media (min-width: 769px) {
-    #tk-chips-{{ section.id }} .tk-chips__heading { font-size: 32px; margin-bottom: 36px; }
+    #tk-chips-{{ section.id }} .tk-chips__heading { font-size: 32px; margin-bottom: 32px; }
     #tk-chips-{{ section.id }} .tk-chips__grid {
       grid-template-columns: repeat({{ chip_count }}, minmax(0, 1fr));
       gap: 14px;
@@ -107,10 +109,10 @@
     #tk-chips-{{ section.id }} .tk-chips__item:last-child:nth-child(odd) { grid-column: auto; }
     #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip,
     #tk-chips-{{ section.id }} ul.tk-chips__grid li.tk-chips__item a.tk-chips__chip:hover {
-      min-height: 76px;
-      padding: 16px 12px;
+      min-height: 48px;
+      padding: 12px 12px;
       font-size: {{ section.settings.text_size_desktop }}px;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
       hyphens: none;
     }
   }
