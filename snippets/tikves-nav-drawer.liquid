@@ -1,0 +1,144 @@
+{%- comment -%}
+  Tikveš London, 28 Oct 2026. Styles and panel script for the mobile menu in
+  snippets/drawer-menu.liquid. Everything is scoped to #NavDrawer.tk-nav so
+  nothing else in the theme moves. Colours come from the theme's drawer
+  settings (Paper ground, Ink text, Stone border), never hard coded.
+{%- endcomment -%}
+<style>
+  #NavDrawer.tk-nav {
+    background-color: var(--colorDrawers);
+    color: var(--colorDrawerText);
+    box-shadow: none;
+  }
+  @media only screen and (max-width: 768px) {
+    #NavDrawer.tk-nav.drawer--left { width: 100%; max-width: 100%; inset-inline-start: -100%; }
+    #NavDrawer.tk-nav.drawer--left.drawer--is-open { transform: translateX(100%); }
+    html[dir=rtl] #NavDrawer.tk-nav.drawer--left.drawer--is-open { transform: translateX(-100%); }
+    #NavDrawer.tk-nav.drawer--right { width: 100%; max-width: 100%; right: -100%; }
+    #NavDrawer.tk-nav.drawer--right.drawer--is-open { transform: translateX(-100%); }
+  }
+  #NavDrawer.tk-nav .drawer__contents { display: flex; flex-direction: column; height: 100%; }
+
+  .tk-nav__bar {
+    display: flex; align-items: center;
+    min-height: 64px; padding: 0 6px;
+    flex: 0 0 auto;
+  }
+  #NavDrawer .tk-nav__close.drawer__close-button {
+    inset-inline-start: 0; inset-inline-end: auto;
+    width: 48px; height: 48px; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: none;
+  }
+  #NavDrawer .tk-nav__close .icon { width: 30px; height: 30px; stroke-width: 2; }
+
+  .tk-nav__viewport { position: relative; flex: 1 1 auto; overflow: hidden; }
+  .tk-nav__panel {
+    position: absolute; inset: 0;
+    overflow-y: auto; -webkit-overflow-scrolling: touch;
+    padding: 8px 0 40px;
+    background-color: var(--colorDrawers);
+    transition: transform .35s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0s linear .35s;
+    visibility: hidden;
+  }
+  .tk-nav__panel--root { transform: translateX(0); visibility: visible; transition-delay: 0s; }
+  .tk-nav__panel--sub { transform: translateX(100%); }
+  .tk-nav__viewport.is-sub-open .tk-nav__panel--root { transform: translateX(-25%); visibility: hidden; transition: transform .35s cubic-bezier(0.165, 0.84, 0.44, 1), visibility 0s linear .35s; }
+  .tk-nav__panel--sub.is-active { transform: translateX(0); visibility: visible; transition-delay: 0s; }
+  @media (prefers-reduced-motion: reduce) { .tk-nav__panel { transition: none !important; } }
+
+  .tk-nav__list, .tk-nav__grandchildren { list-style: none; margin: 0; padding: 0; }
+  .tk-nav__item { margin: 0; list-style: none; }
+
+  #NavDrawer .tk-nav__row,
+  #NavDrawer .tk-nav__back {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    box-sizing: border-box;
+    width: 100%; min-height: 52px;
+    padding: 10px 24px;
+    font-family: var(--typeBasePrimary), var(--typeBaseFallback);
+    font-size: 20px; font-weight: 400; line-height: 1.3; letter-spacing: 0;
+    text-transform: none; text-align: left;
+    color: var(--colorDrawerText);
+    background: none; border: 0; border-radius: 0;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #NavDrawer .tk-nav__row:active, #NavDrawer .tk-nav__back:active { background-color: var(--colorDrawersDim); }
+  #NavDrawer .tk-nav__row:focus-visible, #NavDrawer .tk-nav__back:focus-visible { outline: 1px solid var(--colorDrawerText); outline-offset: -4px; }
+  #NavDrawer .tk-nav__row[aria-current="page"] span { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+
+  #NavDrawer .tk-nav__back { justify-content: flex-start; font-size: 16px; min-height: 48px; margin-bottom: 8px; }
+  .tk-nav__arrow { flex: 0 0 auto; }
+  .tk-nav__arrow--back { transform: scaleX(-1); }
+  html[dir=rtl] .tk-nav__arrow { transform: scaleX(-1); }
+  html[dir=rtl] .tk-nav__arrow--back { transform: none; }
+
+  #NavDrawer .tk-nav__row--small { font-size: 16px; min-height: 44px; }
+  .tk-nav__grandchildren .tk-nav__row { padding-inline-start: 40px; }
+
+  .tk-nav__item--account { margin-top: 16px; }
+  #NavDrawer .tk-nav__row--account { padding-top: 4px; padding-bottom: 4px; }
+  #NavDrawer .tk-nav__row--account .mobile-nav__link { padding: 0; font-size: 16px; }
+
+  #NavDrawer .mobile-nav__social.tk-nav__social { margin: 24px 0 0; padding: 0 12px; border: 0; justify-content: flex-start; }
+  #NavDrawer .mobile-nav__social.tk-nav__social .mobile-nav__social-item { border: 0; flex: 0 0 auto; }
+  .tk-nav__promos { padding: 16px 24px 0; }
+</style>
+
+<script>
+  (function () {
+    var drawer = document.getElementById('NavDrawer');
+    if (!drawer) return;
+    var viewport = drawer.querySelector('[data-tk-nav]');
+    if (!viewport) return;
+    var root = viewport.querySelector('[data-tk-panel="root"]');
+
+    function setInert(panel, on) {
+      if (!panel) return;
+      if (on) { panel.setAttribute('aria-hidden', 'true'); panel.setAttribute('inert', ''); }
+      else { panel.removeAttribute('aria-hidden'); panel.removeAttribute('inert'); }
+    }
+
+    function openPanel(id, trigger) {
+      var panel = document.getElementById(id);
+      if (!panel) return;
+      viewport.classList.add('is-sub-open');
+      panel.classList.add('is-active');
+      setInert(panel, false);
+      setInert(root, true);
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+      panel.scrollTop = 0;
+      var back = panel.querySelector('[data-tk-back]');
+      if (back) setTimeout(function () { back.focus({ preventScroll: true }); }, 360);
+    }
+
+    function closePanels(focusTrigger) {
+      var active = viewport.querySelector('.tk-nav__panel--sub.is-active');
+      viewport.classList.remove('is-sub-open');
+      viewport.querySelectorAll('.tk-nav__panel--sub').forEach(function (p) {
+        p.classList.remove('is-active');
+        setInert(p, true);
+      });
+      setInert(root, false);
+      viewport.querySelectorAll('[data-tk-open]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+      if (focusTrigger && active) {
+        var t = viewport.querySelector('[data-tk-open="' + active.id + '"]');
+        if (t) t.focus({ preventScroll: true });
+      }
+    }
+
+    viewport.querySelectorAll('.tk-nav__panel--sub').forEach(function (p) { setInert(p, true); });
+
+    viewport.addEventListener('click', function (evt) {
+      var opener = evt.target.closest('[data-tk-open]');
+      if (opener) { evt.preventDefault(); openPanel(opener.getAttribute('data-tk-open'), opener); return; }
+      if (evt.target.closest('[data-tk-back]')) { evt.preventDefault(); closePanels(true); }
+    });
+
+    // Back to the top level whenever the drawer closes, so it always opens fresh.
+    new MutationObserver(function () {
+      if (!drawer.classList.contains('drawer--is-open')) setTimeout(function () { closePanels(false); }, 450);
+    }).observe(drawer, { attributes: true, attributeFilter: ['class'] });
+  })();
+</script>
