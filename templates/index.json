@@ -280,6 +280,7 @@
     },
     "tk_chips": {
       "type": "tikves-collection-chips",
+      "disabled": true,
       "settings": {
         "menu": "collection-chips",
         "heading": "Shop by collection",
