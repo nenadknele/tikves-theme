@@ -1,17 +1,23 @@
 {%- comment -%}
   Tikves London - Collection chips
-  Pill navigation between collections, read from a navigation menu
-  (collection-chips), so add, remove or reorder chips under Navigation,
-  never in code. The chip for the page you are on renders filled.
+  Navigation between collections, read from a navigation menu
+  (collection-chips), so add, remove or reorder them under Navigation,
+  never in code.
 
-  Operator ruling 28 Oct 2026: six chips, thin pills, after the Overtone
-  shop by category block. This replaces the large pills of 4 Sep 2026.
-  Two across on mobile, one row on desktop. An odd last chip still spans
-  the width on mobile if the menu ever goes odd.
+  Operator ruling 28 Oct 2026, second pass: shop by collection as a
+  row of six small drawn tiles, about six across a phone like Overtone,
+  swiping for the rest with a short label under each, after the
+  Overtone shop by category block, placed on the homepage after the
+  grapes section. Dots under the row on mobile. On desktop all tiles sit
+  in one row with no scrolling.
+  Each tile shows its drawing from snippets/tikves-collection-art.liquid,
+  keyed by collection handle and approved by the operator from a mockup.
+  A collection with no drawing falls back to its collection image, or the
+  first product's image. No text is ever drawn on a picture.
+  The thin pills of earlier the same day stay available under Layout.
   5 Sep 2026: no hover colour change.
-  6 Sep 2026: the chip for the page you are on fills Ink, not Wine, so
-  the chips stay in the Ink on Paper family and Terra Rossa keeps
-  meaning buy.
+  6 Sep 2026: the current item marks in Ink, never Wine, so Terra Rossa
+  keeps meaning buy.
 {%- endcomment -%}
 
 {%- liquid
@@ -21,28 +27,80 @@
   assign chip_count = chip_menu.links.size
   assign active_bg = section.settings.active_bg | default: '#1F2328'
   assign active_text = section.settings.active_text | default: '#F5EFE7'
+  assign layout = section.settings.layout | default: 'tiles'
 -%}
 
 {%- if chip_count > 0 -%}
-<nav class="tk-chips page-width" id="tk-chips-{{ section.id }}" aria-label="{{ section.settings.heading | default: 'Shop by collection' | escape }}">
+<nav class="tk-chips page-width tk-chips--{{ layout }}" id="tk-chips-{{ section.id }}" aria-label="{{ section.settings.heading | default: 'Shop by collection' | escape }}">
   {%- if section.settings.heading != blank -%}
     <h2 class="tk-chips__heading">{{ section.settings.heading | escape }}</h2>
   {%- endif -%}
-  <ul class="tk-chips__grid">
-    {%- for link in chip_menu.links -%}
-      {%- assign is_current = false -%}
-      {%- if link.active -%}
-        {%- assign is_current = true -%}
-      {%- elsif collection and link.url == collection.url -%}
-        {%- assign is_current = true -%}
-      {%- endif -%}
-      <li class="tk-chips__item">
-        <a href="{{ link.url }}"
-           class="tk-chips__chip{% if is_current %} is-current{% endif %}"
-           {%- if is_current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
-      </li>
-    {%- endfor -%}
-  </ul>
+
+  {%- if layout == 'tiles' -%}
+    <ul class="tk-chips__rail" data-tk-rail>
+      {%- for link in chip_menu.links -%}
+        {%- liquid
+          assign is_current = false
+          if link.active
+            assign is_current = true
+          elsif collection and link.url == collection.url
+            assign is_current = true
+          endif
+          assign tile_image = blank
+          assign tile_art = ''
+          if link.type == 'collection_link'
+            capture tile_art
+              render 'tikves-collection-art', handle: link.object.handle
+            endcapture
+            assign tile_art = tile_art | strip
+            if tile_art == blank
+              assign tile_image = link.object.featured_image
+            endif
+          endif
+        -%}
+        <li class="tk-chips__tile">
+          <a href="{{ link.url }}"
+             class="tk-tile{% if is_current %} is-current{% endif %}"
+             {%- if is_current %} aria-current="page"{% endif %}>
+            <span class="tk-tile__media{% if tile_art != blank %} tk-tile__media--art{% endif %}">
+              {%- if tile_art != blank -%}
+                {{- tile_art -}}
+              {%- elsif tile_image != blank -%}
+                {{- tile_image | image_url: width: 480 | image_tag:
+                  widths: '160, 240, 320, 480',
+                  sizes: '(min-width: 769px) 16vw, 31vw',
+                  loading: 'lazy',
+                  alt: '',
+                  class: 'tk-tile__img' -}}
+              {%- endif -%}
+            </span>
+            <span class="tk-tile__label">{{ link.title | escape }}</span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+    <div class="tk-chips__dots" data-tk-dots aria-hidden="true">
+      {%- for link in chip_menu.links -%}
+        <span class="tk-chips__dot{% if forloop.first %} is-on{% endif %}"></span>
+      {%- endfor -%}
+    </div>
+  {%- else -%}
+    <ul class="tk-chips__grid">
+      {%- for link in chip_menu.links -%}
+        {%- assign is_current = false -%}
+        {%- if link.active -%}
+          {%- assign is_current = true -%}
+        {%- elsif collection and link.url == collection.url -%}
+          {%- assign is_current = true -%}
+        {%- endif -%}
+        <li class="tk-chips__item">
+          <a href="{{ link.url }}"
+             class="tk-chips__chip{% if is_current %} is-current{% endif %}"
+             {%- if is_current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
 </nav>
 
 {%- style -%}
@@ -58,6 +116,95 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
   }
+
+  /* Tiles */
+  #tk-chips-{{ section.id }} .tk-chips__rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 14px;
+    margin: 0 -17px;
+    padding: 0 17px 4px;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 17px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  #tk-chips-{{ section.id }} .tk-chips__rail::-webkit-scrollbar { display: none; }
+  #tk-chips-{{ section.id }} .tk-chips__tile { margin: 0; scroll-snap-align: start; }
+  #tk-chips-{{ section.id }} a.tk-tile,
+  #tk-chips-{{ section.id }} a.tk-tile:hover,
+  #tk-chips-{{ section.id }} a.tk-tile:focus {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #1F2328;
+    text-decoration: none;
+  }
+  #tk-chips-{{ section.id }} .tk-tile__media {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #EAE3D9;
+  }
+  #tk-chips-{{ section.id }} .tk-tile__media--art {
+    width: 58px;
+    aspect-ratio: auto;
+    border-radius: 0;
+    overflow: visible;
+    background-color: transparent;
+  }
+  #tk-chips-{{ section.id }} .tk-tile__art {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  #tk-chips-{{ section.id }} .tk-tile__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  #tk-chips-{{ section.id }} .tk-tile__label {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+    font-size: 11px;
+    white-space: nowrap;
+    line-height: 1.2;
+    text-align: center;
+    padding-bottom: 3px;
+    border-bottom: 1px solid transparent;
+  }
+  #tk-chips-{{ section.id }} a.tk-tile.is-current .tk-tile__label {
+    border-bottom-color: {{ active_bg }};
+  }
+  #tk-chips-{{ section.id }} a.tk-tile:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+    border-radius: 12px;
+  }
+  #tk-chips-{{ section.id }} .tk-chips__dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  #tk-chips-{{ section.id }} .tk-chips__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid #1F2328;
+    background-color: transparent;
+  }
+  #tk-chips-{{ section.id }} .tk-chips__dot.is-on { background-color: #1F2328; }
+
+  /* Pills */
   #tk-chips-{{ section.id }} .tk-chips__grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -98,8 +245,24 @@
     outline: 2px solid currentColor;
     outline-offset: 2px;
   }
+
   @media (min-width: 769px) {
     #tk-chips-{{ section.id }} .tk-chips__heading { font-size: 32px; margin-bottom: 32px; }
+    #tk-chips-{{ section.id }} .tk-tile__media--art { width: 100%; max-width: 132px; }
+    #tk-chips-{{ section.id }} .tk-chips__rail {
+      grid-auto-flow: row;
+      grid-template-columns: repeat({{ chip_count }}, minmax(0, 1fr));
+      grid-auto-columns: auto;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+    }
+    #tk-chips-{{ section.id }} .tk-tile__label {
+      font-size: {{ section.settings.text_size_desktop }}px;
+      letter-spacing: 0.12em;
+    }
+    #tk-chips-{{ section.id }} .tk-chips__dots { display: none; }
     #tk-chips-{{ section.id }} .tk-chips__grid {
       grid-template-columns: repeat({{ chip_count }}, minmax(0, 1fr));
       gap: 14px;
@@ -117,6 +280,28 @@
     }
   }
 {%- endstyle -%}
+
+{%- if layout == 'tiles' -%}
+<script>
+  (function () {
+    var root = document.getElementById('tk-chips-{{ section.id }}');
+    if (!root) return;
+    var rail = root.querySelector('[data-tk-rail]');
+    var dots = root.querySelectorAll('[data-tk-dots] .tk-chips__dot');
+    if (!rail || !dots.length) return;
+    var ticking = false;
+    function update() {
+      ticking = false;
+      var max = rail.scrollWidth - rail.clientWidth;
+      var i = max > 0 ? Math.round((rail.scrollLeft / max) * (dots.length - 1)) : 0;
+      for (var d = 0; d < dots.length; d++) dots[d].classList.toggle('is-on', d === i);
+    }
+    rail.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+    }, { passive: true });
+  })();
+</script>
+{%- endif -%}
 {%- endif -%}
 
 {% schema %}
@@ -127,16 +312,27 @@
       "type": "link_list",
       "id": "menu",
       "label": "Menu",
-      "info": "Chips mirror this menu. Edit it under Navigation, never in code. On desktop they all sit in one row, so keep the list short."
+      "info": "Tiles mirror this menu. Edit it under Navigation, never in code. On desktop they all sit in one row, so keep the list short."
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "tiles", "label": "Drawn tiles" },
+        { "value": "pills", "label": "Thin pills" }
+      ],
+      "default": "tiles",
+      "info": "Tiles show the drawing for each collection. A collection with no drawing shows its collection image."
     },
     { "type": "text", "id": "heading", "label": "Heading", "info": "Renders in capitals." },
-    { "type": "color", "id": "outline_color", "label": "Chip outline", "default": "#1F2328" },
+    { "type": "color", "id": "outline_color", "label": "Pill outline", "default": "#1F2328" },
     { "type": "range", "id": "outline_strength", "label": "Outline strength", "min": 10, "max": 100, "step": 10, "unit": "%", "default": 100 },
-    { "type": "color", "id": "active_bg", "label": "Current chip fill", "default": "#1F2328", "info": "No hover colour. This is only the chip for the page you are on." },
-    { "type": "color", "id": "active_text", "label": "Current chip text", "default": "#F5EFE7" },
+    { "type": "color", "id": "active_bg", "label": "Current item colour", "default": "#1F2328", "info": "No hover colour. Marks only the collection you are on." },
+    { "type": "color", "id": "active_text", "label": "Current pill text", "default": "#F5EFE7" },
     { "type": "range", "id": "text_size", "label": "Label size, mobile", "min": 10, "max": 14, "step": 1, "unit": "px", "default": 12 },
     { "type": "range", "id": "text_size_desktop", "label": "Label size, desktop", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 13 },
-    { "type": "checkbox", "id": "stretch_desktop", "label": "Stretch row to page width on desktop", "default": true, "info": "Kept for older templates. The grid fills the page width on its own." },
+    { "type": "checkbox", "id": "stretch_desktop", "label": "Stretch row to page width on desktop", "default": true, "info": "Kept for older templates. The row fills the page width on its own." },
     { "type": "range", "id": "padding_top", "label": "Top padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 12 },
     { "type": "range", "id": "padding_bottom", "label": "Bottom padding", "min": 0, "max": 80, "step": 4, "unit": "px", "default": 28 }
   ],
