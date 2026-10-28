@@ -403,6 +403,7 @@
     "babuna_marquee",
     "ladder",
     "education",
+    "tk_chips",
     "producer_text",
     "singles",
     "tile_precision",
@@ -413,7 +414,6 @@
     "tk_kumova",
     "region_image",
     "video_band",
-    "tk_chips",
     "trust",
     "newsletter"
   ]
