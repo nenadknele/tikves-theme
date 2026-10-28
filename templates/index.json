@@ -241,8 +241,8 @@
             "collection": "reds",
             "image": "shopify://shop_images/tikves-barovo-red-square.jpg",
             "label": "Reds",
-            "zoom": 220,
-            "focus_y": 55
+            "zoom": 100,
+            "focus_y": 50
           }
         },
         "tile_whites": {
@@ -251,8 +251,8 @@
             "collection": "whites",
             "image": "shopify://shop_images/tikves-bela-voda-white-square.jpg",
             "label": "Whites",
-            "zoom": 220,
-            "focus_y": 55
+            "zoom": 100,
+            "focus_y": 50
           }
         },
         "tile_rose": {
@@ -261,8 +261,8 @@
             "collection": "rose",
             "image": "shopify://shop_images/tikves-alexandria-cuve-rose-premium-square.jpg",
             "label": "Rosé",
-            "zoom": 220,
-            "focus_y": 55
+            "zoom": 100,
+            "focus_y": 50
           }
         },
         "tile_cases": {
@@ -271,8 +271,8 @@
             "collection": "cases",
             "image": "shopify://shop_images/case-the-table-square_f4317a9b-08db-42d4-9e2f-19ec59f8ea5a.jpg",
             "label": "Cases",
-            "zoom": 150,
-            "focus_y": 55
+            "zoom": 100,
+            "focus_y": 50
           }
         },
         "tile_sets": {
@@ -281,8 +281,8 @@
             "collection": "sets",
             "image": "shopify://shop_images/set-single-vineyards-2048x2048_2006adb3-83bf-4c2d-abbb-3a289f8e775b.jpg",
             "label": "Sets",
-            "zoom": 170,
-            "focus_y": 55
+            "zoom": 100,
+            "focus_y": 50
           }
         },
         "tile_spirits": {
@@ -291,8 +291,8 @@
             "collection": "spirits",
             "image": "shopify://shop_images/tikves-kumova-zolta.jpg",
             "label": "Spirits",
-            "zoom": 220,
-            "focus_y": 55
+            "zoom": 100,
+            "focus_y": 50
           }
         }
       },
