@@ -35,7 +35,7 @@
       "type": "tikves-hero",
       "settings": {
         "image": "shopify://shop_images/barovo-red-scene.jpg",
-        "image_mobile": "shopify://shop_images/barovo-red-scene.jpg",
+        "image_mobile": "shopify://shop_images/hero-barovo-mobile-fruit-1600x1200.jpg",
         "lcp": true,
         "image_link": "shopify://products/barovo-red",
         "image_link_label": "Shop Barovo Red",
@@ -52,16 +52,17 @@
         "button_link": "shopify://products/barovo-red",
         "button_style": "solid",
         "button_size": "large",
-        "text_width_mobile": 58,
+        "text_width_mobile": 46,
         "text_width_desktop": 380,
-        "title_size_mobile": 26,
+        "title_size_mobile": 24,
         "title_size_desktop": 42,
-        "sub_size_mobile": 15,
+        "sub_size_mobile": 14,
         "sub_size_desktop": 17,
-        "height_mobile": 330,
+        "height_mobile": 440,
         "ratio_desktop": "fixed",
         "height_desktop": 760,
-        "scrim": 0
+        "scrim": 0,
+        "panel_mobile": true
       }
     },
     "best": {

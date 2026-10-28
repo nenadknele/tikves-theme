@@ -89,7 +89,7 @@
   endif
 -%}
 
-<div class="tk-hero tk-hero--{{ section.id }}{% if s.text_panel %} tk-hero--panel{% endif %}{% if s.stack_mobile and s.text_panel == false %} tk-hero--stack{% endif %}">
+<div class="tk-hero tk-hero--{{ section.id }}{% if s.text_panel %} tk-hero--panel{% endif %}{% if s.stack_mobile and s.text_panel == false %} tk-hero--stack{% endif %}{% if s.text_panel and s.panel_mobile %} tk-hero--panel-float{% endif %}">
   {%- if s.image != blank or s.image_mobile != blank -%}
     {%- liquid
       assign main_img = s.image
@@ -256,6 +256,34 @@
     padding-top: 16px;
     padding-bottom: 16px;
     font-size: 14px;
+  }
+
+  /* Panel on the phone too, 28 Oct 2026: the words float on the photograph
+     at the left, on the Paper panel, instead of sitting underneath. Needs a
+     phone image cut with the bottle in the right half, so the panel never
+     covers it (REF · TEXT ON IMAGES, 2 Sep 2026). */
+  .tk-hero--{{ section.id }}.tk-hero--panel-float { height: {{ s.height_mobile }}px; }
+  .tk-hero--{{ section.id }}.tk-hero--panel-float .tk-hero__img {
+    position: absolute;
+    height: 100%;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--panel-float .tk-hero__link { bottom: 0; height: auto; }
+  .tk-hero--{{ section.id }}.tk-hero--panel-float .tk-hero__inner {
+    display: flex;
+    align-items: {{ s.valign }};
+    height: 100%;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--panel-float .tk-hero__text {
+    background: rgba(245, 239, 231, 0.96);
+    max-width: {{ s.text_width_mobile }}%;
+    margin: 14px !important;
+    padding: 18px 16px 20px !important;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--panel-float .tk-hero__btn {
+    display: inline-block;
+    width: auto;
+    padding: {{ btn_pad }};
+    font-size: {{ btn_font }}px;
   }
 
   .tk-hero--{{ section.id }} .tk-hero__title {
@@ -432,6 +460,7 @@
     { "type": "checkbox", "id": "title_caps", "label": "Heading in capitals", "default": false, "info": "Tracked capitals, matching the section headings." },
     { "type": "textarea", "id": "subheading", "label": "Subheading", "default": "We can tell you everything about every bottle in it." },
     { "type": "checkbox", "id": "text_panel", "label": "Words on a Paper panel", "default": false, "info": "Ink text on a Paper panel over the image on desktop. On the phone the words sit under the photograph instead." },
+    { "type": "checkbox", "id": "panel_mobile", "label": "Panel on the phone too", "default": false, "info": "Floats the Paper panel over the photograph on the phone as well, at the left. Only with a phone image cut so the bottle sits in the right half." },
     { "type": "checkbox", "id": "stack_mobile", "label": "Stack on the phone", "default": false, "info": "Photograph first, then the words on Paper underneath, on the phone only. Desktop keeps the words on the image. Ignored when the Paper panel is on." },
     {
       "type": "select",
