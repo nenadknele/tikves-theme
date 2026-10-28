@@ -1,0 +1,43 @@
+{
+  "sections": {
+    "finder": {
+      "type": "tikves-wine-finder",
+      "blocks": {
+        "occasion_roast": {
+          "type": "occasion",
+          "settings": {
+            "label": "A Sunday roast",
+            "products": ["babuna-red", "vranec-luda-mara", "barovo-red", "kratosija", "alexandria-premium-cuvee-red"]
+          }
+        },
+        "occasion_bbq": {
+          "type": "occasion",
+          "settings": {
+            "label": "Something off the grill",
+            "products": ["vranec-luda-mara", "babuna-red", "kratosija", "alexandria-premium-cuvee-red", "alexandria-premium-cuvee-white"]
+          }
+        },
+        "occasion_fish": {
+          "type": "occasion",
+          "settings": {
+            "label": "Fish or seafood",
+            "products": ["alexandria-premium-cuvee-white", "smederevka", "bela-voda-white", "alexandria-premium-cuvee-rose", "babuna-red", "fontaine-du-sud", "mistral-au-jardin"]
+          }
+        },
+        "occasion_cheese": {
+          "type": "occasion",
+          "settings": {
+            "label": "A cheese board",
+            "products": ["vranec-luda-mara", "babuna-red", "alexandria-premium-cuvee-red", "temjanika-luda-mara", "mistral-au-jardin"]
+          }
+        }
+      },
+      "block_order": ["occasion_roast", "occasion_bbq", "occasion_fish", "occasion_cheese"],
+      "settings": {
+        "title": "Find your wine",
+        "intro": "Four quick questions. Then we'll pick a few bottles for you."
+      }
+    }
+  },
+  "order": ["finder"]
+}

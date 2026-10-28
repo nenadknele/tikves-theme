@@ -1,0 +1,281 @@
+{%- comment -%}
+  TIKVES LONDON . WINE FINDER
+  Built 28 Oct 2026. Four quick questions, then a few bottles.
+
+  Nothing about a wine is typed here. Colour, style and price come from the
+  product tags on the store, per REF · PRODUCT TAGS. The food question uses
+  the occasion blocks below: each block holds a label and a product list,
+  kept the same as the matching occasion collection. Only single bottles of
+  wine that are in stock and priced are suggested: no spirits, cases, sets,
+  gift card or coming soon lines.
+
+  Cards come from the theme's own product-grid-item snippet, so price, image
+  and sold-out states render exactly as they do on collection pages.
+{%- endcomment -%}
+
+{%- liquid
+  assign coming_soon = collections['coming-soon']
+-%}
+
+<div class="tk-finder page-width" data-tk-finder data-section-id="{{ section.id }}">
+  <div class="tk-finder__head">
+    {%- if section.settings.title != blank -%}
+      <h1 class="tk-finder__title">{{ section.settings.title }}</h1>
+    {%- endif -%}
+    {%- if section.settings.intro != blank -%}
+      <p class="tk-finder__intro">{{ section.settings.intro }}</p>
+    {%- endif -%}
+  </div>
+
+  <div class="tk-finder__quiz" data-tk-quiz>
+    <p class="tk-finder__progress" data-tk-progress aria-live="polite"></p>
+
+    <fieldset class="tk-finder__step" data-tk-step="food">
+      <legend class="tk-finder__q">What's on the table?</legend>
+      <div class="tk-finder__options">
+        {%- for block in section.blocks -%}
+          {%- if block.type == 'occasion' and block.settings.label != blank -%}
+            <button type="button" class="tk-finder__opt" data-value="{{ block.id }}" {{ block.shopify_attributes }}>{{ block.settings.label | escape }}</button>
+          {%- endif -%}
+        {%- endfor -%}
+        <button type="button" class="tk-finder__opt" data-value="any">Nothing, just a glass</button>
+      </div>
+    </fieldset>
+
+    <fieldset class="tk-finder__step" data-tk-step="colour" hidden>
+      <legend class="tk-finder__q">Red, white or pink?</legend>
+      <div class="tk-finder__options">
+        <button type="button" class="tk-finder__opt" data-value="type:red">Red</button>
+        <button type="button" class="tk-finder__opt" data-value="type:white">White</button>
+        <button type="button" class="tk-finder__opt" data-value="type:rose">Rosé</button>
+        <button type="button" class="tk-finder__opt" data-value="any">Happy with any</button>
+      </div>
+    </fieldset>
+
+    <fieldset class="tk-finder__step" data-tk-step="style" hidden>
+      <legend class="tk-finder__q">How do you like it?</legend>
+      <div class="tk-finder__options">
+        <button type="button" class="tk-finder__opt" data-value="style:crisp style:aromatic">Fresh and crisp</button>
+        <button type="button" class="tk-finder__opt" data-value="style:rounded">Smooth and easy</button>
+        <button type="button" class="tk-finder__opt" data-value="style:bold style:oaked">Big and bold</button>
+        <button type="button" class="tk-finder__opt" data-value="any">Not sure</button>
+      </div>
+    </fieldset>
+
+    <fieldset class="tk-finder__step" data-tk-step="spend" hidden>
+      <legend class="tk-finder__q">What do you want to spend on a bottle?</legend>
+      <div class="tk-finder__options">
+        <button type="button" class="tk-finder__opt" data-value="price:under-20">Under £20</button>
+        <button type="button" class="tk-finder__opt" data-value="price:20-to-30">£20 to £30</button>
+        <button type="button" class="tk-finder__opt" data-value="price:30-to-50">Over £30</button>
+        <button type="button" class="tk-finder__opt" data-value="any">Doesn't matter</button>
+      </div>
+    </fieldset>
+
+    <button type="button" class="tk-finder__back" data-tk-back hidden>Back</button>
+  </div>
+
+  <div class="tk-finder__result" data-tk-result hidden>
+    <p class="tk-finder__q" data-tk-result-line tabindex="-1"></p>
+    <div class="grid grid--uniform tk-finder__grid">
+      {%- paginate collections.all.products by 100 -%}
+        {%- for product in collections.all.products -%}
+          {%- liquid
+            assign is_wine = false
+            if product.tags contains 'category:wine'
+              assign is_wine = true
+            endif
+            assign is_coming = false
+            if coming_soon != blank
+              for p in coming_soon.products
+                if p.id == product.id
+                  assign is_coming = true
+                  break
+                endif
+              endfor
+            endif
+            assign occasion_ids = ''
+            for block in section.blocks
+              if block.type == 'occasion'
+                for p in block.settings.products
+                  if p.id == product.id
+                    assign occasion_ids = occasion_ids | append: block.id | append: ' '
+                    break
+                  endif
+                endfor
+              endif
+            endfor
+          -%}
+          {%- if is_wine and product.available and product.price > 0 and is_coming == false -%}
+            <div class="tk-finder__card" data-tk-card
+              data-tags="{{ product.tags | join: ' ' | escape }}"
+              data-occasions="{{ occasion_ids | strip }}"
+              hidden>
+              {%- render 'product-grid-item',
+                product: product,
+                per_row: 3,
+                quick_shop_enable: false,
+                fallback: '45vw',
+              -%}
+            </div>
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endpaginate -%}
+    </div>
+    <div class="tk-finder__actions">
+      <button type="button" class="tk-finder__again" data-tk-again>Start again</button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .tk-finder { padding-top: 32px; padding-bottom: 56px; }
+  .tk-finder__head { max-width: 640px; margin: 0 auto 24px; text-align: center; }
+  .tk-finder__title { margin-bottom: 8px; }
+  .tk-finder__intro { margin: 0; }
+  .tk-finder__quiz { max-width: 560px; margin: 0 auto; }
+  .tk-finder__progress { font-size: 14px; margin: 0 0 8px; opacity: .8; text-align: center; }
+  .tk-finder__step { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .tk-finder__q {
+    display: block; width: 100%; text-align: center;
+    font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
+    font-size: 24px; line-height: 1.25; margin: 0 0 20px; padding: 0;
+  }
+  .tk-finder__q:focus { outline: none; }
+  .tk-finder__options { display: flex; flex-direction: column; gap: 10px; }
+  .tk-finder__opt, .tk-finder__again {
+    display: block; width: 100%; min-height: 52px; padding: 12px 20px;
+    font-family: var(--typeBasePrimary), var(--typeBaseFallback);
+    font-size: 18px; text-align: left;
+    color: var(--colorTextBody); background: transparent;
+    border: 1px solid var(--colorBorder); border-radius: 0;
+    cursor: pointer;
+  }
+  .tk-finder__opt:hover, .tk-finder__opt:focus-visible { border-color: var(--colorTextBody); }
+  .tk-finder__opt:active { background: var(--colorBorder); }
+  .tk-finder__back {
+    display: block; margin: 20px auto 0; padding: 8px 12px;
+    background: none; border: 0; font-size: 16px; text-decoration: underline;
+    color: var(--colorTextBody); cursor: pointer;
+  }
+  .tk-finder__back[hidden], .tk-finder__step[hidden], .tk-finder__result[hidden], .tk-finder__card[hidden] { display: none; }
+  .tk-finder__result { margin-top: 8px; }
+  .tk-finder__grid { justify-content: center; }
+  .tk-finder__actions { max-width: 560px; margin: 24px auto 0; }
+  .tk-finder__again { text-align: center; }
+</style>
+
+<script>
+  (function () {
+    var root = document.querySelector('[data-tk-finder][data-section-id="{{ section.id }}"]');
+    if (!root) return;
+    var steps = Array.prototype.slice.call(root.querySelectorAll('[data-tk-step]'));
+    var quiz = root.querySelector('[data-tk-quiz]');
+    var result = root.querySelector('[data-tk-result]');
+    var line = root.querySelector('[data-tk-result-line]');
+    var progress = root.querySelector('[data-tk-progress]');
+    var back = root.querySelector('[data-tk-back]');
+    var cards = Array.prototype.slice.call(root.querySelectorAll('[data-tk-card]'));
+    var answers = {};
+    var current = 0;
+    var MAX = 3;
+
+    function show(i) {
+      current = i;
+      steps.forEach(function (s, n) { s.hidden = n !== i; });
+      progress.textContent = (i + 1) + ' of ' + steps.length;
+      back.hidden = i === 0;
+      var first = steps[i].querySelector('.tk-finder__opt');
+      if (first && i > 0) first.focus({ preventScroll: true });
+    }
+
+    function tagsOf(card) { return ' ' + card.getAttribute('data-tags') + ' '; }
+    function hasAny(card, values) {
+      var t = tagsOf(card);
+      return values.split(' ').some(function (v) { return v && t.indexOf(' ' + v + ' ') > -1; });
+    }
+    function inOccasion(card, id) {
+      return (' ' + card.getAttribute('data-occasions') + ' ').indexOf(' ' + id + ' ') > -1;
+    }
+
+    function pick(useFood, useColour) {
+      var list = cards.filter(function (c) {
+        if (useFood && answers.food !== 'any' && !inOccasion(c, answers.food)) return false;
+        if (useColour && answers.colour !== 'any' && !hasAny(c, answers.colour)) return false;
+        return true;
+      });
+      return list.map(function (c, n) {
+        var score = 0;
+        if (answers.style === 'any' || hasAny(c, answers.style)) score += 2;
+        if (answers.spend === 'any' || hasAny(c, answers.spend)) score += 2;
+        return { card: c, score: score, n: n };
+      }).sort(function (a, b) { return b.score - a.score || a.n - b.n; });
+    }
+
+    function finish() {
+      var exact = true;
+      var ranked = pick(true, true);
+      if (!ranked.length) { ranked = pick(false, true); exact = false; }
+      if (!ranked.length) { ranked = pick(false, false); exact = false; }
+      var top = ranked.slice(0, MAX);
+      var fullCount = top.filter(function (r) { return r.score === 4; }).length;
+      if (!fullCount) exact = false;
+      var chosen = top.map(function (r) { return r.card; });
+      cards.forEach(function (c) { c.hidden = chosen.indexOf(c) === -1; });
+      chosen.forEach(function (c) { c.parentNode.appendChild(c); });
+      line.textContent = !chosen.length
+        ? 'Nothing in stock fits right now. Have a look at the whole range.'
+        : !exact
+          ? "Nothing fits all four, so here's the closest."
+          : fullCount === chosen.length
+            ? (chosen.length === 1 ? "Here's the one we'd open." : "Here's what we'd open.")
+            : (fullCount === 1 ? "Our pick first, then the closest after it." : "Our picks first, then the closest after them.");
+      quiz.hidden = true;
+      result.hidden = false;
+      line.focus({ preventScroll: true });
+      result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    root.addEventListener('click', function (evt) {
+      var opt = evt.target.closest('.tk-finder__opt');
+      if (opt && quiz.contains(opt)) {
+        var step = opt.closest('[data-tk-step]');
+        answers[step.getAttribute('data-tk-step')] = opt.getAttribute('data-value');
+        if (current < steps.length - 1) show(current + 1); else finish();
+        return;
+      }
+      if (evt.target.closest('[data-tk-back]')) { if (current > 0) show(current - 1); return; }
+      if (evt.target.closest('[data-tk-again]')) {
+        answers = {};
+        result.hidden = true;
+        quiz.hidden = false;
+        show(0);
+        root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    show(0);
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Tikves wine finder",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Heading", "default": "Find your wine" },
+    { "type": "textarea", "id": "intro", "label": "Intro line", "default": "Four quick questions. Then we'll pick a few bottles for you." }
+  ],
+  "blocks": [
+    {
+      "type": "occasion",
+      "name": "Food answer",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Answer label" },
+        { "type": "product_list", "id": "products", "label": "Wines that go with it", "limit": 50, "info": "Keep the same as the matching occasion collection." }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Tikves wine finder" } ]
+}
+{% endschema %}
