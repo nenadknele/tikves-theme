@@ -5,11 +5,14 @@
   never in code.
 
   Operator ruling 28 Oct 2026, second pass: shop by collection as a
-  row of six small drawn tiles, about six across a phone like Overtone,
-  swiping for the rest with a short label under each, after the
-  Overtone shop by category block, placed on the homepage after the
-  grapes section. Dots under the row on mobile. On desktop all tiles sit
-  in one row with no scrolling.
+  row of small drawn tiles, about six across a phone like Overtone,
+  swiping for the rest. On a phone the row loops round like Overtone's:
+  the tiles render three times, the outer copies hidden from screen
+  readers and tab order, and the script keeps the view on the middle
+  copy. On desktop the copies are hidden and the row stands still.
+  A short label sits under each drawing. Placed on the homepage after the
+  grapes section, where Overtone puts theirs. Dots under the row on
+  mobile. On desktop all tiles sit in one row with no scrolling.
   Each tile shows its drawing from snippets/tikves-collection-art.liquid,
   keyed by collection handle and approved by the operator from a mockup.
   A collection with no drawing falls back to its collection image, or the
@@ -38,6 +41,9 @@
 
   {%- if layout == 'tiles' -%}
     <ul class="tk-chips__rail" data-tk-rail>
+      {%- for pass in (1..3) -%}
+      {%- assign is_clone = true -%}
+      {%- if pass == 2 -%}{%- assign is_clone = false -%}{%- endif -%}
       {%- for link in chip_menu.links -%}
         {%- liquid
           assign is_current = false
@@ -58,10 +64,10 @@
             endif
           endif
         -%}
-        <li class="tk-chips__tile">
+        <li class="tk-chips__tile{% if is_clone %} tk-chips__tile--clone{% endif %}"{% if is_clone %} aria-hidden="true"{% else %} data-tk-real{% endif %}>
           <a href="{{ link.url }}"
              class="tk-tile{% if is_current %} is-current{% endif %}"
-             {%- if is_current %} aria-current="page"{% endif %}>
+             {%- if is_clone %} tabindex="-1"{% elsif is_current %} aria-current="page"{% endif %}>
             <span class="tk-tile__media{% if tile_art != blank %} tk-tile__media--art{% endif %}">
               {%- if tile_art != blank -%}
                 {{- tile_art -}}
@@ -77,6 +83,7 @@
             <span class="tk-tile__label">{{ link.title | escape }}</span>
           </a>
         </li>
+      {%- endfor -%}
       {%- endfor -%}
     </ul>
     <div class="tk-chips__dots" data-tk-dots aria-hidden="true">
@@ -134,6 +141,7 @@
   }
   #tk-chips-{{ section.id }} .tk-chips__rail::-webkit-scrollbar { display: none; }
   #tk-chips-{{ section.id }} .tk-chips__tile { margin: 0; scroll-snap-align: start; }
+  #tk-chips-{{ section.id }}.is-static .tk-chips__tile--clone { display: none; }
   #tk-chips-{{ section.id }} a.tk-tile,
   #tk-chips-{{ section.id }} a.tk-tile:hover,
   #tk-chips-{{ section.id }} a.tk-tile:focus {
@@ -263,6 +271,7 @@
       letter-spacing: 0.12em;
     }
     #tk-chips-{{ section.id }} .tk-chips__dots { display: none; }
+    #tk-chips-{{ section.id }} .tk-chips__tile--clone { display: none; }
     #tk-chips-{{ section.id }} .tk-chips__grid {
       grid-template-columns: repeat({{ chip_count }}, minmax(0, 1fr));
       gap: 14px;
@@ -288,17 +297,55 @@
     if (!root) return;
     var rail = root.querySelector('[data-tk-rail]');
     var dots = root.querySelectorAll('[data-tk-dots] .tk-chips__dot');
-    if (!rail || !dots.length) return;
-    var ticking = false;
-    function update() {
-      ticking = false;
-      var max = rail.scrollWidth - rail.clientWidth;
-      var i = max > 0 ? Math.round((rail.scrollLeft / max) * (dots.length - 1)) : 0;
+    var real = rail ? rail.querySelectorAll('[data-tk-real]') : [];
+    if (!rail || !real.length) return;
+    var mq = window.matchMedia('(max-width: 768px)');
+    var n = real.length, setW = 0, step = 0, timer = null;
+
+    function measure() {
+      var first = rail.firstElementChild;
+      setW = real[0].offsetLeft - first.offsetLeft;
+      step = n > 1 ? (real[1].offsetLeft - real[0].offsetLeft) : setW;
+    }
+    function looping() {
+      return mq.matches && setW > 0 && rail.scrollWidth > rail.clientWidth;
+    }
+    function jump(to) {
+      var snap = rail.style.scrollSnapType;
+      rail.style.scrollSnapType = 'none';
+      rail.scrollLeft = to;
+      window.requestAnimationFrame(function () { rail.style.scrollSnapType = snap; });
+    }
+    function setDots() {
+      if (!dots.length) return;
+      var tiles = rail.children, base = tiles[0].offsetLeft, best = 0, bd = Infinity;
+      for (var k = 0; k < tiles.length; k++) {
+        if (tiles[k].offsetParent === null) continue;
+        var dist = Math.abs(tiles[k].offsetLeft - base - rail.scrollLeft);
+        if (dist < bd) { bd = dist; best = k; }
+      }
+      var i = mq.matches ? best % n : Math.max(0, best - n);
       for (var d = 0; d < dots.length; d++) dots[d].classList.toggle('is-on', d === i);
     }
+    function settle() {
+      if (!looping()) return;
+      if (rail.scrollLeft < setW - step / 2) jump(rail.scrollLeft + setW);
+      else if (rail.scrollLeft >= setW * 2 - step / 2) jump(rail.scrollLeft - setW);
+    }
+    function init() {
+      root.classList.toggle('is-static', !mq.matches);
+      measure();
+      if (looping()) jump(setW);
+      setDots();
+    }
     rail.addEventListener('scroll', function () {
-      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+      setDots();
+      clearTimeout(timer);
+      timer = setTimeout(settle, 140);
     }, { passive: true });
+    if (mq.addEventListener) mq.addEventListener('change', init);
+    window.addEventListener('resize', function () { measure(); });
+    init();
   })();
 </script>
 {%- endif -%}
