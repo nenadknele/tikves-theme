@@ -314,8 +314,8 @@
         "text_size": 12,
         "text_size_desktop": 13,
         "stretch_desktop": true,
-        "padding_top": 10,
-        "padding_bottom": 2,
+        "padding_top": 12,
+        "padding_bottom": 4,
         "layout": "photos"
       }
     },
