@@ -1,0 +1,72 @@
+{
+  "sections": {
+    "find": {
+      "type": "tikves-find-your-wine",
+      "blocks": {
+        "roast": {
+          "type": "occasion",
+          "settings": {
+            "collection": "sunday-roast",
+            "label": "Sunday roast",
+            "result_heading": "For a Sunday Roast",
+            "skip_colour": false
+          }
+        },
+        "barbecue": {
+          "type": "occasion",
+          "settings": {
+            "collection": "barbecue-and-grills",
+            "label": "Barbecue and grills",
+            "result_heading": "For the Barbecue",
+            "skip_colour": false
+          }
+        },
+        "fish": {
+          "type": "occasion",
+          "settings": {
+            "collection": "fish-and-seafood",
+            "label": "Fish and seafood",
+            "result_heading": "For Fish and Seafood",
+            "skip_colour": false
+          }
+        },
+        "cheese": {
+          "type": "occasion",
+          "settings": {
+            "collection": "cheese-board",
+            "label": "Cheese board",
+            "result_heading": "For the Cheese Board",
+            "skip_colour": false
+          }
+        },
+        "gift": {
+          "type": "occasion",
+          "settings": {
+            "collection": "gifts",
+            "label": "A gift",
+            "result_heading": "A Gift",
+            "skip_colour": true
+          }
+        }
+      },
+      "block_order": ["roast", "barbecue", "fish", "cheese", "gift"],
+      "settings": {
+        "title": "Find Your Wine",
+        "intro": "Two quick questions, then a bottle to open.",
+        "q1": "What's It For?",
+        "q2": "Red, White or Rosé?",
+        "red_label": "Red",
+        "white_label": "White",
+        "rose_label": "Rosé",
+        "any_label": "You choose",
+        "limit": 3,
+        "empty_note": "Nothing in {colour} for that yet, so here is what we would open.",
+        "see_all_label": "See all {collection}",
+        "change_label": "Change",
+        "change_colour_label": "Change the colour",
+        "restart_label": "Start again"
+      }
+    }
+  },
+  "order": ["find"]
+}
