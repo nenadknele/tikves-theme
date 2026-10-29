@@ -150,9 +150,9 @@
         "image": "shopify://shop_images/SET-single-vineyards-2000x2000-v2.jpg",
         "media_position": "left",
         "title": "Not Sure Where to Start?",
-        "text": "<p>A small set built to be a first order. Enough to find out what you like without guessing at a single bottle.</p>",
-        "link_label": "Start here",
-        "link_url": "shopify://collections/sets"
+        "text": "<p>Two quick questions. Say what it's for and we'll show you the bottles that fit.</p>",
+        "link_label": "Find your wine",
+        "link_url": "shopify://pages/find-your-wine"
       }
     },
     "mw_voices": {
