@@ -129,3 +129,29 @@
   sections/popup-group.json, 15) after the last of those is answered or
   closed. The waiting lives in theme.NewsletterPopup in assets/theme.js.
 {%- endcomment -%}
+
+{%- comment -%}
+  IMAGES SHOW AS SOON AS THEY ARRIVE. 29 Oct 2026, speed. theme.css holds
+  every theme image (the image-element class) at opacity 0 until the
+  deferred scripts mark it aos-animate, which on a phone happens about
+  3.4 s into the load. So a product or collection image had downloaded and
+  then sat invisible for seconds, and the largest paint waited for the
+  scripts instead of the picture. Now an image paints the moment it
+  arrives. What goes: the half-second fade on images. What stays: the
+  second photo that fades in when a card is hovered on desktop, because
+  that fade sits on its own layer, not on the image.
+
+  The product page gallery (photoswipe__image) is left as it was. Its first
+  photo already shows early, and when the gallery script moves the photo
+  into its slider, a photo without the fade counts as a brand new paint,
+  which measured the product page about 4 s slower in Lighthouse. To undo,
+  delete the style block below.
+{%- endcomment -%}
+{% style %}
+  .image-element:not(.photoswipe__image) {
+    opacity: 1;
+  }
+  .aos-animate[data-aos=image-fade-in] .image-element:not(.photoswipe__image) {
+    animation: none;
+  }
+{% endstyle %}
