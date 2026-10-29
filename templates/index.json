@@ -23,7 +23,7 @@
         "head_desktop": 32,
         "head_gap_mobile": 20,
         "head_gap_desktop": 32,
-        "head_caps": true,
+        "head_caps": false,
         "head_bold": true,
         "tile_mobile": 22,
         "tile_desktop": 28,
@@ -41,9 +41,9 @@
         "image_link_label": "Shop the three single vineyard wines",
         "focal_desktop": "center center",
         "focal_mobile": "center center",
-        "heading": "One Vineyard Per Bottle",
+        "heading": "One vineyard per bottle",
         "heading_tag": "h1",
-        "title_caps": true,
+        "title_caps": false,
         "subheading": "Barovo, Bela Voda, and Babuna. Two reds and a white from Tikveš. Each from one named vineyard.",
         "text_panel": false,
         "stack_mobile": true,
@@ -93,7 +93,7 @@
       "settings": {
         "image": "shopify://shop_images/homepage-thetable-3.jpg",
         "media_position": "left",
-        "title": "Grapes You Have Not Met Yet",
+        "title": "Grapes you have not met yet",
         "text": "<p>Vranec, Temjanika, Smederevka. Names that mean nothing in London and everything where they come from. Every page tells you what it tastes like and what to eat with it, so you can order one without knowing the word.</p>",
         "link_label": "Shop all wines",
         "link_url": "shopify://collections/all-wines"
@@ -104,7 +104,7 @@
       "settings": {
         "image": "shopify://shop_images/homepage-winery-2.jpg",
         "media_position": "right",
-        "title": "Straight From The Winery",
+        "title": "Straight from the winery",
         "text": "<p>Most wine from this part of Europe reaches a UK shelf through an importer, then a distributor, then a retailer. Ours does not. We buy it at the winery and we ship it here. That is the whole chain.</p>",
         "link_label": "How we buy our wine",
         "link_url": "shopify://pages/about-us"
@@ -127,7 +127,7 @@
       "settings": {
         "image": "shopify://shop_images/HOME-TILE-precision-bela-voda-label-2000x2000.jpg",
         "media_position": "left",
-        "title": "Medals Belong To Vintages, Not Labels",
+        "title": "Medals belong to vintages, not labels",
         "text": "<p>A wine wins a medal in one year, in one competition, for one vintage. We name which. When the bottle we are selling does not carry the award, we say so on the page.</p>",
         "link_label": "How we name medals",
         "link_url": "shopify://pages/about-us"
@@ -138,7 +138,7 @@
       "settings": {
         "image": "shopify://shop_images/homepage-hero-1.jpg",
         "media_position": "right",
-        "title": "Every Bottle Checked By Hand",
+        "title": "Every bottle checked by hand",
         "text": "<p>Every case is opened and read before it ships. Vintage on the label, condition of the bottle, the lot. One person does it and he does it by hand.</p>",
         "link_label": "How we deliver",
         "link_url": "shopify://pages/delivery"
@@ -200,7 +200,7 @@
         "image2": "shopify://shop_images/IMG_6277.jpg",
         "image2_mask": "portrait",
         "subtitle": "Kumova rakija",
-        "title": "A Small Glass With Dessert",
+        "title": "A small glass with dessert",
         "heading_size": "h2",
         "text": "<p>Kumova Žolta is the golden one. Dried apricot, honeyed citrus and vanilla, with a long toasted finish. Grape brandy from the Tikveš winery.</p>",
         "button_label": "Shop Now",
@@ -237,9 +237,9 @@
         "image_link_label": "Shop the range",
         "focal_desktop": "center center",
         "focal_mobile": "center top",
-        "heading": "Wine Worth Knowing",
+        "heading": "Wine worth knowing",
         "heading_tag": "h2",
-        "title_caps": true,
+        "title_caps": false,
         "subheading": "Macedonian and Rhône wines, delivered across Great Britain. We tell you which vintage won which medal, and when it didn't.",
         "text_panel": true,
         "stack_mobile": true,
@@ -263,7 +263,7 @@
     "video_band": {
       "type": "hero-video",
       "settings": {
-        "title": "First Light Over Tikveš",
+        "title": "First light over Tikveš",
         "title_size": 60,
         "subheading": "The valley behind our Macedonian wines. One bottle of Alexandria white, on a barrel, at sunrise.",
         "link_text": "Shop the whites",
