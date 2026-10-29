@@ -186,10 +186,18 @@
         b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
       });
     }
+    function headerBottom() {
+      var h = document.querySelector('.header-wrapper') || document.querySelector('#HeaderWrapper') || document.querySelector('.site-header');
+      var b = h ? h.getBoundingClientRect().bottom : 0;
+      return Math.max(0, b);
+    }
     function go(n) {
       Object.keys(steps).forEach(function (k) { steps[k].hidden = (k !== String(n)); });
-      var top = steps[n].getBoundingClientRect().top + window.pageYOffset - 96;
-      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+      var rect = steps[n].getBoundingClientRect();
+      var pad = headerBottom() + 24;
+      if (rect.top < pad || rect.top > window.innerHeight * 0.6) {
+        window.scrollTo({ top: Math.max(0, rect.top + window.pageYOffset - pad), behavior: 'smooth' });
+      }
     }
     function showResult() {
       var key = occasion + ':' + (skip ? 'any' : colour);
