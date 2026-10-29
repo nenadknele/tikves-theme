@@ -24,6 +24,7 @@
   assign s = section.settings
   assign limit = s.limit | default: 3
   assign colours = 'red,white,rose,any' | split: ','
+  assign lead = s.lead | replace: ' ', '' | downcase | split: ','
 -%}
 
 <div id="tkfy-{{ section.id }}" class="tkfy" data-section-id="{{ section.id }}" data-section-type="tikves-find-your-wine">
@@ -119,14 +120,32 @@
             {%- endif -%}
             <div class="tkfy__cards">
               {%- assign shown = 0 -%}
-              {%- comment -%} Available bottles first. {%- endcomment -%}
+              {%- comment -%}
+                29 Oct 2026, operator: the flagships lead. The bottles named in
+                the Lead with setting come first, in that order, when they are
+                in this collection, in this colour, and can be bought today.
+              {%- endcomment -%}
+              {%- for h in lead -%}
+                {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+                {%- for product in col.products -%}
+                  {%- if product.handle == h and product.available -%}
+                    {%- if want == '' or product.type == want -%}
+                      {%- render 'tikves-fyw-card', product: product, col: col -%}
+                      {%- assign shown = shown | plus: 1 -%}
+                    {%- endif -%}
+                  {%- endif -%}
+                {%- endfor -%}
+              {%- endfor -%}
+              {%- comment -%} Then the rest, available, in the collection's own order. {%- endcomment -%}
               {%- for product in col.products -%}
                 {%- if shown >= limit -%}{%- break -%}{%- endif -%}
                 {%- if product.available -%}
-                  {%- if want == '' or product.type == want -%}
-                    {%- render 'tikves-fyw-card', product: product, col: col -%}
-                    {%- assign shown = shown | plus: 1 -%}
-                  {%- endif -%}
+                  {%- unless lead contains product.handle -%}
+                    {%- if want == '' or product.type == want -%}
+                      {%- render 'tikves-fyw-card', product: product, col: col -%}
+                      {%- assign shown = shown | plus: 1 -%}
+                    {%- endif -%}
+                  {%- endunless -%}
                 {%- endif -%}
               {%- endfor -%}
               {%- comment -%} Then sold-out ones, to fill the row. {%- endcomment -%}
@@ -445,6 +464,7 @@
     { "type": "text", "id": "rose_label", "label": "Rosé label", "default": "Rosé" },
     { "type": "text", "id": "any_label", "label": "No preference label", "default": "You choose" },
     { "type": "range", "id": "limit", "label": "Bottles per result", "min": 1, "max": 4, "step": 1, "default": 3 },
+    { "type": "text", "id": "lead", "label": "Lead with", "default": "barovo-red,babuna-red,bela-voda-white", "info": "Product handles, comma separated. These come first in any result they fit, in this order. The rest follow in the collection's own order." },
     { "type": "text", "id": "empty_note", "label": "Line when the colour has nothing", "default": "Nothing in [colour] for that yet, so here is what we would open.", "info": "[colour] becomes the colour asked for." },
     { "type": "text", "id": "sold_out_note", "label": "Line when the colour is all sold out", "default": "Our [colour] for that is sold out just now, so here is what we would open.", "info": "[colour] becomes the colour asked for." },
     { "type": "text", "id": "see_all_label", "label": "See all button", "default": "See all [collection]", "info": "[collection] becomes the collection name." },
