@@ -1,0 +1,471 @@
+{%- comment -%}
+  TIKVES LONDON . FIND YOUR WINE
+  Added 29 Oct 2026, operator. Our version of the Overtone shade quiz and
+  the Boom "find my match": two questions, then a bottle to open.
+
+  Question one is the occasion. Each answer is a block pointing at a real
+  collection, so the result is whatever that collection holds today.
+  Question two is the colour. A block can skip it (gifts).
+
+  Everything renders in Liquid when the page loads. For each occasion and
+  each colour the matching bottles are written out, hidden, and a few
+  lines of script show the one result that fits the answers. No app, no
+  quiz tool, nothing fetched. Available bottles come first; a sold-out
+  bottle stays in and reads as sold out. Prices come from the store.
+
+  If an occasion has nothing in the colour asked for, the result says so
+  and shows what we would open instead.
+
+  Cards are the Best sellers card, in snippets/tikves-fyw-card.liquid.
+  Keep the copy inside the banned list in tikves-london.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign limit = s.limit | default: 3
+  assign colours = 'red,white,rose,any' | split: ','
+-%}
+
+<div id="tkfy-{{ section.id }}" class="tkfy" data-section-id="{{ section.id }}" data-section-type="tikves-find-your-wine">
+  <div class="page-width">
+
+    <header class="tkfy__head">
+      {%- if s.title != blank -%}<h1 class="tkfy__title">{{ s.title | escape }}</h1>{%- endif -%}
+      {%- if s.intro != blank -%}<p class="tkfy__intro">{{ s.intro | escape }}</p>{%- endif -%}
+    </header>
+
+    {%- comment -%} Step one: the occasion. {%- endcomment -%}
+    <section class="tkfy__step" data-tkfy-step="1" aria-labelledby="tkfy-q1-{{ section.id }}">
+      <h2 class="tkfy__q" id="tkfy-q1-{{ section.id }}">{{ s.q1 | escape }}</h2>
+      <div class="tkfy__options" role="group" aria-label="{{ s.q1 | escape }}">
+        {%- for block in section.blocks -%}
+          {%- assign col = collections[block.settings.collection] -%}
+          {%- if block.settings.collection == blank or col.empty? -%}{%- continue -%}{%- endif -%}
+          {%- assign label = block.settings.label | default: col.title -%}
+          <button type="button" class="tkfy__opt" data-tkfy-occasion="{{ col.handle }}"{% if block.settings.skip_colour %} data-tkfy-skip="true"{% endif %} {{ block.shopify_attributes }}>{{ label | escape }}</button>
+        {%- endfor -%}
+      </div>
+    </section>
+
+    {%- comment -%} Step two: the colour. {%- endcomment -%}
+    <section class="tkfy__step" data-tkfy-step="2" aria-labelledby="tkfy-q2-{{ section.id }}" hidden>
+      <p class="tkfy__crumb"><span data-tkfy-crumb></span> <button type="button" class="tkfy__change" data-tkfy-back="1">{{ s.change_label | escape }}</button></p>
+      <h2 class="tkfy__q" id="tkfy-q2-{{ section.id }}">{{ s.q2 | escape }}</h2>
+      <div class="tkfy__options" role="group" aria-label="{{ s.q2 | escape }}">
+        <button type="button" class="tkfy__opt" data-tkfy-colour="red">{{ s.red_label | escape }}</button>
+        <button type="button" class="tkfy__opt" data-tkfy-colour="white">{{ s.white_label | escape }}</button>
+        <button type="button" class="tkfy__opt" data-tkfy-colour="rose">{{ s.rose_label | escape }}</button>
+        <button type="button" class="tkfy__opt" data-tkfy-colour="any">{{ s.any_label | escape }}</button>
+      </div>
+    </section>
+
+    {%- comment -%} Step three: the result, one block per occasion and colour. {%- endcomment -%}
+    <section class="tkfy__step" data-tkfy-step="3" hidden>
+      {%- for block in section.blocks -%}
+        {%- assign col = collections[block.settings.collection] -%}
+        {%- if block.settings.collection == blank or col.empty? -%}{%- continue -%}{%- endif -%}
+        {%- assign result_heading = block.settings.result_heading | default: col.title -%}
+        {%- assign col_line = col.description | strip_html | strip -%}
+
+        {%- for c in colours -%}
+          {%- liquid
+            if block.settings.skip_colour and c != 'any'
+              continue
+            endif
+            case c
+              when 'red'
+                assign want = 'Red Wine'
+                assign cw = s.red_label | downcase
+              when 'white'
+                assign want = 'White Wine'
+                assign cw = s.white_label | downcase
+              when 'rose'
+                assign want = 'Rosé Wine'
+                assign cw = s.rose_label | downcase
+              else
+                assign want = ''
+                assign cw = ''
+            endcase
+
+            comment
+              Dry pass: how many bottles match this colour, and how many
+              of those can be bought today.
+            endcomment
+            assign matches = 0
+            assign matches_avail = 0
+            for product in col.products
+              if want == '' or product.type == want
+                assign matches = matches | plus: 1
+                if product.available
+                  assign matches_avail = matches_avail | plus: 1
+                endif
+              endif
+            endfor
+            assign note = ''
+            if matches == 0
+              assign note = s.empty_note
+            elsif matches_avail == 0
+              assign note = s.sold_out_note
+            endif
+            if note != ''
+              assign want = ''
+            endif
+          -%}
+          <div class="tkfy__result" data-tkfy-result="{{ col.handle }}:{{ c }}" hidden>
+            <h2 class="tkfy__q">{{ result_heading | escape }}</h2>
+            {%- if col_line != blank -%}<p class="tkfy__line-under">{{ col_line }}</p>{%- endif -%}
+            {%- if note != '' -%}
+              <p class="tkfy__note">{{ note | replace: '[colour]', cw | escape }}</p>
+            {%- endif -%}
+            <div class="tkfy__cards">
+              {%- assign shown = 0 -%}
+              {%- comment -%} Available bottles first. {%- endcomment -%}
+              {%- for product in col.products -%}
+                {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+                {%- if product.available -%}
+                  {%- if want == '' or product.type == want -%}
+                    {%- render 'tikves-fyw-card', product: product, col: col -%}
+                    {%- assign shown = shown | plus: 1 -%}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- comment -%} Then sold-out ones, to fill the row. {%- endcomment -%}
+              {%- for product in col.products -%}
+                {%- if shown >= limit -%}{%- break -%}{%- endif -%}
+                {%- unless product.available -%}
+                  {%- if want == '' or product.type == want -%}
+                    {%- render 'tikves-fyw-card', product: product, col: col -%}
+                    {%- assign shown = shown | plus: 1 -%}
+                  {%- endif -%}
+                {%- endunless -%}
+              {%- endfor -%}
+            </div>
+            <div class="tkfy__after">
+              <a class="tkfy__browse" href="{{ col.url }}">{{ s.see_all_label | replace: '[collection]', col.title | escape }}</a>
+            </div>
+          </div>
+        {%- endfor -%}
+      {%- endfor -%}
+
+      <p class="tkfy__again">
+        <button type="button" class="tkfy__change" data-tkfy-back="2" data-tkfy-colour-back>{{ s.change_colour_label | escape }}</button>
+        <button type="button" class="tkfy__change" data-tkfy-restart>{{ s.restart_label | escape }}</button>
+      </p>
+    </section>
+
+    <noscript>
+      <ul class="tkfy__noscript">
+        {%- for block in section.blocks -%}
+          {%- assign col = collections[block.settings.collection] -%}
+          {%- if block.settings.collection == blank or col.empty? -%}{%- continue -%}{%- endif -%}
+          <li><a href="{{ col.url }}">{{ block.settings.label | default: col.title | escape }}</a></li>
+        {%- endfor -%}
+      </ul>
+    </noscript>
+
+  </div>
+</div>
+
+{%- render 'tikves-gatc-handler' -%}
+
+<script>
+  (function () {
+    var root = document.getElementById('tkfy-{{ section.id }}');
+    if (!root) return;
+    var steps = {};
+    [].slice.call(root.querySelectorAll('[data-tkfy-step]')).forEach(function (el) {
+      steps[el.getAttribute('data-tkfy-step')] = el;
+    });
+    var results = [].slice.call(root.querySelectorAll('[data-tkfy-result]'));
+    var crumb = root.querySelector('[data-tkfy-crumb]');
+    var colourBack = root.querySelector('[data-tkfy-colour-back]');
+    var occasion = null, occasionLabel = '', skip = false, colour = null;
+
+    function press(group, btn) {
+      [].slice.call(group.querySelectorAll('.tkfy__opt')).forEach(function (b) {
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      });
+    }
+    function headerBottom() {
+      var h = document.querySelector('.header-wrapper') || document.querySelector('#HeaderWrapper') || document.querySelector('.site-header');
+      var b = h ? h.getBoundingClientRect().bottom : 0;
+      return Math.max(0, b);
+    }
+    function go(n) {
+      Object.keys(steps).forEach(function (k) { steps[k].hidden = (k !== String(n)); });
+      var rect = steps[n].getBoundingClientRect();
+      var pad = headerBottom() + 24;
+      if (rect.top < pad || rect.top > window.innerHeight * 0.6) {
+        window.scrollTo({ top: Math.max(0, rect.top + window.pageYOffset - pad), behavior: 'smooth' });
+      }
+    }
+    function showResult() {
+      var key = occasion + ':' + (skip ? 'any' : colour);
+      var found = false;
+      results.forEach(function (r) {
+        var on = r.getAttribute('data-tkfy-result') === key;
+        r.hidden = !on;
+        if (on) found = true;
+      });
+      if (colourBack) colourBack.hidden = skip;
+      if (!found) { go(1); return; }
+      go(3);
+    }
+
+    [].slice.call(root.querySelectorAll('[data-tkfy-occasion]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        occasion = btn.getAttribute('data-tkfy-occasion');
+        occasionLabel = btn.textContent.trim();
+        skip = btn.getAttribute('data-tkfy-skip') === 'true';
+        press(steps['1'], btn);
+        if (crumb) crumb.textContent = occasionLabel;
+        if (skip) { colour = 'any'; showResult(); return; }
+        go(2);
+      });
+    });
+    [].slice.call(root.querySelectorAll('[data-tkfy-colour]')).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        colour = btn.getAttribute('data-tkfy-colour');
+        press(steps['2'], btn);
+        showResult();
+      });
+    });
+    [].slice.call(root.querySelectorAll('[data-tkfy-back]')).forEach(function (btn) {
+      btn.addEventListener('click', function () { go(btn.getAttribute('data-tkfy-back')); });
+    });
+    var restart = root.querySelector('[data-tkfy-restart]');
+    if (restart) restart.addEventListener('click', function () {
+      occasion = null; colour = null; skip = false;
+      press(steps['1'], null); press(steps['2'], null);
+      go(1);
+    });
+  })();
+</script>
+
+{% style %}
+  #tkfy-{{ section.id }} {
+    padding: 40px 0 56px;
+    color: #1F2328;
+  }
+  #tkfy-{{ section.id }} .tkfy__head { text-align: center; margin: 0 0 32px; }
+  #tkfy-{{ section.id }} .tkfy__title {
+    margin: 0 0 10px;
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 700;
+  }
+  #tkfy-{{ section.id }} .tkfy__intro {
+    max-width: 46ch;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+  #tkfy-{{ section.id }} .tkfy__step { scroll-margin-top: 96px; }
+  #tkfy-{{ section.id }} .tkfy__step[hidden],
+  #tkfy-{{ section.id }} .tkfy__result[hidden],
+  #tkfy-{{ section.id }} [hidden] { display: none !important; }
+  #tkfy-{{ section.id }} .tkfy__q {
+    margin: 0 0 20px;
+    text-align: center;
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 600;
+  }
+  #tkfy-{{ section.id }} .tkfy__crumb {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 14px;
+    opacity: 0.8;
+  }
+  #tkfy-{{ section.id }} .tkfy__options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  #tkfy-{{ section.id }} .tkfy__opt {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 17px 22px;
+    border: 1px solid #1F2328;
+    border-radius: 999px;
+    background: #F6EEE8;
+    color: #1F2328;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.3;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  #tkfy-{{ section.id }} .tkfy__opt:hover,
+  #tkfy-{{ section.id }} .tkfy__opt:focus-visible,
+  #tkfy-{{ section.id }} .tkfy__opt[aria-pressed="true"] {
+    background: #1F2328;
+    color: #F6EEE8;
+    outline: none;
+  }
+  #tkfy-{{ section.id }} .tkfy__change {
+    padding: 0;
+    margin: 0 0 0 6px;
+    border: 0;
+    background: none;
+    color: #1F2328;
+    font: inherit;
+    font-size: 14px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+  #tkfy-{{ section.id }} .tkfy__line-under {
+    max-width: 46ch;
+    margin: -8px auto 20px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 1.5;
+    opacity: 0.8;
+  }
+  #tkfy-{{ section.id }} .tkfy__note {
+    max-width: 46ch;
+    margin: -6px auto 20px;
+    text-align: center;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  #tkfy-{{ section.id }} .tkfy__cards {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  #tkfy-{{ section.id }} .tkfy__frame { display: block; aspect-ratio: 7 / 6; background: #F6EEE8; overflow: hidden; }
+  #tkfy-{{ section.id }} .tkfy__frame img { width: 100%; height: 100%; object-fit: contain; display: block; }
+  #tkfy-{{ section.id }} .tkfy__meta { padding: 12px 0 0; text-align: center; }
+  #tkfy-{{ section.id }} .tkfy__name { display: block; text-decoration: none; margin: 0 0 4px; }
+  #tkfy-{{ section.id }} .tkfy__line { font-size: 14px; opacity: 0.75; margin: 0 0 6px; }
+  #tkfy-{{ section.id }} .tkfy__price { font-size: 16px; margin: 0 0 10px; }
+  #tkfy-{{ section.id }} .tkfy__form { margin: 0; }
+  #tkfy-{{ section.id }} .tkfy__btn {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px 18px;
+    border: 1px solid #A64029;
+    border-radius: 999px;
+    background: #A64029;
+    color: #FFFFFF;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    line-height: 1.3;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  #tkfy-{{ section.id }} .tkfy__btn:hover { background: #8E3623; border-color: #8E3623; color: #FFFFFF; }
+  #tkfy-{{ section.id }} .tkfy__btn[disabled] { background: transparent; color: #1F2328; border-color: #B9AC9B; opacity: 0.7; cursor: default; }
+  #tkfy-{{ section.id }} .tkfy__after { text-align: center; margin: 28px 0 0; }
+  #tkfy-{{ section.id }} .tkfy__browse {
+    display: inline-block;
+    min-width: 220px;
+    box-sizing: border-box;
+    padding: 15px 28px;
+    border-radius: 999px;
+    background: #F6EEE8;
+    color: #1F2328;
+    border: 1px solid #1F2328;
+    font-size: 13px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  #tkfy-{{ section.id }} .tkfy__browse:hover,
+  #tkfy-{{ section.id }} .tkfy__browse:focus-visible { background: #1F2328; color: #F6EEE8; }
+  #tkfy-{{ section.id }} .tkfy__again {
+    margin: 24px 0 0;
+    text-align: center;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+  }
+  #tkfy-{{ section.id }} .tkfy__again .tkfy__change { margin: 0; }
+  #tkfy-{{ section.id }} .tkfy__noscript { list-style: none; padding: 0; margin: 24px 0 0; text-align: center; }
+  #tkfy-{{ section.id }} .tkfy__noscript li { margin: 0 0 10px; }
+
+  @media only screen and (min-width: 769px) {
+    #tkfy-{{ section.id }} { padding: 64px 0 80px; }
+    #tkfy-{{ section.id }} .tkfy__title { font-size: 40px; }
+    #tkfy-{{ section.id }} .tkfy__q { font-size: 28px; margin-bottom: 24px; }
+    #tkfy-{{ section.id }} .tkfy__options {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      max-width: 760px;
+    }
+    #tkfy-{{ section.id }} .tkfy__opt { width: auto; min-width: 200px; }
+    #tkfy-{{ section.id }} .tkfy__cards {
+      display: grid;
+      grid-template-columns: repeat({{ limit }}, minmax(0, 1fr));
+      gap: 24px;
+      max-width: 920px;
+      align-items: stretch;
+    }
+    #tkfy-{{ section.id }} .tkfy__card { display: flex; flex-direction: column; }
+    #tkfy-{{ section.id }} .tkfy__meta { flex: 1 1 auto; display: flex; flex-direction: column; padding-top: 14px; }
+    #tkfy-{{ section.id }} .tkfy__line { font-size: 12px; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #tkfy-{{ section.id }} .tkfy__meta > .tkfy__btn,
+    #tkfy-{{ section.id }} .tkfy__meta > .tkfy__form { margin-top: auto; }
+    #tkfy-{{ section.id }} .tkfy__frame { aspect-ratio: 4 / 5; }
+    #tkfy-{{ section.id }} .tkfy__price { margin-bottom: 12px; }
+  }
+{% endstyle %}
+
+{% schema %}
+{
+  "name": "Tikves find your wine",
+  "class": "index-section",
+  "settings": [
+    { "type": "paragraph", "content": "Two questions, then a bottle. Each answer below is a collection; the result is whatever that collection holds, in the colour asked for." },
+    { "type": "text", "id": "title", "label": "Page heading", "default": "Find Your Wine" },
+    { "type": "textarea", "id": "intro", "label": "Line under the heading", "default": "Two quick questions, then a bottle to open." },
+    { "type": "text", "id": "q1", "label": "Question one", "default": "What's It For?" },
+    { "type": "text", "id": "q2", "label": "Question two", "default": "Red, White or Rosé?" },
+    { "type": "text", "id": "red_label", "label": "Red label", "default": "Red" },
+    { "type": "text", "id": "white_label", "label": "White label", "default": "White" },
+    { "type": "text", "id": "rose_label", "label": "Rosé label", "default": "Rosé" },
+    { "type": "text", "id": "any_label", "label": "No preference label", "default": "You choose" },
+    { "type": "range", "id": "limit", "label": "Bottles per result", "min": 1, "max": 4, "step": 1, "default": 3 },
+    { "type": "text", "id": "empty_note", "label": "Line when the colour has nothing", "default": "Nothing in [colour] for that yet, so here is what we would open.", "info": "[colour] becomes the colour asked for." },
+    { "type": "text", "id": "sold_out_note", "label": "Line when the colour is all sold out", "default": "Our [colour] for that is sold out just now, so here is what we would open.", "info": "[colour] becomes the colour asked for." },
+    { "type": "text", "id": "see_all_label", "label": "See all button", "default": "See all [collection]", "info": "[collection] becomes the collection name." },
+    { "type": "text", "id": "change_label", "label": "Change answer link", "default": "Change" },
+    { "type": "text", "id": "change_colour_label", "label": "Back to colour link", "default": "Change the colour" },
+    { "type": "text", "id": "restart_label", "label": "Start again link", "default": "Start again" }
+  ],
+  "blocks": [
+    {
+      "type": "occasion",
+      "name": "Occasion",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "label", "label": "Answer button", "info": "Leave empty to use the collection name." },
+        { "type": "text", "id": "result_heading", "label": "Result heading", "info": "Leave empty to use the collection name." },
+        { "type": "checkbox", "id": "skip_colour", "label": "Skip the colour question", "default": false, "info": "For gifts, where the colour does not apply." }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [{ "name": "Tikves find your wine", "category": "Tikves" }],
+  "disabled_on": { "groups": ["footer", "header", "custom.popups"] }
+}
+{% endschema %}

@@ -1,0 +1,50 @@
+{%- comment -%}
+  TIKVES LONDON . FIND YOUR WINE . CARD
+  One product card for the Find your wine results. The same shape as the
+  Best sellers card in tikves-singles: picture, name, tile line with ABV,
+  price from the store, Add to cart. A sold-out bottle stays in the result
+  and reads as sold out. Takes: product, col (the collection the result
+  came from, for the link).
+{%- endcomment -%}
+{%- liquid
+  assign v = product.selected_or_first_available_variant | default: product.variants.first
+  assign img = product.featured_media.preview_image
+  assign line = product.metafields.custom.tile_line.value
+  assign card_abv = product.metafields.wine.abv.value
+-%}
+<article class="tkfy__card" data-product-handle="{{ product.handle }}">
+  <a class="tkfy__frame" href="{{ product.url | within: col }}">
+    {%- if img != blank -%}
+      <img
+        src="{{ img | image_url: width: 800 }}"
+        srcset="{{ img | image_url: width: 400 }} 400w, {{ img | image_url: width: 600 }} 600w, {{ img | image_url: width: 800 }} 800w, {{ img | image_url: width: 1000 }} 1000w"
+        sizes="(min-width: 769px) 30vw, 100vw"
+        alt="{{ img.alt | default: product.title | escape }}"
+        width="{{ img.width }}"
+        height="{{ img.height }}"
+        loading="lazy">
+    {%- endif -%}
+  </a>
+  <div class="tkfy__meta">
+    <a class="tkfy__name grid-product__title grid-product__title--{{ settings.type_product_style }}" href="{{ product.url | within: col }}">{{ product.title }}</a>
+    {%- if line != blank or card_abv != blank -%}
+      <div class="tkfy__line">
+        {{- line -}}
+        {%- if line != blank and card_abv != blank %} · {% endif -%}
+        {%- if card_abv != blank -%}{{ card_abv }} ABV{%- endif -%}
+      </div>
+    {%- endif -%}
+    <div class="tkfy__price">{{ product.price | money }}</div>
+    {%- if product.available == false -%}
+      <button type="button" class="tkfy__btn" disabled aria-disabled="true">{{ 'products.product.sold_out' | t }}</button>
+    {%- elsif product.variants.size > 1 -%}
+      <a class="tkfy__btn" href="{{ product.url | within: col }}">{{ 'products.product.add_to_cart' | t }}</a>
+    {%- else -%}
+      <form class="tkfy__form" action="{{ routes.cart_add_url }}" method="post" data-tk-gatc>
+        <input type="hidden" name="id" value="{{ v.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit" class="tkfy__btn">{{ 'products.product.add_to_cart' | t }}</button>
+      </form>
+    {%- endif -%}
+  </div>
+</article>
