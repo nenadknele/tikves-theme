@@ -13,8 +13,8 @@
       "type": "tikves-home-design",
       "settings": {
         "band_color": "#eae3d9",
-        "keys_band": "ladder,singles,mw_voices,tk_kumova,tk_chips",
-        "keys_pad": "ladder,singles,mw_voices,newsletter,tk_chips,tk_kumova",
+        "keys_band": "ladder,best,singles,mw_voices,tk_kumova,tk_chips",
+        "keys_pad": "ladder,best,singles,mw_voices,newsletter,tk_chips,tk_kumova",
         "pad_mobile": 40,
         "pad_desktop": 64,
         "foot_gap_mobile": 48,
@@ -28,7 +28,7 @@
         "tile_mobile": 22,
         "tile_desktop": 28,
         "btn_size": 13,
-        "keys_all": "hero,ladder,education,region_image,singles,producer_text,mw_voices,trust,newsletter,tk_chips,tk_kumova,tile_precision,tile_checked,tile_start,video_band"
+        "keys_all": "hero,ladder,best,education,region_image,singles,producer_text,mw_voices,trust,newsletter,tk_chips,tk_kumova,tile_precision,tile_checked,tile_start,video_band"
       }
     },
     "hero": {
@@ -64,17 +64,16 @@
         "scrim": 50
       }
     },
-    "babuna_marquee": {
-      "type": "scrolling-text",
+    "best": {
+      "type": "tikves-singles",
       "settings": {
-        "text": "Babuna Red 2023 · Gold · International Wine Challenge 2026 · £29 a bottle",
-        "link": "shopify://products/babuna-red",
-        "text_size": 26,
-        "text_size_mobile": 16,
-        "color_scheme": "button",
-        "text_spacing": true,
-        "direction": "left",
-        "speed": 180
+        "title": "Best sellers",
+        "heading_size": "h3",
+        "intro": "The five bottles people buy most.",
+        "collection": "best-sellers",
+        "limit": 5,
+        "per_row": 5,
+        "link_label": ""
       }
     },
     "ladder": {
@@ -401,7 +400,7 @@
   "order": [
     "tk_design",
     "hero",
-    "babuna_marquee",
+    "best",
     "ladder",
     "education",
     "producer_text",

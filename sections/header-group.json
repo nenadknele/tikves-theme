@@ -25,9 +25,8 @@
         },
         "announcement_babuna_iwc": {
           "type": "announcement",
-          "disabled": true,
           "settings": {
-            "text": "Babuna Red 2023. Gold, IWC 2026.",
+            "text": "Babuna Red 2023. Gold, International Wine Challenge 2026.",
             "link_text": "£29 a bottle",
             "link": "shopify://products/babuna-red"
           }
