@@ -60,6 +60,7 @@
         "rose_label": "Rosé",
         "any_label": "You choose",
         "limit": 3,
+        "lead": "barovo-red,babuna-red,bela-voda-white",
         "empty_note": "Nothing in [colour] for that yet, so here is what we would open.",
         "sold_out_note": "Our [colour] for that is sold out just now, so here is what we would open.",
         "see_all_label": "See all [collection]",
