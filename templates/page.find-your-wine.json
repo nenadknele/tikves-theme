@@ -61,6 +61,7 @@
         "any_label": "You choose",
         "limit": 3,
         "empty_note": "Nothing in [colour] for that yet, so here is what we would open.",
+        "sold_out_note": "Our [colour] for that is sold out just now, so here is what we would open.",
         "see_all_label": "See all [collection]",
         "change_label": "Change",
         "change_colour_label": "Change the colour",

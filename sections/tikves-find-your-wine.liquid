@@ -88,25 +88,34 @@
             endcase
 
             comment
-              Dry pass: how many bottles match this colour at all.
+              Dry pass: how many bottles match this colour, and how many
+              of those can be bought today.
             endcomment
             assign matches = 0
+            assign matches_avail = 0
             for product in col.products
               if want == '' or product.type == want
                 assign matches = matches | plus: 1
+                if product.available
+                  assign matches_avail = matches_avail | plus: 1
+                endif
               endif
             endfor
-            assign fallback = false
+            assign note = ''
             if matches == 0
-              assign fallback = true
+              assign note = s.empty_note
+            elsif matches_avail == 0
+              assign note = s.sold_out_note
+            endif
+            if note != ''
               assign want = ''
             endif
           -%}
           <div class="tkfy__result" data-tkfy-result="{{ col.handle }}:{{ c }}" hidden>
             <h2 class="tkfy__q">{{ result_heading | escape }}</h2>
             {%- if col_line != blank -%}<p class="tkfy__line-under">{{ col_line }}</p>{%- endif -%}
-            {%- if fallback -%}
-              <p class="tkfy__note">{{ s.empty_note | replace: '[colour]', cw | escape }}</p>
+            {%- if note != '' -%}
+              <p class="tkfy__note">{{ note | replace: '[colour]', cw | escape }}</p>
             {%- endif -%}
             <div class="tkfy__cards">
               {%- assign shown = 0 -%}
@@ -429,6 +438,7 @@
     { "type": "text", "id": "any_label", "label": "No preference label", "default": "You choose" },
     { "type": "range", "id": "limit", "label": "Bottles per result", "min": 1, "max": 4, "step": 1, "default": 3 },
     { "type": "text", "id": "empty_note", "label": "Line when the colour has nothing", "default": "Nothing in [colour] for that yet, so here is what we would open.", "info": "[colour] becomes the colour asked for." },
+    { "type": "text", "id": "sold_out_note", "label": "Line when the colour is all sold out", "default": "Our [colour] for that is sold out just now, so here is what we would open.", "info": "[colour] becomes the colour asked for." },
     { "type": "text", "id": "see_all_label", "label": "See all button", "default": "See all [collection]", "info": "[collection] becomes the collection name." },
     { "type": "text", "id": "change_label", "label": "Change answer link", "default": "Change" },
     { "type": "text", "id": "change_colour_label", "label": "Back to colour link", "default": "Change the colour" },
