@@ -9,6 +9,17 @@
   endcapture
 -%}
 
+{%- comment -%}
+  29 Oct 2026, speed. These tiles sit at the top of a collection page, so
+  the first row is on the first screen and the first tile is the page's
+  largest image. It was lazy loaded, so the phone only asked for it late.
+  Now the first tile loads straight away at high priority and the second
+  loads straight away. The rest stay lazy. On a phone two tiles fill the
+  first row. Only the first group of tiles on a page does this (tk_eager,
+  set in snippets/subcollections.liquid). To undo, delete tk_tile and the
+  loading line below.
+{%- endcomment -%}
+{%- assign tk_tile = 0 -%}
 <div class="grid grid--uniform{% unless settings.collection_grid_gutter %} grid--no-gutters{% endunless %}">
   {%- for sub_collection_link in sub_collection_links -%}
     {%- if sub_collection_link.url contains '/collections/' -%}
@@ -20,6 +31,18 @@
 
       {%- if sub_collection != blank -%}
         {%- unless parent_url == sub_collection.url -%}
+          {%- liquid
+            assign tk_tile = tk_tile | plus: 1
+            if tk_eager != true
+              assign tk_loading = 'lazy'
+            elsif tk_tile == 1
+              assign tk_loading = false
+            elsif tk_tile == 2
+              assign tk_loading = 'eager'
+            else
+              assign tk_loading = 'lazy'
+            endif
+          -%}
           {%- render 'collection-grid-item',
             collection: sub_collection,
             gridView: gridView,
@@ -27,6 +50,7 @@
             per_row: per_row,
             sizeVariable: gridView,
             fallback: 'variable',
+            loading: tk_loading,
           -%}
         {%- endunless -%}
       {%- endif -%}
