@@ -279,7 +279,6 @@
     },
     "tk_chips": {
       "type": "tikves-collection-chips",
-      "disabled": true,
       "settings": {
         "menu": "collection-chips",
         "heading": "Shop by collection",
@@ -291,7 +290,8 @@
         "text_size_desktop": 13,
         "stretch_desktop": true,
         "padding_top": 0,
-        "padding_bottom": 0
+        "padding_bottom": 0,
+        "layout": "pills"
       }
     },
     "trust": {
@@ -404,7 +404,6 @@
     "ladder",
     "education",
     "producer_text",
-    "tk_chips",
     "singles",
     "tile_precision",
     "tile_checked",
@@ -415,6 +414,7 @@
     "region_image",
     "video_band",
     "trust",
+    "tk_chips",
     "newsletter"
   ]
 }
