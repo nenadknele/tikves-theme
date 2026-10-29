@@ -352,7 +352,6 @@
       "blocks": {
         "title": {
           "type": "title",
-          "disabled": true,
           "settings": {
             "title": "News From Tikveš",
             "heading_size": "h3"
@@ -360,19 +359,16 @@
         },
         "text": {
           "type": "text",
-          "disabled": true,
           "settings": {
             "text": "<p>A few emails a month. New releases, what has just landed, and now and then something about where the wine comes from.</p>"
           }
         },
         "form": {
           "type": "form",
-          "disabled": true,
           "settings": {}
         },
         "fineprint": {
           "type": "text",
-          "disabled": true,
           "settings": {
             "text": "<p>You must be 18 or over. Unsubscribe any time.</p>"
           }
@@ -384,7 +380,6 @@
         "form",
         "fineprint"
       ],
-      "disabled": true,
       "settings": {
         "align_text": "center",
         "image_width": "50",
@@ -414,7 +409,7 @@
     "region_image",
     "trust",
     "video_band",
-    "tk_chips",
-    "newsletter"
+    "newsletter",
+    "tk_chips"
   ]
 }

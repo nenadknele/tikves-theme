@@ -191,10 +191,9 @@
   [id$="__mw_voices"] .tkv__item { display: flex; flex-direction: column; }
   [id$="__mw_voices"] .tkv__quote { flex: 1 1 auto; }
 
-  /* 8 . LAST BAND air before the footer. */
-  [id$="__newsletter"] {
-    padding-bottom: {{ s.pad_mobile | plus: s.foot_gap_mobile }}px !important;
-  }
+  /* 8 . NEWSLETTER. It used to be the last band and carried extra air
+     above the footer. 29 Oct 2026: Shop by collection is the last band,
+     so the newsletter takes the ordinary rhythm like every other section. */
   [id$="__newsletter"] input[type="email"] {
     text-align: left;
     height: auto !important;
@@ -323,10 +322,6 @@
     {{ sel_pad }} {
       padding-top: {{ s.pad_desktop }}px;
       padding-bottom: {{ s.pad_desktop }}px;
-    }
-
-    [id$="__newsletter"] {
-      padding-bottom: {{ s.pad_desktop | plus: s.foot_gap_desktop }}px !important;
     }
 
     {{ sel_head_el }} {
