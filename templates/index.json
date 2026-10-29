@@ -404,7 +404,6 @@
     "ladder",
     "education",
     "producer_text",
-    "tk_chips",
     "singles",
     "tile_precision",
     "tile_checked",
@@ -415,6 +414,7 @@
     "region_image",
     "video_band",
     "trust",
+    "tk_chips",
     "newsletter"
   ]
 }
