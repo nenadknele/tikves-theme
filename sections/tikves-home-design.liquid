@@ -171,6 +171,16 @@
     padding: 16px 34px !important;
   }
 
+  /* 5c . SHOP BY COLLECTION, 29 Oct 2026, operator, after Overtone: one
+     thin Ink line above the section and one below, full width. The only
+     lines on the page; every other section is divided by space. */
+  [id^="shopify-section-"][id$="__tk_chips"] {
+    border-top: 1px solid #1F2328;
+    border-bottom: 1px solid #1F2328;
+    padding-top: 40px !important;
+    padding-bottom: 48px !important;
+  }
+
   /* 6 . The layer itself takes no space. */
   #shopify-section-{{ section.id }} { display: none; }
 
@@ -298,6 +308,10 @@
   }
 
   @media only screen and (min-width: 769px) {
+    [id^="shopify-section-"][id$="__tk_chips"] {
+      padding-top: 56px !important;
+      padding-bottom: 64px !important;
+    }
     {{ sel_pad }} {
       padding-top: {{ s.pad_desktop }}px;
       padding-bottom: {{ s.pad_desktop }}px;
