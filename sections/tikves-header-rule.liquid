@@ -31,6 +31,21 @@
   }
   {%- endif -%}
 
+  /* 29 Oct 2026, operator: on the phone the drawer's top hairline sat on
+     the fixed close bar, so the list scrolled straight through it and
+     cut the first item in half. The line moves onto the first menu item
+     and scrolls away with the list. The close bar keeps the drawer
+     colour so nothing shows behind it. Same Stone hairline as before. */
+  #NavDrawer .drawer__header {
+    border-bottom: 0 !important;
+  }
+  #NavDrawer .drawer__fixed-header {
+    background-color: #F6EEE8;
+  }
+  #NavDrawer .mobile-nav > li:first-child {
+    border-top: 1px solid #B9AC9B;
+  }
+
   /* Icons in the left column sit side by side, never stacked. */
   .site-header .header-item--left .site-nav,
   .site-header .header-item--left .site-nav__icons {
