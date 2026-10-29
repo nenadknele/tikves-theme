@@ -106,7 +106,7 @@
             <h2 class="tkfy__q">{{ result_heading | escape }}</h2>
             {%- if col_line != blank -%}<p class="tkfy__line-under">{{ col_line }}</p>{%- endif -%}
             {%- if fallback -%}
-              <p class="tkfy__note">{{ s.empty_note | replace: '{colour}', cw | escape }}</p>
+              <p class="tkfy__note">{{ s.empty_note | replace: '[colour]', cw | escape }}</p>
             {%- endif -%}
             <div class="tkfy__cards">
               {%- assign shown = 0 -%}
@@ -132,7 +132,7 @@
               {%- endfor -%}
             </div>
             <div class="tkfy__after">
-              <a class="tkfy__browse" href="{{ col.url }}">{{ s.see_all_label | replace: '{collection}', col.title | escape }}</a>
+              <a class="tkfy__browse" href="{{ col.url }}">{{ s.see_all_label | replace: '[collection]', col.title | escape }}</a>
             </div>
           </div>
         {%- endfor -%}
@@ -428,8 +428,8 @@
     { "type": "text", "id": "rose_label", "label": "Rosé label", "default": "Rosé" },
     { "type": "text", "id": "any_label", "label": "No preference label", "default": "You choose" },
     { "type": "range", "id": "limit", "label": "Bottles per result", "min": 1, "max": 4, "step": 1, "default": 3 },
-    { "type": "text", "id": "empty_note", "label": "Line when the colour has nothing", "default": "Nothing in {colour} for that yet, so here is what we would open.", "info": "{colour} becomes the colour asked for." },
-    { "type": "text", "id": "see_all_label", "label": "See all button", "default": "See all {collection}", "info": "{collection} becomes the collection name." },
+    { "type": "text", "id": "empty_note", "label": "Line when the colour has nothing", "default": "Nothing in [colour] for that yet, so here is what we would open.", "info": "[colour] becomes the colour asked for." },
+    { "type": "text", "id": "see_all_label", "label": "See all button", "default": "See all [collection]", "info": "[collection] becomes the collection name." },
     { "type": "text", "id": "change_label", "label": "Change answer link", "default": "Change" },
     { "type": "text", "id": "change_colour_label", "label": "Back to colour link", "default": "Change the colour" },
     { "type": "text", "id": "restart_label", "label": "Start again link", "default": "Start again" }
