@@ -44,8 +44,9 @@
   {%- for k in keys_all -%}[id$="__{{ k }}"] .index-section{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
 {%- endcapture -%}
 
+{%- comment -%} 29 Oct 2026: the rhythm lands on the section wrapper only. [id$="__best"] also matched the section's own inner div (id tksg-...__best), so every padded row carried its padding twice. Hidden while the bands were a darker cream; on one cream it showed as big empty gaps. {%- endcomment -%}
 {%- capture sel_pad -%}
-  {%- for k in keys_pad -%}[id$="__{{ k }}"]{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
+  {%- for k in keys_pad -%}[id^="shopify-section-"][id$="__{{ k }}"]{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}
 {%- endcapture -%}
 
 {%- capture sel_band -%}
