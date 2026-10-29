@@ -269,14 +269,20 @@
 
   /* 10 . VIDEO BAND. 24 Sep 2026, operator: heading bigger, subheading
      smaller, after reading Overtone. Heading takes the section-heading
-     capitals one size up; the subheading drops to body size. Marked
+     style one size up, capitals only with head_caps; the subheading drops
+     to body size. Marked
      important because the section writes its own title size inline. */
   [id$="__video_band"] .hero__title {
     font-size: 34px !important;
     line-height: 1.05 !important;
     font-weight: 700 !important;
+    {%- if s.head_caps %}
     text-transform: uppercase !important;
     letter-spacing: 0.04em;
+    {%- else %}
+    text-transform: none !important;
+    letter-spacing: 0.01em;
+    {%- endif %}
     margin-bottom: 10px;
   }
   [id$="__video_band"] .hero__subtitle {
