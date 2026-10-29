@@ -334,7 +334,14 @@
       overflow: visible;
       padding: 0;
     }
-    #tksg-{{ section.id }} .tksg__card { flex: none; }
+    /* 29 Oct 2026, operator: on desktop the tasting line is squeezed to one
+       line and every button sits on the same baseline, whatever the text
+       length above it. */
+    #tksg-{{ section.id }} .tksg__card { flex: none; display: flex; flex-direction: column; }
+    #tksg-{{ section.id }} .tksg__meta { flex: 1 1 auto; display: flex; flex-direction: column; }
+    #tksg-{{ section.id }} .tksg__line { font-size: 12px; letter-spacing: -0.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #tksg-{{ section.id }} .tksg__meta > .tksg__btn,
+    #tksg-{{ section.id }} .tksg__meta > .tksg__form { margin-top: auto; }
     #tksg-{{ section.id }} .tksg__frame { aspect-ratio: 4 / 5; }
     #tksg-{{ section.id }} .tksg__meta { padding-top: 14px; }
     #tksg-{{ section.id }} .tksg__price { margin-bottom: 12px; }
