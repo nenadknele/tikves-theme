@@ -308,6 +308,16 @@
     opacity: 1;
   }
 
+  /* 29 Oct 2026, operator: on the phone the words under the photograph
+     sit centred, heading, line and button. Desktop keeps its overlay
+     alignment. */
+  @media only screen and (max-width: 768px) {
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__text,
+    .tk-hero--{{ section.id }}.tk-hero--panel .tk-hero__text {
+      text-align: center;
+    }
+  }
+
   @media only screen and (min-width: 769px) {
     .tk-hero--{{ section.id }},
     .tk-hero--{{ section.id }}.tk-hero--panel,
