@@ -56,7 +56,7 @@
   {%- for block in section.blocks -%}
     .tkb--{{ section.id }} .tkb__band--{{ block.id }} {
       background: {{ block.settings.bg | default: '#4A0D18' }};
-      color: {{ block.settings.fg | default: '#F5EFE7' }};
+      color: {{ block.settings.fg | default: '#F6EEE8' }};
     }
   {%- endfor -%}
 
@@ -105,7 +105,7 @@
         { "type": "text", "id": "cta", "label": "Link text", "default": "Shop" },
         { "type": "url", "id": "link", "label": "Link" },
         { "type": "color", "id": "bg", "label": "Background", "default": "#4A0D18" },
-        { "type": "color", "id": "fg", "label": "Text", "default": "#F5EFE7" }
+        { "type": "color", "id": "fg", "label": "Text", "default": "#F6EEE8" }
       ]
     }
   ],

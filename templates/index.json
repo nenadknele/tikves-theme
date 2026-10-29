@@ -12,7 +12,7 @@
     "tk_design": {
       "type": "tikves-home-design",
       "settings": {
-        "band_color": "#eae3d9",
+        "band_color": "#F6EEE8",
         "keys_band": "ladder,best,singles,mw_voices,tk_kumova,tk_chips",
         "keys_pad": "ladder,best,singles,mw_voices,newsletter,tk_chips,tk_kumova",
         "pad_mobile": 40,
@@ -187,7 +187,7 @@
         "portrait_size": 130,
         "round_images": true,
         "credit": "",
-        "color_background": "#eae3d9",
+        "color_background": "#F6EEE8",
         "color_text": "#1f2328"
       }
     },
@@ -285,7 +285,7 @@
         "outline_color": "#1f2328",
         "outline_strength": 100,
         "active_bg": "#1f2328",
-        "active_text": "#f5efe7",
+        "active_text": "#f6eee8",
         "text_size": 12,
         "text_size_desktop": 13,
         "stretch_desktop": true,
@@ -390,7 +390,7 @@
         "image_width": "50",
         "image_mask": "landscape",
         "image_position": "left",
-        "color_background": "#f5efe7",
+        "color_background": "#f6eee8",
         "color_text": "#1f2328",
         "top_padding": false,
         "bottom_padding": false

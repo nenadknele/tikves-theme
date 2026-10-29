@@ -29,7 +29,7 @@
   assign outline_color = section.settings.outline_color | color_modify: 'alpha', outline_alpha
   assign chip_count = chip_menu.links.size
   assign active_bg = section.settings.active_bg | default: '#1F2328'
-  assign active_text = section.settings.active_text | default: '#F5EFE7'
+  assign active_text = section.settings.active_text | default: '#F6EEE8'
   assign layout = section.settings.layout | default: 'tiles'
 -%}
 
@@ -158,7 +158,7 @@
     aspect-ratio: 1 / 1;
     border-radius: 12px;
     overflow: hidden;
-    background-color: #EAE3D9;
+    background-color: #F6EEE8;
   }
   #tk-chips-{{ section.id }} .tk-tile__media--art {
     width: 58px;
@@ -376,7 +376,7 @@
     { "type": "color", "id": "outline_color", "label": "Pill outline", "default": "#1F2328" },
     { "type": "range", "id": "outline_strength", "label": "Outline strength", "min": 10, "max": 100, "step": 10, "unit": "%", "default": 100 },
     { "type": "color", "id": "active_bg", "label": "Current item colour", "default": "#1F2328", "info": "No hover colour. Marks only the collection you are on." },
-    { "type": "color", "id": "active_text", "label": "Current pill text", "default": "#F5EFE7" },
+    { "type": "color", "id": "active_text", "label": "Current pill text", "default": "#F6EEE8" },
     { "type": "range", "id": "text_size", "label": "Label size, mobile", "min": 10, "max": 14, "step": 1, "unit": "px", "default": 12 },
     { "type": "range", "id": "text_size_desktop", "label": "Label size, desktop", "min": 10, "max": 18, "step": 1, "unit": "px", "default": 13 },
     { "type": "checkbox", "id": "stretch_desktop", "label": "Stretch row to page width on desktop", "default": true, "info": "Kept for older templates. The row fills the page width on its own." },
