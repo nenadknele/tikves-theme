@@ -25,7 +25,15 @@
   data-limit="{{ number_of_products }}">
 
   {% if block.settings.product_complementary_heading != blank %}
-    <h4 class="product-recommendations__title">{{ block.settings.product_complementary_heading }}</h4>
+    {%- comment -%} 30 Oct 2026: an h2, so the heading no longer skips from the product title's h1 to h4. Same words. The style block keeps the old look: the h4 had the body font in bold, the theme gives an h2 the heading font. {%- endcomment -%}
+    <h2 class="h4 product-recommendations__title">{{ block.settings.product_complementary_heading }}</h2>
+    {%- style -%}
+      product-recommendations[data-intent=complementary] h2.product-recommendations__title {
+        font-family: var(--typeBasePrimary), var(--typeBaseFallback);
+        font-weight: 700;
+        line-height: inherit;
+      }
+    {%- endstyle -%}
   {% endif %}
 
   <div
