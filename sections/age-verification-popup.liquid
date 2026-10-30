@@ -13,10 +13,23 @@
 >
   {% if section.settings.image != blank %}
     <div class="age-verification-popup__background-image-wrapper" data-background-image>
-      {% comment %} Full width image so don't need to adjust sizes attribute, fallback is 100vw {% endcomment %}
+      {%- comment -%}
+        30 Oct 2026, speed, operator choice A. On a phone the photo is stretched
+        to fill the screen's height, about 3.5 times its own width, so the
+        sharpness of the file barely shows. A phone was downloading 99 KB (832
+        px) or the 102 KB original (1200 px and up, at 3x). sizes now tells a
+        phone the photo is 200 px wide, so any phone takes the 600 px file
+        (59 KB) and looks the same. 600 is the smallest step on purpose, so a
+        low-density phone does not drop to the softer 352 px file. Desktop
+        keeps 100vw. The widths and sizes here must match
+        snippets/tikves-gate-preload.liquid exactly, or the phone downloads
+        the photo twice.
+      {%- endcomment -%}
       {%- render 'image-element',
         img: section.settings.image,
         img_width: 2400,
+        widths: '600, 832, 1200, 1920, 2400',
+        sizes: '(max-width: 768px) 200px, 100vw',
         classes: 'age-verification-popup__background-image',
       -%}
     </div>
