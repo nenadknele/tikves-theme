@@ -155,3 +155,20 @@
     animation: none;
   }
 {% endstyle %}
+
+{%- comment -%}
+  JOURNAL HERO PAINTS AT ONCE. 29 Oct 2026, speed. The photo at the top of
+  a journal article ran a 2.5 s zoom and fade (zoom-fade in theme.css)
+  that starts at opacity 0. The photo had downloaded by about 0.6 s on a
+  phone but only painted at about 1.0 s, and Lighthouse put the page's
+  largest paint at 5.5 to 6.2 s. Now the photo shows still, at full size,
+  the moment it arrives. Article pages only; collection headers keep the
+  theme's own behaviour. To undo, delete the style block below.
+{%- endcomment -%}
+{% style %}
+  .template-article .collection-hero__image {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+{% endstyle %}
