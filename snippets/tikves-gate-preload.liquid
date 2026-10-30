@@ -25,6 +25,11 @@
   image). If the gate picture ever changes, change the name here too.
   If the name does not match a file in Content, Files, nothing renders.
 
+  30 Oct 2026: 600 px is now the smallest step and phones are told the
+  photo is 200 px wide, so every phone takes the 600 px file. Keep this
+  list and sizes the same as the img in
+  sections/age-verification-popup.liquid.
+
   TO UNDO: delete this snippet and its render line in layout/theme.liquid.
 {%- endcomment -%}
 {%- assign tl_gate_img = images['age-gate-vineyard-sunset.jpg'] -%}
@@ -36,8 +41,8 @@
     l.rel = 'preload';
     l.as = 'image';
     l.setAttribute('fetchpriority', 'high');
-    l.setAttribute('imagesrcset', '{{ tl_gate_img | image_url: width: 352 }} 352w, {{ tl_gate_img | image_url: width: 832 }} 832w, {{ tl_gate_img | image_url: width: 1200 }} 1200w, {{ tl_gate_img | image_url: width: 1920 }} 1920w, {{ tl_gate_img | image_url: width: 2400 }} 2400w');
-    l.setAttribute('imagesizes', '100vw');
+    l.setAttribute('imagesrcset', '{{ tl_gate_img | image_url: width: 600 }} 600w, {{ tl_gate_img | image_url: width: 832 }} 832w, {{ tl_gate_img | image_url: width: 1200 }} 1200w, {{ tl_gate_img | image_url: width: 1920 }} 1920w, {{ tl_gate_img | image_url: width: 2400 }} 2400w');
+    l.setAttribute('imagesizes', '(max-width: 768px) 200px, 100vw');
     document.head.appendChild(l);
   })();
 </script>
