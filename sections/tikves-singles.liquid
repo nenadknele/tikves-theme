@@ -78,11 +78,12 @@
               {%- if img != blank -%}
                 {%- capture tk_src -%}{{ img | image_url: width: 800 }}{%- endcapture -%}
                 {%- capture tk_set -%}{{ img | image_url: width: 400 }} 400w, {{ img | image_url: width: 600 }} 600w, {{ img | image_url: width: 800 }} 800w, {{ img | image_url: width: 1000 }} 1000w, {{ img | image_url: width: 1200 }} 1200w{%- endcapture -%}
+                {%- comment -%} 30 Oct 2026, speed: on a phone the card is the full width but the square photo is fitted to the 7:6 frame's height, so it shows at about 80% of the screen. sizes said 100vw, so a phone fetched the 800 px file for a 312 px picture. 80vw picks 600 px on a typical Android phone. Desktop unchanged. {%- endcomment -%}
                 {%- if forloop.first -%}
                 <img
                   src="{{ tk_src }}"
                   srcset="{{ tk_set }}"
-                  sizes="(min-width: 769px) 22vw, 100vw"
+                  sizes="(min-width: 769px) 22vw, 80vw"
                   alt="{{ img.alt | default: product.title | escape }}"
                   width="{{ img.width }}"
                   height="{{ img.height }}"
@@ -91,12 +92,12 @@
                 <img
                   data-tksg-src="{{ tk_src }}"
                   data-tksg-srcset="{{ tk_set }}"
-                  sizes="(min-width: 769px) 22vw, 100vw"
+                  sizes="(min-width: 769px) 22vw, 80vw"
                   alt="{{ img.alt | default: product.title | escape }}"
                   width="{{ img.width }}"
                   height="{{ img.height }}"
                   loading="lazy">
-                <noscript><img src="{{ tk_src }}" srcset="{{ tk_set }}" sizes="(min-width: 769px) 22vw, 100vw" alt="{{ img.alt | default: product.title | escape }}" width="{{ img.width }}" height="{{ img.height }}" loading="lazy"></noscript>
+                <noscript><img src="{{ tk_src }}" srcset="{{ tk_set }}" sizes="(min-width: 769px) 22vw, 80vw" alt="{{ img.alt | default: product.title | escape }}" width="{{ img.width }}" height="{{ img.height }}" loading="lazy"></noscript>
                 {%- endif -%}
               {%- endif -%}
             </a>
