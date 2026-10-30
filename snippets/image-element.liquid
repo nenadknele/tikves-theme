@@ -11,6 +11,7 @@
      - sizes (Optional - String)
      - widths (Optional - String)
      - preload (Optional - Boolean)
+     - fetchpriority (Optional - String, 'high' without a preload header)
      - itemprop (Optional - String)
      - format (Optional - String)
      - role (Optional - String)
@@ -69,6 +70,12 @@
   assign fetch_priority = 'auto'
   if preload
     assign fetch_priority = 'high'
+  endif
+  # 30 Oct 2026, speed: a caller can ask for high priority without the
+  # preload header (fetchpriority: 'high'). Shopify's preload header carries
+  # no priority, so the browser started those downloads at Low.
+  if fetchpriority != blank
+    assign fetch_priority = fetchpriority
   endif
 
   # Image sizes https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/sizes

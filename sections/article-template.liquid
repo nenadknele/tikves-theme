@@ -8,11 +8,13 @@
 {%- if section.settings.image_hero and article.image -%}
   <div class="collection-hero collection-hero--{{ section.settings.image_hero_size }}">
     {% comment %} Full width image so don't need to adjust sizes attribute, fallback is 100vw {% endcomment %}
-    {% comment %} 28 Sep 2026, speed: the hero sits at the top of the page, so it loads first and is announced in the headers. {% endcomment %}
+    {% comment %} 28 Sep 2026, speed: the hero sits at the top of the page, so it loads first. {% endcomment %}
+    {%- comment -%} 30 Oct 2026, speed: eager with high priority from the HTML, not the preload header. The header carries no priority, so the phone fetched the hero at Low, behind the age gate photo on a first visit. {%- endcomment -%}
     {%- render 'image-element',
       img: article.image,
       classes: 'collection-hero__image image-fit',
-      loading: false,
+      loading: 'eager',
+      fetchpriority: 'high',
     -%}
 
     <div class="collection-hero__content">
