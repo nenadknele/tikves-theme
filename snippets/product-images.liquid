@@ -125,12 +125,13 @@
                     {%- endcapture -%}
                     {%- assign media_alt = media.alt | escape | split: '#' | first -%}
 
+                    {%- comment -%} 30 Oct 2026, speed: thumbnails always lazy. On a phone the thumbnail strip is hidden (small--hide), but eager images download even when hidden, so every product page fetched each thumbnail at 720 px for nothing (68 KB on Barovo Red). A lazy image that is not displayed is never fetched. On desktop the strip is on screen, so the thumbnails still load straight away. {%- endcomment -%}
                     {%- render 'image-element',
                       img: media.preview_image,
                       alt: media_alt,
                       widths: '120, 360, 540, 720',
                       sizeVariable: '80px',
-                      loading: loading,
+                      loading: 'lazy',
                     -%}
                   </div>
                 </a>
