@@ -23,8 +23,8 @@
   }
 
   #NewsletterPopup-{{ section.id }} .modal__close .icon {
-    width: 14px;
-    height: 14px;
+    width: 20px;
+    height: 20px;
     display: block;
   }
 
@@ -52,6 +52,19 @@
   #NewsletterPopup-{{ section.id }} .popup-cta button[type="submit"],
   #NewsletterPopup-{{ section.id }} .popup-cta .newsletter__submit {
     border-radius: 0;
+  }
+
+  /* The gift amount, bigger, like the reference popup. */
+  #NewsletterPopup-{{ section.id }} .tl-pop-big {
+    font-size: 80px;
+    margin: 12px 0 10px;
+  }
+
+  /* Chat button stays out of the way while the popup is open. */
+  body.modal-open #shopify-chat,
+  body.modal-open shopify-chat,
+  body.modal-open .shopify-chat {
+    display: none !important;
   }
 
   @media (max-width: 749px) {
