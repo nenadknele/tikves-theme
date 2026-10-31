@@ -27,6 +27,9 @@
     28 Sep 2026, speed: with Load first on, the photograph for each screen
     size is announced in the response headers, so the phone starts on it
     before the page has finished arriving. A middle size for the phone.
+    31 Oct 2026: Desktop fit. Whole photo shows the square bottle shot
+    uncropped on Paper, anchored by the desktop focal point, with the
+    words in ink and no shading. Fill keeps the old crop.
   endcomment
 
   assign scrim_a = s.scrim | divided_by: 100.0
@@ -89,7 +92,7 @@
   endif
 -%}
 
-<div class="tk-hero tk-hero--{{ section.id }}{% if s.text_panel %} tk-hero--panel{% endif %}{% if s.stack_mobile and s.text_panel == false %} tk-hero--stack{% endif %}">
+<div class="tk-hero tk-hero--{{ section.id }}{% if s.fit_desktop == 'contain' %} tk-hero--whole{% endif %}{% if s.text_panel %} tk-hero--panel{% endif %}{% if s.stack_mobile and s.text_panel == false %} tk-hero--stack{% endif %}">
   {%- if s.image != blank or s.image_mobile != blank -%}
     {%- liquid
       assign main_img = s.image
@@ -387,6 +390,16 @@
     .tk-hero--{{ section.id }} .tk-hero__title { font-size: {{ s.title_size_desktop }}px; }
     .tk-hero--{{ section.id }} .tk-hero__sub { font-size: {{ s.sub_size_desktop }}px; margin-top: 10px; }
     .tk-hero--{{ section.id }} .tk-hero__btn { margin-top: 20px; }
+
+    /* 31 Oct 2026: Desktop fit, whole photo. Paper ground, ink words, no shading. */
+    .tk-hero--{{ section.id }}.tk-hero--whole { background: #F6EEE8; }
+    .tk-hero--{{ section.id }}.tk-hero--whole .tk-hero__img { object-fit: contain; }
+    .tk-hero--{{ section.id }}.tk-hero--whole .tk-hero__scrim { display: none; }
+    .tk-hero--{{ section.id }}.tk-hero--whole .tk-hero__title,
+    .tk-hero--{{ section.id }}.tk-hero--whole .tk-hero__sub {
+      color: #1F2328;
+      text-shadow: none;
+    }
   }
 {% endstyle %}
 
@@ -502,6 +515,17 @@
         { "value": "2 / 1", "label": "2:1" },
         { "value": "16 / 9", "label": "16:9" },
         { "value": "3 / 2", "label": "3:2, the whole photograph" }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "fit_desktop",
+      "label": "Desktop fit",
+      "default": "cover",
+      "info": "Fill crops the photograph to the frame. Whole photo shows all of it on Paper, placed by the desktop focal point, with the words in ink.",
+      "options": [
+        { "value": "cover", "label": "Fill the frame" },
+        { "value": "contain", "label": "Whole photo" }
       ]
     },
     { "type": "range", "id": "height_desktop", "label": "Desktop height, when fixed", "min": 320, "max": 760, "step": 10, "unit": "px", "default": 480 },
