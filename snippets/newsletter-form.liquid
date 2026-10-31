@@ -96,7 +96,7 @@
     <input type="hidden" name="contact[tags]" value="{{ capture_tags }}">
     <input type="hidden" name="contact[context]" value="{{ snippet_context }}">
     <div class="input-group newsletter__input-group">
-      <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ nl_placeholder }}" name="contact[email]" id="Email-{{ section_id }}" class="input-group-field newsletter__input" autocorrect="off" autocapitalize="off" required>
+      <input type="email" value="{% if customer %}{{ customer.email }}{% endif %}" placeholder="{{ nl_placeholder }}" name="contact[email]" id="Email-{{ section_id }}" class="input-group-field newsletter__input" autocorrect="off" autocapitalize="off" autocomplete="email" inputmode="email" spellcheck="false" required>
       <div class="input-group-btn">
         <button type="submit" id="newsletter-form-submit-{{ section_id }}" class="btn" name="commit">
           <span class="form__submit--large">{{ nl_submit }}</span>
