@@ -35,7 +35,7 @@
       "type": "tikves-hero",
       "settings": {
         "image": "shopify://shop_images/barovo-hero-desktop.jpg",
-        "image_mobile": "shopify://shop_images/barovo-hero-desktop.jpg",
+        "image_mobile": "shopify://shop_images/barovo-hero-phone-tight.jpg",
         "lcp": true,
         "image_link": "shopify://products/barovo-red",
         "image_link_label": "Shop Barovo Red",
@@ -58,7 +58,7 @@
         "title_size_desktop": 42,
         "sub_size_mobile": 14,
         "sub_size_desktop": 17,
-        "height_mobile": 290,
+        "height_mobile": 340,
         "ratio_desktop": "16 / 9",
         "height_desktop": 760,
         "scrim": 50
