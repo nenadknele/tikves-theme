@@ -34,7 +34,7 @@
     "hero": {
       "type": "tikves-hero",
       "settings": {
-        "image": "shopify://shop_images/barovo-hero-desktop.jpg",
+        "image": "shopify://shop_images/barovo-hero-desktop-169.jpg",
         "image_mobile": "shopify://shop_images/barovo-hero-phone-tight.jpg",
         "lcp": true,
         "image_link": "shopify://products/barovo-red",
