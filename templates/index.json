@@ -34,8 +34,8 @@
     "hero": {
       "type": "tikves-hero",
       "settings": {
-        "image": "shopify://shop_images/hero-desktop-shadows_2.jpg",
-        "image_mobile": "shopify://shop_images/hero-mobile-shadows.jpg",
+        "image": "shopify://shop_images/barovo-hero-desktop.jpg",
+        "image_mobile": "shopify://shop_images/barovo-hero-phone.jpg",
         "lcp": true,
         "image_link": "shopify://products/the-single-vineyards",
         "image_link_label": "Shop the three single vineyard wines",
