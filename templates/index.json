@@ -59,7 +59,7 @@
         "sub_size_mobile": 14,
         "sub_size_desktop": 17,
         "height_mobile": 290,
-        "ratio_desktop": "fixed",
+        "ratio_desktop": "16 / 9",
         "height_desktop": 760,
         "scrim": 50
       }
