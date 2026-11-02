@@ -1,0 +1,75 @@
+{%- comment -%}
+  TIKVES LONDON . TRACKING COOKIES CLEARED ON A NO
+  2 Nov 2026, consent read of register C86. Rendered from layout/theme.liquid,
+  last thing in the body, after the Klaviyo loader.
+
+  The problem it fixes. Shopify's banner holds the Google and Meta tags back
+  until a yes, and after a "Reject all" they stop. But a visitor who said yes
+  earlier and no later keeps the cookies the tags already set: _ga, the GA4
+  stream cookies, _gcl_au and _fbp were all still there after a no, read live
+  on 2 Nov. Nothing reads them while the answer is no, but the cookie page
+  says these cookies are set only with a yes, so they should not sit on the
+  device after a no.
+
+  What this does. When the banner says no to Analytics, it deletes the
+  analytics cookies. When it says no to Marketing, it deletes the advertising
+  cookies. It runs on every page once a choice exists, and again the moment
+  the choice changes. It only deletes. It never loads anything and never sets
+  a cookie. Klaviyo's own cookie is cleared by klaviyo-consent-loader.
+
+  Analytics: Google Analytics (_ga, _ga_*, _gid, _gat*) and Lucky Orange
+  (_lo_*). Marketing: Google Ads (_gcl_*, _gac_*), Meta (_fbp, _fbc) and
+  Pinterest (_pin_unauth, _pinterest_*, _epik, _derived_epik).
+
+  TO UNDO: delete this snippet and its render line in layout/theme.liquid.
+{%- endcomment -%}
+<script>
+(function () {
+  var ANALYTICS = [/^_ga$/, /^_ga_/, /^_gid$/, /^_gat/, /^_lo_/];
+  var MARKETING = [/^_gcl_/, /^_gac_/, /^_fbp$/, /^_fbc$/, /^_pin_unauth$/, /^_pinterest_/, /^_epik$/, /^_derived_epik$/];
+
+  function domains() {
+    var host = location.hostname;
+    var list = ['', host, '.' + host];
+    var root = host.replace(/^www\./, '');
+    if (root !== host) list.push(root, '.' + root);
+    return list;
+  }
+
+  function clear(patterns) {
+    var names = document.cookie.split(';').map(function (c) { return c.split('=')[0].trim(); });
+    names.forEach(function (n) {
+      if (!patterns.some(function (p) { return p.test(n); })) return;
+      domains().forEach(function (d) {
+        document.cookie = n + '=; Max-Age=0; path=/' + (d ? '; domain=' + d : '');
+      });
+    });
+  }
+
+  function decide(analyticsAllowed, marketingAllowed) {
+    if (analyticsAllowed === false) clear(ANALYTICS);
+    if (marketingAllowed === false) clear(MARKETING);
+  }
+
+  document.addEventListener('visitorConsentCollected', function (e) {
+    var d = e.detail || {};
+    decide(d.analyticsAllowed, d.marketingAllowed);
+  });
+
+  function check() {
+    var cp = window.Shopify && window.Shopify.customerPrivacy;
+    if (!cp) return;
+    var c = cp.currentVisitorConsent ? cp.currentVisitorConsent() : {};
+    // No choice yet: the tags have not run, so there is nothing to clear.
+    if (!c || (c.analytics === '' && c.marketing === '')) return;
+    decide(cp.analyticsProcessingAllowed(), cp.marketingAllowed());
+  }
+
+  if (window.Shopify && typeof window.Shopify.loadFeatures === 'function') {
+    window.Shopify.loadFeatures(
+      [{ name: 'consent-tracking-api', version: '0.1' }],
+      function (err) { if (!err) check(); }
+    );
+  }
+})();
+</script>
