@@ -172,3 +172,47 @@
     transform: none;
   }
 {% endstyle %}
+
+{%- comment -%}
+  COLLECTION TILES SWIPE ON A PHONE. 2 Nov 2026, storefront check, operator
+  go-ahead. On All wines a phone met thirteen collection tiles (Reds,
+  Whites, Sunday Roast and the rest) stacked two to a row before the first
+  bottle, which sat about three screens down. On a phone each group of
+  tiles is now one row that swipes sideways, so the wines start on the
+  first screen. Same tiles, same pictures, same links. Desktop unchanged.
+  The hook is the tk-subcollections class in snippets/sub-collections.liquid.
+  To undo, delete the style block below.
+{%- endcomment -%}
+{% style %}
+  @media only screen and (max-width: 768px) {
+    .tk-subcollections {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      gap: 10px;
+      margin-left: 0;
+      margin-bottom: 16px;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .tk-subcollections::-webkit-scrollbar { display: none; }
+    .tk-subcollections > .grid__item {
+      flex: 0 0 27%;
+      width: 27% !important;
+      max-width: 27%;
+      padding-left: 0;
+      margin-bottom: 0;
+      scroll-snap-align: start;
+      clear: none;
+    }
+    .tk-subcollections .collection-image {
+      padding-top: 100% !important;
+    }
+    .tk-subcollections .collection-item__title {
+      font-size: 13px;
+      margin-top: 6px;
+    }
+  }
+{% endstyle %}
