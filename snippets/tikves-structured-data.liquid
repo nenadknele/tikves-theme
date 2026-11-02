@@ -73,4 +73,72 @@
     ]
   }
   </script>
+{%- elsif request.page_type == 'product' -%}
+  {%- comment -%}
+    Breadcrumb data for product pages. 2 Nov 2026, storefront check,
+    operator go-ahead. Search engines read it and can show the path
+    (Tikveš London > Reds > Barovo Red) in results. Nothing shows on the
+    page: the visible breadcrumbs stay off, so Add to cart keeps its place
+    on the first phone screen. The middle step is the product's main
+    collection, picked by product type. A type not listed here gets a
+    two-step path, shop then product. Names come from the live
+    collections, so a renamed collection carries through.
+  {%- endcomment -%}
+  {%- liquid
+    assign crumb_handle = ''
+    case product.type
+      when 'Red Wine'
+        assign crumb_handle = 'reds'
+      when 'White Wine'
+        assign crumb_handle = 'whites'
+      when 'Rosé Wine'
+        assign crumb_handle = 'rose'
+      when 'Sparkling Wine'
+        assign crumb_handle = 'sparkling'
+      when 'Spirit'
+        assign crumb_handle = 'spirits'
+      when 'Wine Set'
+        assign crumb_handle = 'sets'
+      when 'Wine Case'
+        assign crumb_handle = 'cases'
+      when 'Gift Card'
+        assign crumb_handle = 'gifts'
+    endcase
+    assign crumb = nil
+    if crumb_handle != ''
+      assign crumb = collections[crumb_handle]
+    endif
+    assign product_pos = 2
+    if crumb.handle != blank
+      assign product_pos = 3
+    endif
+  -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": {{ shop.name | json }},
+        "item": {{ shop.url | append: '/' | json }}
+      },
+      {%- if crumb.handle != blank %}
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": {{ crumb.title | json }},
+        "item": {{ shop.url | append: crumb.url | json }}
+      },
+      {%- endif %}
+      {
+        "@type": "ListItem",
+        "position": {{ product_pos }},
+        "name": {{ product.title | json }},
+        "item": {{ shop.url | append: product.url | json }}
+      }
+    ]
+  }
+  </script>
 {%- endif -%}
