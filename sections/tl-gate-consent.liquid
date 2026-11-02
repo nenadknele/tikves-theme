@@ -1,0 +1,137 @@
+{%- comment -%}
+  2 Nov 2026, consent rate. The cookie choice becomes the age gate's second
+  step, so a visitor meets one box, not two stacked pop-ups.
+
+  This section sits in the popup group directly after age-verification-popup.
+  On load it moves its own markup inside the gate's box. The gate section and
+  theme.js are untouched.
+
+  - Tap Yes on the age question. If Shopify says this visitor's region needs a
+    cookie choice (Shopify.customerPrivacy.shouldShowBanner), the gate stays
+    open and shows this step instead.
+  - Reject all and Accept all carry equal weight and both close the gate.
+    Choose cookies closes the gate and opens Shopify's own preferences panel.
+  - The choice is saved through Shopify's own consent API (setTrackingConsent),
+    so Google, Meta and every pixel get the official signal, as they do from
+    Shopify's banner today.
+  - If the consent API is not ready, or the region needs no choice, the gate
+    closes as before and Shopify's own banner stays the fallback. Nothing is
+    set without a choice. Age and cookies stay two separate answers.
+{%- endcomment -%}
+
+<div class="tl-consent-step" data-tl-consent-step hidden>
+  <h2 class="h3">Cookies</h2>
+  <div class="rte">
+    <div class="enlarge-text">
+      <p>We need some to run the shop. With your OK, others show us what works and help our ads reach the right people. Your choice, and you can change it any time. More in our <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>.</p>
+    </div>
+  </div>
+  <div class="age-verification-popup__btns-wrapper tl-consent-step__btns">
+    <button type="button" class="btn" data-tl-consent-reject>Reject all</button>
+    <button type="button" class="btn" data-tl-consent-accept>Accept all</button>
+  </div>
+  <button type="button" class="tl-consent-step__choose" data-tl-consent-choose>Choose cookies</button>
+</div>
+
+{% style %}
+  .tl-consent-step__btns .btn {
+    min-height: 44px;
+  }
+  .tl-consent-step__choose {
+    display: inline-block;
+    margin-top: 14px;
+    min-height: 44px;
+    padding: 0;
+    background: none;
+    border: 0;
+    text-decoration: underline;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+  }
+{% endstyle %}
+
+<script>
+  (function () {
+    var step = document.querySelector('[data-tl-consent-step]');
+    var root = document.querySelector('age-verification-popup');
+    if (!step || !root) return;
+    var wrapper = root.querySelector('.age-verification-popup__content-wrapper');
+    var yes = root.querySelector('[data-age-verification-popup-exit-button]');
+    var question = root.querySelector('[data-age-verification-popup-content]');
+    if (!wrapper || !yes || !question) return;
+
+    wrapper.appendChild(step);
+
+    var released = false;
+
+    function privacy() {
+      return window.Shopify && window.Shopify.customerPrivacy;
+    }
+
+    function needsChoice() {
+      var p = privacy();
+      try {
+        return !!(p && p.shouldShowBanner && p.setTrackingConsent && p.shouldShowBanner());
+      } catch (e) {
+        return false;
+      }
+    }
+
+    function hideShopifyBanner() {
+      var b = document.getElementById('shopify-pc__banner');
+      if (b) b.style.display = 'none';
+    }
+
+    // Close the gate the normal way: theme.js sets the age cookie, closes the modal and fires its event.
+    function passGate() {
+      released = true;
+      yes.click();
+    }
+
+    // Runs before theme.js's own Yes handler, which is attached without capture.
+    yes.addEventListener('click', function (e) {
+      if (released || !needsChoice()) return;
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      question.classList.remove('age-verification-popup__content--active');
+      question.hidden = true;
+      step.hidden = false;
+      var first = step.querySelector('button');
+      if (first) first.focus();
+    }, true);
+
+    function save(all) {
+      var p = privacy();
+      if (!p || !p.setTrackingConsent) {
+        passGate();
+        return;
+      }
+      p.setTrackingConsent(
+        { analytics: all, marketing: all, preferences: all },
+        function () {
+          hideShopifyBanner();
+          passGate();
+        }
+      );
+    }
+
+    step.querySelector('[data-tl-consent-accept]').addEventListener('click', function () { save(true); });
+    step.querySelector('[data-tl-consent-reject]').addEventListener('click', function () { save(false); });
+    step.querySelector('[data-tl-consent-choose]').addEventListener('click', function () {
+      passGate();
+      setTimeout(function () {
+        if (window.privacyBanner && window.privacyBanner.showPreferences) {
+          window.privacyBanner.showPreferences();
+        }
+      }, 300);
+    });
+  })();
+</script>
+
+{% schema %}
+  {
+    "name": "Cookie step in age gate",
+    "settings": []
+  }
+{% endschema %}
