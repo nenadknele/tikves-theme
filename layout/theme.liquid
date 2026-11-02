@@ -345,6 +345,8 @@
     <script>theme.settings.email = {{ shop.email | json }}</script>
     <script src="https://api.archetypethemes.co/design-mode.js" defer="defer"></script>
   {% endif %}
+  {%- comment -%} The one clock for countdowns and timed lines, 2 Nov 2026, REF v4. Must load before anything that uses window.TL. {%- endcomment -%}
+  {%- render 'tl-dates' -%}
 </head>
 
 <body class="template-{{ template | replace: '.', ' ' | truncatewords: 1, '' | handle }}{% if request.path == '/challenge' %} template-challange{% endif %}" data-center-text="{{ settings.type_body_align_text }}" data-button_style="{{ settings.button_style }}" data-type_header_capitalize="{{ settings.type_header_capitalize }}" data-type_headers_align_text="{{ settings.type_headers_align_text }}" data-type_product_capitalize="{{ settings.type_product_capitalize }}" data-swatch_style="{{ settings.swatch_style }}" {% if settings.disable_animations %}data-disable-animations="true"{% endif %}>

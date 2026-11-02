@@ -82,6 +82,7 @@
             {% endif %}
           </div>
 
+          {% render 'tl-urgency', mode: 'line' %}
           <div class="cart__item-sub cart__item-row">
             <div class="ajaxcart__subtotal">{{ 'cart.general.subtotal' | t }}</div>
             <div data-subtotal>{{ cart.total_price | money }}</div>

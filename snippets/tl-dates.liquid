@@ -1,0 +1,106 @@
+{% comment %}
+  TIKVES LONDON · THE ONE CLOCK FOR URGENCY · 2 Nov 2026
+  REF · HORMOZI OFFER IN FULL v4. Every countdown, every timed line and every
+  timed hide on the site reads its dates and its words from here. Rendered
+  once, in the head of layout/theme.liquid, before anything that uses it.
+
+  THE DEADLINES ARE REAL AND FIXED. They never reset per visitor. That is the
+  law (DMCC Act 2024) as well as our rule. Change a date here only on an
+  operator ruling, and change its Shopify discount in the same pass.
+  · Black Friday line from Tue 24 Nov 00:00 UK.
+  · Black Friday, 15% off everything but gift cards, Fri 27 Nov 00:00 to
+    Mon 30 Nov 23:59 UK. Discount: DiscountAutomaticNode/2293044805977.
+  · Christmas: the last order day, Wed 16 Dec 23:59 UK, per 18 · CARRIER AND
+    DELIVERY v6 section 5. The Christmas Six ends at the same moment.
+  · Gift card line, Thu 17 Dec 00:00 to Thu 24 Dec 23:59 UK.
+  All of these fall in GMT, so UK time equals UTC and the UK date is the UTC
+  date. If a date is ever moved into British Summer Time, this needs an
+  offset.
+
+  HTML CLASSES IT SETS, for CSS hides: tl-bf-teaser, tl-bf-live, tl-xmas-over,
+  tl-gift. The Christmas Six lines carry the class tl-six-timed and step aside
+  during the Black Friday weekend and after the Christmas cut-off, even if the
+  theme switch is still on.
+
+  COUNTING: days are calendar days in UK time, today included, so on Monday
+  14 December it reads 3 days left (14, 15, 16). In the last 48 hours it
+  counts hours, rounded up. On the deadline's own day it says Last day.
+{% endcomment %}
+<script>
+  (function () {
+    if (window.TL) return;
+    var D = {
+      bfTeaser: Date.UTC(2026, 10, 24, 0, 0, 0),
+      bfStart: Date.UTC(2026, 10, 27, 0, 0, 0),
+      bfEnd: Date.UTC(2026, 10, 30, 23, 59, 59),
+      xmasEnd: Date.UTC(2026, 11, 16, 23, 59, 59),
+      giftEnd: Date.UTC(2026, 11, 24, 23, 59, 59)
+    };
+    var DAY = 86400000, HOUR = 3600000;
+    function ukDate(t) { return new Date(t).toISOString().slice(0, 10); }
+    function dayNumber(t) { return Math.floor(Date.parse(ukDate(t) + 'T00:00:00Z') / DAY); }
+    function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
+    function phase(t) {
+      return {
+        bfTeaser: t >= D.bfTeaser && t < D.bfStart,
+        bfLive: t >= D.bfStart && t <= D.bfEnd,
+        xmas: t <= D.xmasEnd,
+        gift: t > D.xmasEnd && t <= D.giftEnd
+      };
+    }
+    function left(end, t) {
+      var ms = end - t;
+      if (ms <= 0) return null;
+      var hours = Math.ceil(ms / HOUR);
+      if (ukDate(t) === ukDate(end)) return { kind: 'lastday', n: hours };
+      if (ms <= 48 * HOUR) return { kind: 'hours', n: hours };
+      return { kind: 'days', n: dayNumber(end) - dayNumber(t) + 1 };
+    }
+    var BF = '15% off every bottle, case and set';
+    var texts = {
+      xmasCount: function (t) {
+        var l = left(D.xmasEnd, t);
+        if (!l) return '';
+        if (l.kind === 'lastday') return 'Last day to order for Christmas. ' + plural(l.n, 'hour') + ' left.';
+        return plural(l.n, l.kind === 'hours' ? 'hour' : 'day') + ' left to order for Christmas.';
+      },
+      xmasLine: function (t) {
+        var l = left(D.xmasEnd, t);
+        if (!l) return '';
+        var tail = l.kind === 'lastday' ? 'Last day, ' + plural(l.n, 'hour') + ' left.' : plural(l.n, l.kind === 'hours' ? 'hour' : 'day') + ' left.';
+        return 'Order by Wednesday 16 December for Christmas delivery. ' + tail;
+      },
+      bf: function (t) {
+        var p = phase(t);
+        if (p.bfTeaser) return 'Black Friday starts Friday: ' + BF + '.';
+        if (!p.bfLive) return '';
+        var l = left(D.bfEnd, t);
+        if (!l) return '';
+        if (l.kind === 'lastday') return 'Last day of Black Friday: ' + BF + '. ' + plural(l.n, 'hour') + ' left.';
+        return 'Black Friday: ' + BF + '. ' + plural(l.n, l.kind === 'hours' ? 'hour' : 'day') + ' left.';
+      },
+      gift: function (t) {
+        return phase(t).gift ? 'Too late for Christmas delivery? A gift card comes by email, straight away.' : '';
+      }
+    };
+    var t0 = Date.now();
+    var p0 = phase(t0);
+    var root = document.documentElement;
+    if (p0.bfTeaser) root.classList.add('tl-bf-teaser');
+    if (p0.bfLive) root.classList.add('tl-bf-live');
+    if (!p0.xmas) root.classList.add('tl-xmas-over');
+    if (p0.gift) root.classList.add('tl-gift');
+    window.TL = { dates: D, phase: phase, left: left, texts: texts, now: function () { return Date.now(); } };
+  })();
+</script>
+<style>
+  html.tl-bf-live .tl-six-timed,
+  html.tl-xmas-over .tl-six-timed { display: none !important; }
+  [data-tl-fill]:empty { display: none; }
+  /* Belt and braces: a line outside its window stays hidden even where a
+     re-rendered fragment did not run its script. */
+  html:not(.tl-bf-live):not(.tl-bf-teaser) [data-tl-fill="bf"],
+  html.tl-xmas-over [data-tl-fill="xmasLine"],
+  html.tl-xmas-over [data-tl-fill="xmasCount"],
+  html:not(.tl-gift) [data-tl-fill="gift"] { display: none !important; }
+</style>

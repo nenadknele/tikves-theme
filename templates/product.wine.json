@@ -44,6 +44,12 @@
             "text": "{{ product.metafields.custom.rarity_note.value }}"
           }
         },
+        "urgency": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Countdown and timed lines, 2 Nov 2026, REF v4. Words and dates live in snippets/tl-dates. {% endcomment %}{% render 'tl-urgency', mode: 'line' %}"
+          }
+        },
         "back_in_stock": {
           "type": "custom",
           "settings": {
@@ -53,7 +59,7 @@
         "christmas_six": {
           "type": "custom",
           "settings": {
-            "code": "{% comment %} THE CHRISTMAS SIX, 2 Nov 2026, REF v3. Shows only while the offer is switched on in theme settings, and only on wines with custom.christmas_six. {% endcomment %}{% if settings.tl_christmas_six and product.metafields.custom.christmas_six.value == true %}<p class=\"tl-pdp-six\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Part of the Christmas Six.</strong> Pick six or more of our wines and 8% comes off, delivered free. Until Wednesday 16 December.</p>{% endif %}"
+            "code": "{% comment %} THE CHRISTMAS SIX, 2 Nov 2026, REF v3. Shows only while the offer is switched on in theme settings, and only on wines with custom.christmas_six. {% endcomment %}{% if settings.tl_christmas_six and product.metafields.custom.christmas_six.value == true %}<p class=\"tl-pdp-six tl-six-timed\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Part of the Christmas Six.</strong> Pick six or more of our wines and 8% comes off, delivered free. Until Wednesday 16 December.</p>{% endif %}"
           }
         },
         "guarantee": {
@@ -130,7 +136,7 @@
         "price",
         "quantity",
         "buy_buttons",
-        "inventory_status", "rarity", "christmas_six",
+        "inventory_status", "rarity", "christmas_six", "urgency",
         "back_in_stock",
         "guarantee",
         "sales_point-secure",

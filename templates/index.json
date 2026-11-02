@@ -64,6 +64,10 @@
         "scrim": 50
       }
     },
+    "tl_urgency": {
+      "type": "tl-urgency-band",
+      "settings": {}
+    },
     "best": {
       "type": "tikves-singles",
       "settings": {
@@ -399,7 +403,7 @@
   },
   "order": [
     "tk_design",
-    "hero",
+    "hero", "tl_urgency",
     "best",
     "ladder",
     "education",

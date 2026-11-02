@@ -21,7 +21,7 @@
     {%- if p.metafields.custom.christmas_six.value == true -%}{{ p.id }},{%- endif -%}
   {%- endfor -%}
 {%- endcapture -%}
-<div class="tl-six" data-tl-six data-ids="{{ tl_six_ids | strip }}" hidden>
+<div class="tl-six tl-six-timed" data-tl-six data-ids="{{ tl_six_ids | strip }}" hidden>
   <p class="tl-six__line" data-tl-six-line></p>
   <p class="tl-six__more" data-tl-six-more></p>
 </div>

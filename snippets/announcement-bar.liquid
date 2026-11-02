@@ -27,6 +27,8 @@
           class="announcement-slider"
           data-compact="{{ section.settings.announcement_compact }}"
           data-block-count="{{ announcement_block_count }}">
+          {%- comment -%} Countdown slides, 2 Nov 2026, REF v4. Rendered in code, not as blocks, because the section allows three blocks and all three are used. {%- endcomment -%}
+          {%- render 'tl-urgency', mode: 'bar' -%}
           {%- assign slide_index = 0 -%}
           {%- for block in section.blocks -%}
             {%- if block.type == '@app' -%}
@@ -64,6 +66,7 @@
             {%- endif -%}
           {%- endfor -%}
         </div>
+        {%- render 'tl-urgency', mode: 'bar-script' -%}
       </div>
     </div>
   </div>
