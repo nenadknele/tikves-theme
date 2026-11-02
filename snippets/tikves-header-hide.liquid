@@ -1,0 +1,47 @@
+{%- comment -%}
+  TIKVES LONDON . HEADER HIDES ON THE WAY DOWN, PHONES ONLY
+  2 Nov 2026, storefront check, operator go-ahead. Rendered from
+  snippets/tikves-head-css.liquid.
+
+  On a phone the stuck header stayed on screen the whole way down a page,
+  83px of a small screen. Now, once the theme has stuck the header (past
+  250px, class site-header--stuck), scrolling down slides it out of view
+  and any scroll up brings it straight back. It never hides while the
+  menu, search or cart drawer is open, or near the top of the page.
+  Desktop keeps the theme's own behaviour.
+
+  TO UNDO: delete this snippet and its render line in
+  snippets/tikves-head-css.liquid.
+{%- endcomment -%}
+{% style %}
+  @media only screen and (max-width: 768px) {
+    .site-header--stuck.tk-header-hidden {
+      transform: translate3d(0, -100%, 0) !important;
+      transition: transform 0.25s ease !important;
+    }
+  }
+{% endstyle %}
+<script>
+  (function () {
+    var mq = window.matchMedia('(max-width: 768px)');
+    var last = window.scrollY, ticking = false;
+    function header() { return document.querySelector('.site-header'); }
+    function update() {
+      ticking = false;
+      var h = header(); if (!h) return;
+      var y = window.scrollY, html = document.documentElement;
+      var drawerOpen = /js-drawer-open/.test(html.className) || document.body.classList.contains('js-drawer-open');
+      if (!mq.matches || drawerOpen || y < 300 || !h.classList.contains('site-header--stuck')) {
+        h.classList.remove('tk-header-hidden');
+      } else if (y > last + 4) {
+        h.classList.add('tk-header-hidden');
+      } else if (y < last - 4) {
+        h.classList.remove('tk-header-hidden');
+      }
+      last = y;
+    }
+    window.addEventListener('scroll', function () {
+      if (!ticking) { ticking = true; window.requestAnimationFrame(update); }
+    }, { passive: true });
+  })();
+</script>
