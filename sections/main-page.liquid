@@ -10,12 +10,22 @@
   if page.content == blank
     assign has_body = false
   endif
+
+  # 2 Nov 2026, SEO: one main heading per page. Some page bodies (About,
+  # Awards) carry their own h1 and hide the theme's title. There the
+  # theme's title is printed as a paragraph with the same class, so it
+  # stays hidden exactly as before and the body's h1 is the only one.
+  # Every other page keeps the theme's h1.
+  assign title_tag = 'h1'
+  if page.content contains '<h1'
+    assign title_tag = 'p'
+  endif
 -%}
 
 <div class="page-width page-width--narrow page-content{% unless has_body %} page-content--title-only{% endunless %}">
   {%- render 'breadcrumbs' -%}
   <header class="section-header text-center">
-    <h1 class="section-header__title">{{ page.title }}</h1>
+    <{{ title_tag }} class="section-header__title">{{ page.title }}</{{ title_tag }}>
   </header>
 
   {%- if has_body -%}
