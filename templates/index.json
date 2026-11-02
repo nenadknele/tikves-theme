@@ -162,7 +162,7 @@
           "type": "voice",
           "settings": {
             "image": "shopify://shop_images/WhatsApp_Headshot_1024_circle.jpg",
-            "quote": "<p>\"One of my absolute favourites is Barovo red, an old-vine, field blend of Kratošija and Vranec from around 700 metres altitude. And the wine is stunning too, full-bodied and bold but also elegant.\"</p>",
+            "quote": "<p>\"One of my absolute favourites is Barovo red, an old-vine, field blend of Kratošija and Vranec from around 700 metres altitude. … And the wine is stunning too, full-bodied and bold but also elegant.\"</p>",
             "name": "Dr Caroline Gilby MW",
             "role": "Master of Wine"
           }
