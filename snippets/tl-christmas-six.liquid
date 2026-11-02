@@ -1,0 +1,78 @@
+{% comment %}
+  THE CHRISTMAS SIX, 2 Nov 2026. REF · HORMOZI OFFER IN FULL v3.
+  Cart line for the offer: progress under six, the upsell to twelve at six,
+  the downsell to the pairs and trios. Renders nothing unless the offer is
+  switched on in theme settings (Cart, "The Christmas Six is running").
+  Switch it on only on the day the two parked Shopify discounts start, and
+  off on the day they end. A line that promises 8% with no discount behind
+  it is a false promise.
+
+  WHICH BOTTLES COUNT: products with the field custom.christmas_six = true.
+  That field must match the discount's scope collection offer-scope-any-six.
+  Change one, change the other in the same pass.
+
+  WHY JAVASCRIPT: theme.js does not re-render this snippet when the cart
+  changes, so the numbers are re-read from /cart.js, the same pattern as
+  tl-delivery-summary. If the script is removed, remove the line with it.
+{% endcomment %}
+{%- if settings.tl_christmas_six -%}
+{%- capture tl_six_ids -%}
+  {%- for p in collections.all-wines.products -%}
+    {%- if p.metafields.custom.christmas_six.value == true -%}{{ p.id }},{%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+<div class="tl-six" data-tl-six data-ids="{{ tl_six_ids | strip }}" hidden>
+  <p class="tl-six__line" data-tl-six-line></p>
+  <p class="tl-six__more" data-tl-six-more></p>
+</div>
+<style>
+  .tl-six{border-top:1px solid #B9AC9B;margin-top:14px;padding-top:12px;font-size:13px;line-height:1.5}
+  .tl-six[hidden]{display:none}
+  .tl-six p{margin:0 0 6px}
+  .tl-six p:last-child{margin:0}
+  .tl-six a{text-decoration:underline;text-underline-offset:3px;color:inherit}
+</style>
+<script>
+(function () {
+  var roots = document.querySelectorAll('[data-tl-six]');
+  if (!roots.length) return;
+  function render(root, cart) {
+    var ids = (root.dataset.ids || '').split(',').filter(Boolean).map(Number);
+    var n = 0, units = 0;
+    ((cart && cart.items) || []).forEach(function (item) {
+      if (!item.gift_card) units += item.quantity;
+      if (ids.indexOf(item.product_id) > -1) n += item.quantity;
+    });
+    var line = root.querySelector('[data-tl-six-line]');
+    var more = root.querySelector('[data-tl-six-more]');
+    if (n === 0) { root.hidden = true; return; }
+    if (n < 6) {
+      var left = 6 - n;
+      line.innerHTML = '<strong>The Christmas Six.<\/strong> Add ' + left + ' more bottle' + (left === 1 ? '' : 's') + ' of our wine for 8% off' + (units >= 6 ? '' : ' and free delivery') + ', until Wednesday 16 December.';
+      more.innerHTML = 'Not after six? <a href="/collections/sets">Our pairs and trios<\/a> are made for two or three.';
+    } else if (n < 12) {
+      line.innerHTML = '<strong>That’s your Christmas Six.<\/strong> 8% off and free delivery are on.';
+      more.textContent = 'Stocking up for the season? Make it twelve and the 8% comes off every bottle.';
+    } else {
+      line.innerHTML = '<strong>Twelve for the season.<\/strong> 8% off every bottle, delivered free.';
+      more.textContent = '';
+    }
+    root.hidden = false;
+  }
+  function refresh() {
+    fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (cart) { roots.forEach(function (root) { render(root, cart); }); })
+      .catch(function () {});
+  }
+  document.addEventListener('cart:updated', function (evt) {
+    if (evt.detail && evt.detail.cart && evt.detail.cart.items) {
+      roots.forEach(function (root) { render(root, evt.detail.cart); });
+    } else { refresh(); }
+  });
+  document.addEventListener('ajaxProduct:added', refresh);
+  document.addEventListener('cart:build', refresh);
+  refresh();
+})();
+</script>
+{%- endif -%}

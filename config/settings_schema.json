@@ -868,6 +868,13 @@
       },
       {
         "type": "checkbox",
+        "id": "tl_christmas_six",
+        "label": "The Christmas Six is running",
+        "info": "Shows the Christmas Six lines on wine pages and in the cart, the gift message box, and free delivery on six in the delivery bar. Switch on only on the day the two parked Shopify discounts start, off the day they end.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
         "id": "cart_terms_conditions_enable",
         "label": "t:settings_schema.cart.settings.cart_terms_conditions_enable.label"
       },
