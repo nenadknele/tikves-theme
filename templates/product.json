@@ -30,6 +30,12 @@
             "inventory_transfers_enable": false
           }
         },
+        "rarity": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.custom.rarity_note.value }}"
+          }
+        },
         "back_in_stock": {
           "type": "custom",
           "settings": {
@@ -57,7 +63,7 @@
         "price",
         "variant_picker",
         "buy_buttons",
-        "inventory_status",
+        "inventory_status", "rarity",
         "back_in_stock",
         "guarantee",
         "separator-1",

@@ -34,8 +34,14 @@
         "inventory_status": {
           "type": "inventory_status",
           "settings": {
-            "inventory_threshold": 0,
+            "inventory_threshold": 60,
             "inventory_transfers_enable": false
+          }
+        },
+        "rarity": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.custom.rarity_note.value }}"
           }
         },
         "back_in_stock": {
@@ -118,7 +124,7 @@
         "price",
         "quantity",
         "buy_buttons",
-        "inventory_status",
+        "inventory_status", "rarity",
         "back_in_stock",
         "guarantee",
         "sales_point-secure",

@@ -324,8 +324,8 @@
       "description": "Description",
       "in_stock_label": "In stock, ready to ship",
       "stock_label": {
-        "one": "Low stock - {{ count }} item left",
-        "other": "Low stock - {{ count }} items left"
+        "one": "Only {{ count }} left.",
+        "other": "Only {{ count }} left."
       },
       "sold_out": "Sold Out",
       "unavailable": "Unavailable",
