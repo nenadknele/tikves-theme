@@ -217,5 +217,45 @@
   }
 {% endstyle %}
 
+{%- comment -%}
+  2 Nov 2026: on a phone, Add to cart sat just below the first screen of
+  a product page. Two layout changes bring it up, phones and product
+  pages only:
+  1. The quantity box sits to the left of Add to cart on one row. Its
+     label stays in the page for screen readers, it is only hidden from
+     view.
+  2. The gaps between the blocks above the button go from 25px to 12px.
+  Photos, words and prices are unchanged. Desktop unchanged.
+  To undo, delete the style block below.
+{%- endcomment -%}
+{% style %}
+  @media only screen and (max-width: 768px) {
+    .template-product .product-single__meta .product-block:has(~ .product-block .add-to-cart) {
+      margin-bottom: 12px;
+    }
+    .template-product .product-single__meta .product-block:has(.product__quantity):has(+ .product-block .add-to-cart) {
+      float: left;
+      margin: 0 10px 0 0;
+    }
+    .template-product .product-single__meta .product-block:has(.product__quantity):has(+ .product-block .add-to-cart) label {
+      position: absolute !important;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .template-product .product-single__meta .product-block:has(.product__quantity):has(+ .product-block .add-to-cart) .js-qty__num {
+      min-height: 44px;
+    }
+    .template-product .product-single__meta .product-block:has(.product__quantity) + .product-block:has(.add-to-cart) {
+      display: flow-root;
+    }
+    .template-product .product-single__meta .product-block:has(.product__quantity) + .product-block:has(.add-to-cart) + * {
+      clear: both;
+    }
+  }
+{% endstyle %}
+
 {%- comment -%} 2 Nov 2026: the stuck header hides on the way down on phones. See the snippet. {%- endcomment -%}
 {%- render 'tikves-header-hide' -%}
