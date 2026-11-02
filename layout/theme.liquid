@@ -390,5 +390,7 @@
 
   {%- comment -%} 24 Oct 2026, consent: Klaviyo loads only after a yes to Analytics and Marketing. Keep the Klaviyo app embed off. See the snippet. {%- endcomment -%}
   {%- render 'klaviyo-consent-loader' -%}
+  {%- comment -%} 2 Nov 2026, consent: tracking cookies left by an earlier yes are deleted on a no. See the snippet. {%- endcomment -%}
+  {%- render 'consent-cookie-cleanup' -%}
 </body>
 </html>
