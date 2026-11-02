@@ -12,7 +12,7 @@
   assign line = product.metafields.custom.tile_line.value
   assign card_abv = product.metafields.wine.abv.value
 -%}
-<article class="tkfy__card" data-product-handle="{{ product.handle }}">
+<article class="tkfy__card" data-product-handle="{{ product.handle }}"{% if settings.tl_christmas_six and product.available and product.metafields.custom.christmas_six.value == true %} data-six-vid="{{ v.id }}" data-six-title="{{ product.title | escape }}"{% endif %}>
   <a class="tkfy__frame" href="{{ product.url | within: col }}">
     {%- if img != blank -%}
       <img
