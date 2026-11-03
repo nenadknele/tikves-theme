@@ -46,7 +46,7 @@
   .tl-sb__card.is-in .tl-sb__add{display:none}
   .tl-sb__card.is-in .tl-sb__step{display:flex}
 
-  .tl-sb__tray{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--colorBody,#f6efe8);border-top:1px solid rgba(0,0,0,.15);padding:12px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08);transform:translateY(110%);transition:transform .3s ease;visibility:hidden}
+  .tl-sb__tray{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--colorBody,#f6efe8);border-top:1px solid rgba(0,0,0,.15);padding:10px 16px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08);transform:translateY(110%);transition:transform .3s ease;visibility:hidden}
   .tl-sb__tray.is-up{transform:none;visibility:visible}
   .tl-sb__trayhead{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 4px}
   .tl-sb__trayhead h3{margin:0;font-size:16px}
@@ -86,7 +86,9 @@
     .tl-sb{padding-left:16px;padding-right:16px}
     .tl-sb__tabs{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;justify-content:flex-start}
     .tl-sb__msg,.tl-sb__clear{display:none!important}
-    .tl-sb__track{margin:16px 16px 34px}
+    .tl-sb__track{margin:14px 16px 28px}
+    .tl-sb__mark b{width:30px;height:30px;font-size:11px}
+    .tl-sb__mark span{top:33px}
   }
   @media (min-width:769px){
     .tl-sb{padding-bottom:56px}
