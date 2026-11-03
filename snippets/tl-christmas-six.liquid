@@ -48,7 +48,7 @@
     if (n === 0) { root.hidden = true; return; }
     if (n < 6) {
       var left = 6 - n;
-      line.innerHTML = '<strong>The Christmas Six.<\/strong> Add ' + left + ' more bottle' + (left === 1 ? '' : 's') + ' of our wine for 8% off' + (units >= 6 ? '' : ' and free delivery') + ', until Wednesday 16 December.';
+      line.innerHTML = '<strong>The Christmas Six.<\/strong> Add ' + left + ' more bottle' + (left === 1 ? '' : 's') + ' from the Christmas Six wines for 8% off' + (units >= 6 ? '' : ' and free delivery') + ', until Wednesday 16 December.';
       more.innerHTML = 'Not after six? <a href="/collections/sets">Our pairs and trios<\/a> are made for two or three.';
     } else if (n < 12) {
       line.innerHTML = '<strong>That’s your Christmas Six.<\/strong> 8% off and free delivery are on.';
