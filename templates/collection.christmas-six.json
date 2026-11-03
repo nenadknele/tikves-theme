@@ -3,7 +3,7 @@
  * overtone.co and boombeauty.com. The theme countdown to Wed 16 Dec 23:59 UK
  * on the festive Barovo photograph (wide crop on desktop, phone crop on the
  * phone), how it works, the three ready-made sixes, then Build Your Own Six,
- * a six-slot builder over the eleven wines. Used only by
+ * a six-slot builder over every wine in the offer. Used only by
  * /collections/the-christmas-six. Remove after 16 Dec.
  */
 
@@ -17,7 +17,7 @@
           "settings": {
             "heading": "The Christmas Six",
             "heading_size": "h1",
-            "text": "<p>Any six of our eleven Christmas wines. 10% off, delivered free in Great Britain. Order by Wednesday 16 December for Christmas delivery.</p>",
+            "text": "<p>Any six bottles of our wine. 10% off, delivered free in Great Britain. Order by Wednesday 16 December for Christmas delivery.</p>",
             "content_alignment": "center"
           }
         },
@@ -129,7 +129,7 @@
       ],
       "settings": {
         "more_heading": "Or Build Your Own Six",
-        "more_text": "Pick from all eleven wines below. Your six fills up as you go."
+        "more_text": "Pick from every wine below. Your six fills up as you go."
       }
     },
     "builder": {
