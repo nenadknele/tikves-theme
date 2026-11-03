@@ -2,7 +2,7 @@
  * The Christmas Mix page, 3 Nov 2026, after the Zipify bundle builders on
  * overtone.co and boombeauty.com. The theme countdown to Wed 16 Dec 23:59 UK
  * on the fireplace toast over the Christmas roast, heading and the steps as
- * boxes only, no sentence (his word, 3 Nov),
+ * boxes only, no sentence and no button (his word, 3 Nov),
  * as Overtone does them (buy 2 5%, buy 4+ 10%, buy 6+ free delivery), then
  * the builder: Reds, Whites and Rosé tabs over every single bottle in the
  * offer. Used only by /collections/the-christmas-mix. Remove after 16 Dec.
@@ -33,20 +33,11 @@
             "hide_timer": true,
             "text": "<p>Too late for Christmas delivery? <a href=\"/products/gift-card\">A gift card</a> comes by email, straight away.</p>"
           }
-        },
-        "button": {
-          "type": "button",
-          "settings": {
-            "button": "Build Your Mix",
-            "button_link": "/collections/the-christmas-mix#tl-build",
-            "button_style": "solid"
-          }
         }
       },
       "block_order": [
         "content",
-        "timer",
-        "button"
+        "timer"
       ],
       "settings": {
         "layout": "hero",
