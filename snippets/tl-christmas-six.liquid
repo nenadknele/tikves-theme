@@ -1,14 +1,15 @@
 {% comment %}
-  THE CHRISTMAS SIX, 2 Nov 2026. REF · HORMOZI OFFER IN FULL v3.
-  Cart line for the offer: progress under six, the upsell to twelve at six,
-  the downsell to the pairs and trios. Renders nothing unless the offer is
-  switched on in theme settings (Cart, "The Christmas Six is running").
+  THE CHRISTMAS MIX, 3 Nov 2026 (was the Christmas Six, REF v3).
+  Cart line for the offer: progress to the next step (2 bottles 5%, 4 or more 10%,
+  free delivery from 6). Renders nothing unless the offer is
+  switched on in theme settings (Cart, "The Christmas Mix is running").
   Switch it on only on the day the two parked Shopify discounts start, and
-  off on the day they end. A line that promises 10% with no discount behind
-  it is a false promise.
+  off on the day they end. A line that promises a discount with no discount
+  behind it is a false promise. The steps here must match the Shopify
+  discounts.
 
   WHICH BOTTLES COUNT: products with the field custom.christmas_six = true.
-  That field must match the discount's scope collection offer-scope-any-six.
+  That field must match the discounts' scope collection offer-scope-any-six.
   Change one, change the other in the same pass.
 
   WHY JAVASCRIPT: theme.js does not re-render this snippet when the cart
@@ -46,16 +47,16 @@
     var line = root.querySelector('[data-tl-six-line]');
     var more = root.querySelector('[data-tl-six-more]');
     if (n === 0) { root.hidden = true; return; }
-    if (n < 6) {
-      var left = 6 - n;
-      line.innerHTML = '<strong>The Christmas Six.<\/strong> Add ' + left + ' more bottle' + (left === 1 ? '' : 's') + ' from the Christmas Six wines for 10% off' + (units >= 6 ? '' : ' and free delivery') + ', until Wednesday 16 December.';
-      more.innerHTML = 'Not after six? <a href="/collections/sets">Our pairs and trios<\/a> are made for two or three.';
-    } else if (n < 12) {
-      line.innerHTML = '<strong>That’s your Christmas Six.<\/strong> 10% off and free delivery are on.';
-      more.textContent = 'Stocking up for the season? Make it twelve and the 10% comes off every bottle.';
+    function b(k) { return k + ' bottle' + (k === 1 ? '' : 's'); }
+    more.textContent = '';
+    if (n < 2) {
+      line.innerHTML = '<strong>The Christmas Mix.<\/strong> Add 1 more of our wines for 5% off, until Wednesday 16 December. Four or more get 10%.';
+    } else if (n < 4) {
+      line.innerHTML = '<strong>5% off is on.<\/strong> Add ' + b(4 - n) + ' more for 10% off.';
+    } else if (n < 6 && units < 6) {
+      line.innerHTML = '<strong>10% off is on.<\/strong> Add ' + b(6 - units) + ' more for free delivery.';
     } else {
-      line.innerHTML = '<strong>Twelve for the season.<\/strong> 10% off every bottle, delivered free.';
-      more.textContent = '';
+      line.innerHTML = '<strong>10% off' + (units >= 6 ? ' and free delivery are' : ' is') + ' on.<\/strong>';
     }
     root.hidden = false;
   }

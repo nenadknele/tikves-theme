@@ -1,0 +1,62 @@
+/*
+ * The Christmas Mix page, 3 Nov 2026, after the Zipify bundle builders on
+ * overtone.co and boombeauty.com. The theme countdown to Wed 16 Dec 23:59 UK
+ * on the fireplace toast over the Christmas roast, heading and the steps as
+ * boxes only, no sentence and no button (his word, 3 Nov),
+ * as Overtone does them (buy 2 5%, buy 4+ 10%, buy 6+ free delivery), then
+ * the builder: Reds, Whites and Rosé tabs over every single bottle in the
+ * offer. Used only by /collections/the-christmas-mix. Remove after 16 Dec.
+ */
+
+{
+  "sections": {
+    "countdown": {
+      "type": "countdown",
+      "blocks": {
+        "content": {
+          "type": "content",
+          "settings": {
+            "heading": "The Christmas Mix",
+            "heading_size": "h1",
+            "text": "<ul><li>Buy 2<strong>5%</strong>off</li><li>Buy 4+<strong>10%</strong>off</li><li>Buy 6+<strong>Free</strong>delivery</li></ul>",
+            "content_alignment": "center"
+          }
+        },
+        "timer": {
+          "type": "timer",
+          "settings": {
+            "year": 2026,
+            "month": "12",
+            "day": "16",
+            "hour": "23",
+            "minute": "59",
+            "hide_timer": true,
+            "text": "<p>Too late for Christmas delivery? <a href=\"/products/gift-card\">A gift card</a> comes by email, straight away.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "content",
+        "timer"
+      ],
+      "settings": {
+        "layout": "hero",
+        "full_width": true,
+        "text_color": "#ffffff",
+        "background_color": "#2b1a14",
+        "background_image": "shopify://shop_images/IMG_3066.jpg",
+        "mobile_image": "shopify://shop_images/IMG_3066.jpg",
+        "overlay_color": "#000000",
+        "overlay_opacity": 34
+      }
+    },
+    "builder": {
+      "type": "tl-six-builder",
+      "settings": {}
+    }
+  },
+  "order": [
+    "countdown",
+    "builder"
+  ]
+}

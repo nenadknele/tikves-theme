@@ -159,10 +159,10 @@
                 {%- endunless -%}
               {%- endfor -%}
             </div>
-            {%- comment -%} THE CHRISTMAS SIX, 2 Nov 2026, REF v3: the small yes leads to a six. Built from the bottles in this result that count towards the offer. Hidden when none do, or when the offer is off. {%- endcomment -%}
+            {%- comment -%} THE CHRISTMAS MIX, 3 Nov 2026 (was the Christmas Six): the small yes leads to a mix of six. Built from the bottles in this result that count towards the offer. Hidden when none do, or when the offer is off. {%- endcomment -%}
             {%- if settings.tl_christmas_six -%}
               <div class="tkfy__six tl-six-timed" data-tkfy-six hidden>
-                <button type="button" class="tkfy__six-btn" data-tkfy-six-add>Make it your Christmas Six</button>
+                <button type="button" class="tkfy__six-btn" data-tkfy-six-add>Make it a Christmas Mix of six</button>
                 <p class="tkfy__six-line" data-tkfy-six-line></p>
               </div>
             {%- endif -%}
@@ -229,7 +229,7 @@
             document.dispatchEvent(new CustomEvent('ajaxProduct:added'));
             btn.textContent = 'In your bag';
           })
-          .catch(function () { btn.disabled = false; btn.textContent = 'Make it your Christmas Six'; });
+          .catch(function () { btn.disabled = false; btn.textContent = 'Make it a Christmas Mix of six'; });
       });
       box.hidden = false;
     });

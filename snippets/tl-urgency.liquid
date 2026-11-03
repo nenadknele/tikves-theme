@@ -40,8 +40,8 @@
     assign tl_show_gift = true
   endif
   if settings.tl_christmas_six
-    assign tl_xmas_link = '/collections/the-christmas-six'
-    assign tl_xmas_link_text = 'The Christmas Six'
+    assign tl_xmas_link = '/collections/the-christmas-mix'
+    assign tl_xmas_link_text = 'The Christmas Mix'
   else
     assign tl_xmas_link = '/collections/gifts'
     assign tl_xmas_link_text = 'Gifts'
@@ -144,10 +144,10 @@
         {%- if tl_show_xmas -%}
           <div class="tl-band__panel" data-tl-panel="xmas">
             {%- if settings.tl_christmas_six -%}
-              <h2 class="tl-band__title">The Christmas Six</h2>
-              <p class="tl-band__line">Six bottles from the Christmas Six wines, 10% off and delivered free in Great Britain.</p>
+              <h2 class="tl-band__title">The Christmas Mix</h2>
+              <p class="tl-band__line">Mix any of our wines. Buy 2 for 5% off, buy 4 or more for 10% off. Six or more delivered free in Great Britain.</p>
               <p class="tl-band__count" data-tl-fill="xmasCount">Order by Wednesday 16 December for Christmas delivery.</p>
-              <a class="btn tl-band__btn" href="/collections/the-christmas-six">Build Your Six</a>
+              <a class="btn tl-band__btn" href="/collections/the-christmas-mix">Build Your Mix</a>
             {%- else -%}
               <h2 class="tl-band__title">Order For Christmas</h2>
               <p class="tl-band__line">Order by Wednesday 16 December for Christmas delivery.</p>

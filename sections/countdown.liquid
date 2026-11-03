@@ -136,7 +136,7 @@
           <div class="countdown__block countdown__block--{{ block.type }}" {{ block.shopify_attributes }}>
             <div class="countdown__text-wrapper countdown__text-wrapper--content-alignment-{{ block.settings.content_alignment }}">
               <div class="countdown__heading">
-                <h2 class="{{ block.settings.heading_size }}">{{ block.settings.heading }}</h2>
+                {%- if block.settings.heading_size == 'h1' -%}<h1 class="h1">{{ block.settings.heading }}</h1>{%- else -%}<h2 class="{{ block.settings.heading_size }}">{{ block.settings.heading }}</h2>{%- endif -%}
               </div>
               <div class="countdown__richtext">
                 {{ block.settings.text }}
