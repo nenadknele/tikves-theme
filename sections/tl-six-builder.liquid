@@ -74,14 +74,15 @@
 
   /* Hero tier boxes. The list lives in the countdown section's text on this
      template; this section is only on this page, so the style rides here. */
-  .countdown__richtext ul.tl-tiers,.countdown__richtext ul{list-style:none;display:flex;justify-content:center;gap:8px;margin:16px auto 4px;padding:0;max-width:680px}
-  .countdown__richtext ul li{flex:1 1 0;min-width:0;margin:0;padding:8px 4px;border:1px solid rgba(255,255,255,.85);border-radius:4px;background:rgba(0,0,0,.28);text-align:center;font-size:10px;line-height:1.3;letter-spacing:.04em;text-transform:uppercase}
+  .countdown__richtext ul{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px auto 6px;padding:0;max-width:520px}
+  .countdown__richtext ul li{display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0;padding:10px 4px 9px;border:1.5px solid #fff;border-radius:2px;background:rgba(20,12,8,.45);text-align:center;font-size:10px;line-height:1.2;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
   .countdown__richtext ul li::before{content:none}
-  .countdown__richtext ul li strong{display:block;font-size:20px;line-height:1.1;letter-spacing:0;text-transform:none;margin:2px 0 0}
+  .countdown__richtext ul li strong{display:block;font-size:30px;line-height:1;letter-spacing:0;text-transform:none;margin:5px 0 4px;font-weight:700}
+  .countdown__richtext p:empty{display:none}
   @media (min-width:769px){
-    .countdown__richtext ul{gap:12px}
-    .countdown__richtext ul li{padding:12px 10px;font-size:13px;letter-spacing:.06em}
-    .countdown__richtext ul li strong{font-size:30px}
+    .countdown__richtext ul{gap:14px;max-width:600px}
+    .countdown__richtext ul li{padding:14px 10px 12px;font-size:12px}
+    .countdown__richtext ul li strong{font-size:40px}
   }
 
   @media (max-width:768px){
