@@ -59,7 +59,7 @@
         "christmas_six": {
           "type": "custom",
           "settings": {
-            "code": "{% comment %} THE CHRISTMAS SIX, 2 Nov 2026, REF v3. Shows only while the offer is switched on in theme settings, and only on wines with custom.christmas_six. {% endcomment %}{% if settings.tl_christmas_six and product.metafields.custom.christmas_six.value == true %}<p class=\"tl-pdp-six tl-six-timed\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Part of the Christmas Six.</strong> Pick six or more of the Christmas Six wines and 10% comes off, delivered free in Great Britain. Until Wednesday 16 December.</p>{% endif %}"
+            "code": "{% comment %} THE CHRISTMAS MIX, 3 Nov 2026 (was the Christmas Six). Shows only while the offer is switched on in theme settings, and only on wines with custom.christmas_six. {% endcomment %}{% if settings.tl_christmas_six and product.metafields.custom.christmas_six.value == true %}<p class=\"tl-pdp-six tl-six-timed\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Part of the Christmas Mix.</strong> Mix any of our wines. 5% off four bottles, 7% off six with free delivery in Great Britain, 10% off twelve. Until Wednesday 16 December.</p>{% endif %}"
           }
         },
         "guarantee": {

@@ -1,10 +1,10 @@
 /*
- * The Christmas Six page, 3 Nov 2026, after the Zipify bundle builders on
+ * The Christmas Mix page, 3 Nov 2026, after the Zipify bundle builders on
  * overtone.co and boombeauty.com. The theme countdown to Wed 16 Dec 23:59 UK
- * on the fireplace toast over the Christmas roast (one square photo,
- * cropped by the theme for desktop and phone), how it works, the three ready-made sixes, then Build Your Own Six,
- * a six-slot builder over every wine in the offer. Used only by
- * /collections/the-christmas-six. Remove after 16 Dec.
+ * on the fireplace toast over the Christmas roast, with the three steps as
+ * boxes (4 bottles 5%, 6 bottles 7% and free delivery, 12 bottles 10%), then
+ * the builder: Reds, Whites and Rosé tabs over every single bottle in the
+ * offer. Used only by /collections/the-christmas-mix. Remove after 16 Dec.
  */
 
 {
@@ -15,9 +15,9 @@
         "content": {
           "type": "content",
           "settings": {
-            "heading": "The Christmas Six",
+            "heading": "The Christmas Mix",
             "heading_size": "h1",
-            "text": "<p>Any six bottles of our wine. 10% off, delivered free in Great Britain. Order by Wednesday 16 December for Christmas delivery.</p>",
+            "text": "<p>Mix any of our wines. The more bottles, the more comes off. Order by Wednesday 16 December for Christmas delivery.</p><ul><li>4 bottles<strong>5% off</strong></li><li>6 bottles<strong>7% off</strong>free delivery</li><li>12 bottles<strong>10% off</strong>free delivery</li></ul>",
             "content_alignment": "center"
           }
         },
@@ -36,8 +36,8 @@
         "button": {
           "type": "button",
           "settings": {
-            "button": "Build Your Six",
-            "button_link": "/collections/the-christmas-six#tl-build",
+            "button": "Build Your Mix",
+            "button_link": "/collections/the-christmas-mix#tl-build",
             "button_style": "solid"
           }
         }
@@ -58,91 +58,13 @@
         "overlay_opacity": 44
       }
     },
-    "six-page": {
-      "type": "tl-six-page",
-      "blocks": {
-        "red": {
-          "type": "six",
-          "settings": {
-            "title": "The Red Six",
-            "text": "Barovo Red and T'ga za Jug, with two Kratošija and two Babuna Red. For the roast and the cheeseboard.",
-            "button": "Put The Red Six In Your Basket",
-            "product_1": "barovo-red",
-            "qty_1": 1,
-            "product_2": "tga-za-jug",
-            "qty_2": 1,
-            "product_3": "kratosija",
-            "qty_3": 2,
-            "product_4": "babuna-red",
-            "qty_4": 2,
-            "product_5": "",
-            "qty_5": 0,
-            "product_6": "",
-            "qty_6": 0
-          }
-        },
-        "white": {
-          "type": "six",
-          "settings": {
-            "title": "The White Six",
-            "text": "Bela Voda White and Alexandria Premium Cuvée White, with two Smederevka and two Temjanika Luda Mara. For fish, starters and people arriving.",
-            "button": "Put The White Six In Your Basket",
-            "product_1": "bela-voda-white",
-            "qty_1": 1,
-            "product_2": "alexandria-premium-cuvee-white",
-            "qty_2": 1,
-            "product_3": "smederevka",
-            "qty_3": 2,
-            "product_4": "temjanika-luda-mara",
-            "qty_4": 2,
-            "product_5": "",
-            "qty_5": 0,
-            "product_6": "",
-            "qty_6": 0
-          }
-        },
-        "table": {
-          "type": "six",
-          "settings": {
-            "title": "The Table Six",
-            "text": "Alexandria Premium Cuvée Red and Rosé, with one each of Smederevka, Temjanika Luda Mara, Kratošija and Babuna Red. Something for every course.",
-            "button": "Put The Table Six In Your Basket",
-            "product_1": "alexandria-premium-cuvee-red",
-            "qty_1": 1,
-            "product_2": "alexandria-premium-cuvee-rose",
-            "qty_2": 1,
-            "product_3": "smederevka",
-            "qty_3": 1,
-            "product_4": "temjanika-luda-mara",
-            "qty_4": 1,
-            "product_5": "kratosija",
-            "qty_5": 1,
-            "product_6": "babuna-red",
-            "qty_6": 1
-          }
-        }
-      },
-      "block_order": [
-        "red",
-        "white",
-        "table"
-      ],
-      "settings": {
-        "more_heading": "Or Build Your Own Six",
-        "more_text": "Tap Add on any six bottles below. Your six fills up as you go. Then put it in the basket in one tap."
-      }
-    },
     "builder": {
       "type": "tl-six-builder",
-      "settings": {
-        "heading": "",
-        "text": ""
-      }
+      "settings": {}
     }
   },
   "order": [
     "countdown",
-    "six-page",
     "builder"
   ]
 }
