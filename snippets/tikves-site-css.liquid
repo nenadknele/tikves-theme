@@ -400,7 +400,8 @@
   CHAT AND ACCESSIBILITY BUTTONS, 3 Nov 2026, on his word: as small as they
   go. The Shopify Inbox button becomes a round icon with no "Chat" label
   (Inbox exports its button as the part "activator"). The AccessEase icon
-  drops to a small circle tucked into the corner. On the Christmas Mix page
+  drops to a small circle in the bottom-left, just above the joining gift
+  reminder so the two don't sit on each other. On the Christmas Mix page
   both lift above the basket bar while it is up (tl-six-builder sets
   --tl-tray-h and the class tl-mix-tray-up).
 {%- endcomment -%}
@@ -419,12 +420,16 @@
     width: 32px !important;
     height: 32px !important;
     min-width: 0 !important;
-    left: 10px !important;
-    bottom: 12px !important;
+    left: 16px !important;
+    bottom: 64px !important;
   }
-  #accessease-icon.accessease-icon svg {
+  #accessease-icon.accessease-icon svg.accessease-icon-wrapper {
     width: 100% !important;
     height: 100% !important;
+  }
+  #accessease-icon.accessease-icon svg.accessease-icon-main {
+    width: 18px !important;
+    height: 18px !important;
   }
   @media only screen and (max-width: 768px) {
     html.tl-mix-tray-up shopify-chat::part(activator) {
