@@ -300,16 +300,28 @@
     }
     slots.innerHTML = html;
     bar.style.width = Math.min(100, Math.round(n / 6 * 100)) + '%';
-    marks.forEach(function (m) { m.classList.toggle('is-on', n >= +m.dataset.at); });
+    // Free delivery comes two ways: six or more bottles (the Mix), or £100
+    // or more after the discount (the shop's own rate, England, Scotland
+    // and Wales). Either one lights the Free mark and the message says so,
+    // so nobody is asked to add bottles for something they already have.
+    var stepPct = n >= 4 ? 10 : (n >= 2 ? 5 : 0), paidNow = 0;
+    Object.keys(pick).forEach(function (id) {
+      paidNow += Math.round((+cards[id].dataset.price || 0) * pick[id] * (100 - stepPct) / 100);
+    });
+    var freeDel = n >= 6 || paidNow >= 10000;
+    marks.forEach(function (m) {
+      var at = +m.dataset.at;
+      m.classList.toggle('is-on', n >= at || (at === 6 && freeDel));
+    });
     count.textContent = n + ' / 12';
     if (n === 0) {
       msg.innerHTML = 'Two bottles get 5% off. Four or more get 10%. Six or more come with free delivery.';
     } else if (n < 2) {
       msg.innerHTML = '<strong>Add 1 more bottle for 5% off.</strong>';
     } else if (n < 4) {
-      msg.innerHTML = '<strong>5% off is on.</strong> Add ' + bottles(4 - n) + ' more for 10% off.';
-    } else if (n < 6) {
-      msg.innerHTML = '<strong>10% off is on.</strong> Add ' + bottles(6 - n) + ' more for free delivery.';
+      msg.innerHTML = '<strong>5% off is on.</strong> Add ' + (4 - n) + ' more ' + (4 - n === 1 ? 'bottle' : 'bottles') + ' for 10% off.';
+    } else if (!freeDel) {
+      msg.innerHTML = '<strong>10% off is on.</strong> Add ' + (6 - n) + ' more ' + (6 - n === 1 ? 'bottle' : 'bottles') + ' for free delivery.';
     } else {
       msg.innerHTML = '<strong>10% off and free delivery are on.</strong>';
     }
