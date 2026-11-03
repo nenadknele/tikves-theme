@@ -1,0 +1,39 @@
+{%- comment -%}
+  TIKVES LONDON . COOKIE SETTINGS LINK
+  3 Nov 2026. Rendered from layout/theme.liquid, last thing in the body.
+
+  Lets a visitor change their cookie choice as easily as they made it.
+  Any link whose href ends in "#cookie-settings" opens Shopify's own
+  cookie preferences panel. The footer legal menu carries one such link,
+  "Cookie settings", and the Cookie Policy's "Change my cookie choice"
+  button points at the same hash.
+
+  - The panel is Shopify's (window.privacyBanner.showPreferences), the
+    same one the age gate's "Choose cookies" opens, so the choice is
+    saved through Shopify's consent API like every other choice.
+  - If the panel is not there, or fails to open, the click goes to the
+    privacy policy instead, so a click never does nothing.
+  - One listener on the document, so it catches links in menus, page
+    bodies and anything rendered later. theme.js is untouched.
+{%- endcomment -%}
+<script>
+  (function () {
+    var FALLBACK = '/policies/privacy-policy';
+
+    document.addEventListener('click', function (event) {
+      var link = event.target.closest && event.target.closest('a[href]');
+      if (!link) return;
+      var href = link.getAttribute('href') || '';
+      if (href.slice(-16) !== '#cookie-settings') return;
+
+      event.preventDefault();
+      try {
+        if (window.privacyBanner && typeof window.privacyBanner.showPreferences === 'function') {
+          window.privacyBanner.showPreferences();
+          return;
+        }
+      } catch (e) {}
+      window.location.href = FALLBACK;
+    });
+  })();
+</script>

@@ -392,5 +392,8 @@
 
   {%- comment -%} 24 Oct 2026, consent: Klaviyo loads only after a yes to Analytics and Marketing. Keep the Klaviyo app embed off. See the snippet. {%- endcomment -%}
   {%- render 'klaviyo-consent-loader' -%}
+
+  {%- comment -%} 3 Nov 2026: links ending in #cookie-settings open Shopify's cookie preferences. See the snippet. {%- endcomment -%}
+  {%- render 'tl-cookie-settings' -%}
 </body>
 </html>
