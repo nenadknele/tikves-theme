@@ -20,9 +20,9 @@
 {%- endcomment -%}
 
 <div class="tl-consent-step" data-tl-consent-step hidden>
-  <h2 class="h3">Cookies</h2>
+  <h2 class="h2">Cookies</h2>
   <div class="rte">
-    <div class="enlarge-text">
+    <div>
       <p>We need some to run the shop. With your OK, others show us what works and help our ads reach the right people. Your choice, and you can change it any time. More in our <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>.</p>
     </div>
   </div>
@@ -34,20 +34,68 @@
 </div>
 
 {% style %}
+  /* 3 Nov 2026, layout pass. Same panel width on both steps, so the box does
+     not jump when the age question turns into the cookie question. Heading
+     matches the age step. Body at reading size, not enlarged. Reject all and
+     Accept all sit side by side at equal width and equal weight. */
+  /* 460px matches the gate's panel width setting. The gate only applies
+     that setting when it has no photograph, so it is set here as well. */
+  age-verification-popup .modal__inner {
+    width: 460px;
+  }
+  age-verification-popup .modal__centered,
+  age-verification-popup .modal__centered-content {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .tl-consent-step h2 {
+    margin-bottom: 0;
+  }
+  .tl-consent-step .rte {
+    max-width: 34em;
+    margin: 16px auto 24px;
+  }
+  .tl-consent-step .rte p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .tl-consent-step .rte a {
+    text-underline-offset: 2px;
+  }
+  .tl-consent-step .tl-consent-step__btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-width: 340px;
+    margin: 0 auto;
+  }
   .tl-consent-step__btns .btn {
+    width: 100%;
     min-height: 44px;
+    margin: 0;
+    padding-left: 8px;
+    padding-right: 8px;
   }
   .tl-consent-step__choose {
-    display: inline-block;
-    margin-top: 14px;
+    display: block;
+    margin: 14px auto 0;
     min-height: 44px;
     padding: 0;
     background: none;
     border: 0;
     text-decoration: underline;
+    text-underline-offset: 3px;
     font: inherit;
+    font-size: 13px;
+    letter-spacing: 0.04em;
     color: inherit;
+    opacity: 0.75;
     cursor: pointer;
+  }
+  .tl-consent-step__choose:hover,
+  .tl-consent-step__choose:focus-visible {
+    opacity: 1;
   }
 {% endstyle %}
 
