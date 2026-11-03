@@ -13,8 +13,9 @@
   tl-christmas-six, tl-urgency, product.wine and Find Your Wine in one pass.
   Desktop: the tray sits beside the grid and follows the scroll.
   Phone: a compact bar fixed to the bottom of the screen. It slides up once
-  the wines are on screen or a bottle is in. While it's up, the Shopify Inbox
-  chat bubble steps aside so it doesn't sit on the bar or the Add buttons.
+  the wines are on screen or a bottle is in. Like Overtone, it carries no
+  sentences: the count, the bar with its three marks, and the button. While
+  it's up, the chat and accessibility buttons lift above it (tikves-site-css).
 {% endcomment %}
 <style>
   .tl-sb{padding-top:0;padding-bottom:150px}
@@ -62,7 +63,6 @@
   .tl-sb__go[disabled]{opacity:.65;cursor:not-allowed}
   .tl-sb__clear[hidden]{display:none}
   .tl-sb__clear{background:none;border:0;text-decoration:underline;text-underline-offset:3px;font-size:13px;cursor:pointer;color:inherit;padding:0}
-  html.tl-mix-tray-up #shopify-chat,html.tl-mix-tray-up #ShopifyChat,html.tl-mix-tray-up inbox-online-store-chat,html.tl-mix-tray-up #dummy-chat-button-iframe{display:none!important}
 
   /* Hero tier boxes. The list lives in the countdown section's text on this
      template; this section is only on this page, so the style rides here. */
@@ -79,6 +79,8 @@
   @media (max-width:768px){
     .tl-sb{padding-left:16px;padding-right:16px}
     .tl-sb__tabs{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;justify-content:flex-start}
+    .tl-sb__msg,.tl-sb__clear{display:none!important}
+    .tl-sb__track{margin:16px 16px 34px}
   }
   @media (min-width:769px){
     .tl-sb{padding-bottom:56px}
@@ -96,7 +98,6 @@
     .tl-sb__slot img{width:100%;height:100%;object-fit:contain;background:#fff}
     .tl-sb__slot.is-full{border-style:solid;opacity:1}
     .tl-sb__row{flex-direction:column;align-items:stretch}
-    html.tl-mix-tray-up #shopify-chat,html.tl-mix-tray-up #ShopifyChat,html.tl-mix-tray-up inbox-online-store-chat,html.tl-mix-tray-up #dummy-chat-button-iframe{display:revert!important}
   }
 </style>
 
@@ -234,7 +235,9 @@
   function lift() {
     var up = gridSeen || total() > 0;
     tray.classList.toggle('is-up', up);
-    document.documentElement.classList.toggle('tl-mix-tray-up', up);
+    var phone = window.matchMedia('(max-width: 768px)').matches;
+    document.documentElement.style.setProperty('--tl-tray-h', (up && phone ? tray.offsetHeight : 0) + 'px');
+    document.documentElement.classList.toggle('tl-mix-tray-up', up && phone);
   }
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(function (es) {
@@ -275,7 +278,6 @@
       msg.innerHTML = '<strong>10% off and free delivery are on.</strong> That’s the best price on your mix.';
     }
     go.disabled = n === 0;
-    go.textContent = n === 0 ? 'Add Your Mix To Basket' : 'Add ' + bottles(n) + ' To Basket';
     clear.hidden = n === 0;
     Object.keys(cards).forEach(function (id) {
       var q = pick[id] || 0;
