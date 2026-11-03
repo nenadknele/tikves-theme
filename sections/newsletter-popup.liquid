@@ -90,6 +90,10 @@
 {%- if request.page_type == 'page' and tl_offer_pages contains page.handle -%}
   {%- assign tl_hide_popup = true -%}
 {%- endif -%}
+{%- comment -%} The Christmas Six page, 3 Nov 2026: the joining gift doesn't combine with the Six, so it isn't offered on top of it. {%- endcomment -%}
+{%- if template.suffix == 'christmas-six' -%}
+  {%- assign tl_hide_popup = true -%}
+{%- endif -%}
 
 {% unless tl_hide_popup %}
 

@@ -1,8 +1,8 @@
 /*
  * The Christmas Six page, 3 Nov 2026, after the Zipify bundle builders on
  * overtone.co and boombeauty.com. The theme countdown to Wed 16 Dec 23:59 UK
- * on the festive Barovo photograph (wide crop on desktop, phone crop on the
- * phone), how it works, the three ready-made sixes, then Build Your Own Six,
+ * on the fireplace toast over the Christmas roast (one square photo,
+ * cropped by the theme for desktop and phone), how it works, the three ready-made sixes, then Build Your Own Six,
  * a six-slot builder over every wine in the offer. Used only by
  * /collections/the-christmas-six. Remove after 16 Dec.
  */
@@ -52,8 +52,8 @@
         "full_width": true,
         "text_color": "#ffffff",
         "background_color": "#2b1a14",
-        "background_image": "shopify://shop_images/barovo-hero-desktop-169.jpg",
-        "mobile_image": "shopify://shop_images/barovo-hero-phone-tight.jpg",
+        "background_image": "shopify://shop_images/IMG_3066.jpg",
+        "mobile_image": "shopify://shop_images/IMG_3066.jpg",
         "overlay_color": "#000000",
         "overlay_opacity": 44
       }
@@ -129,7 +129,7 @@
       ],
       "settings": {
         "more_heading": "Or Build Your Own Six",
-        "more_text": "Pick from every wine below. Your six fills up as you go."
+        "more_text": "Tap Add on any six bottles below. Your six fills up as you go. Then put it in the basket in one tap."
       }
     },
     "builder": {

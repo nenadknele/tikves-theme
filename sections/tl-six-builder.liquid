@@ -8,10 +8,12 @@
   Shopify automatic discounts, so nothing here sets a price: it reads the live
   price and the live stock count, and says what checkout will do.
   Desktop: the tray sits beside the grid and follows the scroll.
-  Phone: the tray is a bar fixed to the bottom of the screen.
+  Phone: the tray is a compact bar fixed to the bottom of the screen. It slides
+  up once the wines are on screen or a bottle is picked, so it never sits over
+  the hero or the ready-made sixes.
 {% endcomment %}
 <style>
-  .tl-sb{padding:16px 0 150px}
+  .tl-sb{padding:16px 0 140px}
   .tl-sb__head{text-align:center;max-width:640px;margin:0 auto 22px}
   .tl-sb__head h2{margin:0 0 8px}
   .tl-sb__head p{margin:0}
@@ -26,21 +28,24 @@
   .tl-sb__price{font-size:14px;margin:0}
   .tl-sb__left{font-size:13px;margin:0;font-weight:600}
   .tl-sb__ctrl{margin-top:auto;padding-top:8px}
-  .tl-sb__add{width:100%}
+  .tl-sb__add{width:100%;padding-left:6px;padding-right:6px;letter-spacing:.08em;white-space:nowrap}
   .tl-sb__step{display:none;align-items:center;justify-content:space-between;border:1px solid currentColor;border-radius:999px;height:40px}
   .tl-sb__step button{background:none;border:0;width:44px;height:40px;font-size:20px;cursor:pointer;color:inherit}
   .tl-sb__step span{font-weight:600}
   .tl-sb__card.is-in .tl-sb__add{display:none}
   .tl-sb__card.is-in .tl-sb__step{display:flex}
-  .tl-sb__tray{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--colorBody,#f6efe8);border-top:1px solid rgba(0,0,0,.15);padding:10px 16px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+  .tl-sb__tray{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--colorBody,#f6efe8);border-top:1px solid rgba(0,0,0,.15);padding:10px 16px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08);transform:translateY(110%);transition:transform .3s ease;visibility:hidden}
+  .tl-sb__tray.is-up{transform:none;visibility:visible}
   .tl-sb__tray h3{display:none}
-  .tl-sb__slots{display:flex;gap:6px;margin:0 0 8px}
-  .tl-sb__slot{flex:1;aspect-ratio:1;max-width:44px;border:1px dashed rgba(0,0,0,.35);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.8}
+  .tl-sb__top{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 8px}
+  .tl-sb__slots{display:flex;gap:5px;margin:0;flex:0 0 auto}
+  .tl-sb__slot{flex:0 0 30px;width:30px;height:30px;border:1px dashed rgba(0,0,0,.35);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.8}
   .tl-sb__slot img{width:100%;height:100%;object-fit:cover}
   .tl-sb__slot.is-full{border-style:solid;opacity:1}
-  .tl-sb__bar{height:4px;background:rgba(0,0,0,.1);border-radius:4px;overflow:hidden;margin:0 0 8px}
+  .tl-sb__bar{display:none;height:4px;background:rgba(0,0,0,.1);border-radius:4px;overflow:hidden;margin:0 0 8px}
   .tl-sb__bar i{display:block;height:100%;width:0;background:currentColor;transition:width .25s}
-  .tl-sb__msg{font-size:14px;line-height:1.35;margin:0 0 8px}
+  .tl-sb__msg{font-size:13px;line-height:1.3;margin:0;flex:1;min-width:140px}
+  .tl-sb__slots.is-twelve .tl-sb__slot{flex-basis:20px;width:20px;height:20px;font-size:10px}
   .tl-sb__row{display:flex;gap:10px;align-items:center}
   .tl-sb__go{flex:1}
   .tl-sb__go[disabled]{opacity:.5;cursor:not-allowed}
@@ -49,10 +54,14 @@
     .tl-sb{padding:24px 0 48px}
     .tl-sb__wrap{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start}
     .tl-sb__grid{grid-template-columns:repeat(3,1fr);gap:18px}
-    .tl-sb__tray{position:sticky;top:110px;left:auto;right:auto;bottom:auto;z-index:2;border:1px solid rgba(0,0,0,.15);border-radius:4px;padding:18px;box-shadow:none}
+    .tl-sb__tray{position:sticky;top:110px;left:auto;right:auto;bottom:auto;z-index:2;border:1px solid rgba(0,0,0,.15);border-radius:4px;padding:18px;box-shadow:none;transform:none;visibility:visible}
+    .tl-sb__top{display:block;margin:0}
+    .tl-sb__bar{display:block}
+    .tl-sb__msg{font-size:14px;line-height:1.35;margin:0 0 10px}
+    .tl-sb__slots.is-twelve .tl-sb__slot{width:auto;height:auto;font-size:12px}
     .tl-sb__tray h3{display:block;margin:0 0 12px}
     .tl-sb__slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-    .tl-sb__slot{max-width:none;aspect-ratio:3/4}
+    .tl-sb__slot{width:auto;height:auto;aspect-ratio:3/4}
     .tl-sb__row{flex-direction:column;align-items:stretch}
   }
 </style>
@@ -106,9 +115,11 @@
 
     <aside class="tl-sb__tray" aria-label="Your six">
       <h3>Your Six</h3>
-      <div class="tl-sb__slots" data-tl-sb-slots></div>
-      <div class="tl-sb__bar"><i data-tl-sb-bar></i></div>
-      <p class="tl-sb__msg" data-tl-sb-msg>Pick six bottles. 10% comes off at checkout and delivery is free in Great Britain.</p>
+      <div class="tl-sb__top">
+        <div class="tl-sb__slots" data-tl-sb-slots></div>
+        <div class="tl-sb__bar"><i data-tl-sb-bar></i></div>
+        <p class="tl-sb__msg" data-tl-sb-msg>Tap Add on any six bottles. 10% off and free delivery.</p>
+      </div>
       <div class="tl-sb__row">
         <button type="button" class="btn tl-sb__go" data-tl-sb-go disabled>Put Your Six In The Basket</button>
         <button type="button" class="tl-sb__clear" data-tl-sb-clear hidden>Start again</button>
@@ -133,6 +144,18 @@
 
   function total() { return order.length; }
 
+  // Phone: the bar slides up once the wines are on screen or a bottle is in.
+  var tray = root.querySelector('.tl-sb__tray');
+  var grid = root.querySelector('.tl-sb__grid');
+  var gridSeen = false;
+  function lift() { tray.classList.toggle('is-up', gridSeen || total() > 0); }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { gridSeen = e.isIntersecting; });
+      lift();
+    }, { rootMargin: '0px 0px -30% 0px' }).observe(grid);
+  } else { gridSeen = true; }
+
   function render() {
     var n = total();
     var shown = Math.max(6, n <= 6 ? 6 : 12);
@@ -147,14 +170,16 @@
       }
     }
     slots.innerHTML = html;
+    slots.classList.toggle('is-twelve', shown > 6);
+    lift();
     bar.style.width = Math.min(100, Math.round(n / 6 * 100)) + '%';
     if (n === 0) {
-      msg.innerHTML = 'Pick six bottles. 10% comes off at checkout and delivery is free in Great Britain.';
+      msg.innerHTML = 'Tap Add on any six bottles. 10% off and free delivery.';
     } else if (n < 6) {
       var left = 6 - n;
       msg.innerHTML = '<strong>' + n + ' of 6.</strong> Add ' + left + ' more for 10% off and free delivery.';
     } else if (n < 12) {
-      msg.innerHTML = '<strong>That’s your Christmas Six.</strong> 10% off and free delivery are on. Stocking up for the season? Make it twelve.';
+      msg.innerHTML = '<strong>That’s your six.</strong> 10% off and free delivery are on. Fancy twelve?';
     } else {
       msg.innerHTML = '<strong>Twelve for the season.</strong> 10% off every bottle, delivered free.';
     }
