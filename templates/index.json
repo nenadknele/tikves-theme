@@ -62,11 +62,14 @@
         "ratio_desktop": "fixed",
         "height_desktop": 640,
         "scrim": 50
-      }
+      },
+      "disabled": true
     },
     "tl_urgency": {
       "type": "tl-urgency-band",
-      "settings": {}
+      "settings": {
+        "hide_xmas": true
+      }
     },
     "best": {
       "type": "tikves-singles",
@@ -399,11 +402,62 @@
         "top_padding": false,
         "bottom_padding": false
       }
+    },
+    "mix_hero": {
+      "type": "countdown",
+      "blocks": {
+        "content": {
+          "type": "content",
+          "settings": {
+            "heading": "The Christmas Mix",
+            "heading_size": "h1",
+            "text": "<ul><li>Buy 2<strong>5%</strong>off</li><li>Buy 4+<strong>10%</strong>off</li><li>Buy 6+<strong>Free</strong>delivery</li></ul>",
+            "content_alignment": "center"
+          }
+        },
+        "timer": {
+          "type": "timer",
+          "settings": {
+            "year": 2026,
+            "month": "12",
+            "day": "16",
+            "hour": "23",
+            "minute": "59",
+            "hide_timer": true,
+            "text": "<p>Too late for Christmas delivery? <a href=\"/products/gift-card\">A gift card</a> comes by email, straight away.</p>"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "button": "Build Your Mix",
+            "button_link": "shopify://collections/the-christmas-mix",
+            "button_style": "solid"
+          }
+        }
+      },
+      "block_order": [
+        "content",
+        "timer",
+        "button"
+      ],
+      "settings": {
+        "layout": "hero",
+        "full_width": true,
+        "text_color": "#ffffff",
+        "background_color": "#2b1a14",
+        "background_image": "shopify://shop_images/IMG_3066.jpg",
+        "mobile_image": "shopify://shop_images/IMG_3066.jpg",
+        "overlay_color": "#000000",
+        "overlay_opacity": 34
+      }
     }
   },
   "order": [
     "tk_design",
-    "hero", "tl_urgency",
+    "mix_hero",
+    "hero",
+    "tl_urgency",
     "best",
     "ladder",
     "education",

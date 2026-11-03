@@ -9,7 +9,7 @@
   All the words and logic live in snippets/tl-urgency, mode 'band'.
 {% endcomment %}
 <div class="page-width">
-  {%- render 'tl-urgency', mode: 'band' -%}
+  {%- render 'tl-urgency', mode: 'band', hide_xmas: section.settings.hide_xmas -%}
 </div>
 
 {% schema %}
@@ -18,7 +18,14 @@
   "settings": [
     {
       "type": "paragraph",
-      "content": "Black Friday, then the Christmas Six or the Christmas order-by date, then the gift card, each in its own dates. The words and dates live in the theme code, not here, so they can't drift from the discounts."
+      "content": "Black Friday, then the Christmas Mix or the Christmas order-by date, then the gift card, each in its own dates. The words and dates live in the theme code, not here, so they can't drift from the discounts."
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_xmas",
+      "label": "Leave out the Christmas panel",
+      "default": false,
+      "info": "On while the Christmas Mix hero sits at the top of the homepage, so the offer isn't said twice. Black Friday and the gift card still show in their dates."
     }
   ],
   "presets": [
