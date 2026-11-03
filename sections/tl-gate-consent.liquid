@@ -181,9 +181,12 @@
 
     function hide() {
       bar.classList.add('tl-cc--leaving');
+      // Keep Shopify's own banner hidden after our bar closes. It is not told
+      // a choice was made on this page, so unhiding it would show a second
+      // banner straight after the first. The next page load reads the saved
+      // choice and shows neither.
       setTimeout(function () {
         bar.hidden = true;
-        document.documentElement.classList.remove('tl-cc-on');
       }, 300);
     }
 
