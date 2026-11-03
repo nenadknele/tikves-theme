@@ -88,10 +88,29 @@
     .countdown__richtext ul li strong{font-size:40px}
   }
 
+  /* Short hero, 3 Nov 2026, his word: crop it so the wines show on the
+     first screen. Theme default is 5rem padding on the phone and a full
+     screen height on desktop. */
+  .countdown-layout--hero .countdown__content{padding:26px 16px 22px!important;height:auto!important;min-height:0!important}
+  .countdown-layout--hero .countdown__block{margin:.35rem auto}
+  .countdown-layout--hero .countdown__heading h1{margin:0 0 4px}
+  .countdown-layout--hero .countdown__richtext ul{margin:10px auto 4px}
+  .countdown-layout--hero .countdown__display-block h2{font-size:30px;margin:0}
+  .countdown-layout--hero .countdown__display-block span{font-size:10px}
+  @media (min-width:769px){
+    .countdown-layout--hero .countdown__content{padding:44px 24px 40px!important}
+    .countdown-layout--hero .countdown__display-block h2{font-size:38px}
+    .countdown-layout--hero .countdown__display-block span{font-size:11px}
+  }
+
   @media (max-width:768px){
     .tl-sb{padding-left:16px;padding-right:16px}
     .tl-sb__tabs{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;justify-content:flex-start}
     .tl-sb__msg,.tl-sb__clear{display:none!important}
+    .tl-sb__how{gap:6px;margin-bottom:12px}
+    .tl-sb__how li{font-size:11px;line-height:1.25;padding:6px 4px}
+    .tl-sb__how li::before{width:18px;height:18px;font-size:10px;margin-bottom:3px}
+    .tl-sb__tabs{padding-top:10px;padding-bottom:10px}
     .tl-sb__track{margin:14px 16px 44px}
     .tl-sb__mark--ship span{right:-6px}
     .tl-sb__mark b{width:30px;height:30px;font-size:11px}
