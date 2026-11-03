@@ -18,129 +18,131 @@
     no change.
 {%- endcomment -%}
 
-<div class="tl-cc" data-tl-cc role="region" aria-label="Cookie choice" hidden>
-  <div class="tl-cc__inner">
-    <div class="tl-cc__text">
-      <p class="tl-cc__title">Cookies</p>
-      <p class="tl-cc__body">We need some to run the shop. With your OK, others show us what works and help our ads reach the right people. Your choice, and you can change it any time. More in our <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>.</p>
-    </div>
-    <div class="tl-cc__actions">
-      <div class="tl-cc__btns">
-        <button type="button" class="btn" data-tl-cc-reject>Reject all</button>
-        <button type="button" class="btn" data-tl-cc-accept>Accept all</button>
-      </div>
-      <button type="button" class="tl-cc__choose" data-tl-cc-choose>Choose cookies</button>
-    </div>
+<div class="tl-cc" data-tl-cc role="region" aria-labelledby="tl-cc-title" hidden>
+  <p class="tl-cc__title" id="tl-cc-title">Cookies</p>
+  <p class="tl-cc__body">We need some to run the shop. With your OK, others show us what works and help our ads reach the right people. Your choice, and you can change it any time. More in our <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>.</p>
+  <div class="tl-cc__btns">
+    <button type="button" class="tl-cc__choose" data-tl-cc-choose>Choose cookies</button>
+    <button type="button" class="tl-cc__btn" data-tl-cc-accept>Accept all</button>
+    <button type="button" class="tl-cc__btn" data-tl-cc-reject>Reject all</button>
   </div>
 </div>
 
 {% style %}
+  /* 3 Nov 2026: the operator asked for this bar to look the same as Shopify's
+     own cookie banner. Sizes, spacing, corners and shadow are read off that
+     banner on the live shop. Colours are the brand's Paper, Ink and Terra
+     Rossa; type is Inter throughout, as in Shopify's banner. */
   html.tl-cc-on #shopify-pc__banner {
     display: none !important;
   }
   .tl-cc {
     position: fixed;
-    left: 0;
-    right: 0;
     bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 25;
+    box-sizing: border-box;
+    width: calc(100% - 37px);
+    padding: 16px 16px 14px;
     background: #F5EFE7;
     color: #1F2328;
-    border-top: 1px solid #B9AC9B;
-    box-shadow: 0 -6px 24px rgba(31, 35, 40, 0.12);
-    padding: 18px 16px calc(16px + env(safe-area-inset-bottom));
-    transform: translateY(0);
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 4px 10px rgba(63, 63, 68, 0.4);
+    font-family: var(--typeBasePrimary), var(--typeBaseFallback);
+    font-size: 16px;
+    line-height: 1.6;
     transition: transform 0.3s ease;
   }
   .tl-cc[hidden] {
     display: none;
   }
   .tl-cc--leaving {
-    transform: translateY(110%);
+    transform: translate(-50%, 110%);
   }
-  .tl-cc__inner {
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  /* Brand type per 08 · DESIGN v4: Fraunces for the heading, Inter for
-     body and UI, 16px minimum. Colours are Paper, Ink and Stone. */
   .tl-cc__title {
-    margin: 0 0 6px;
-    font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback);
-    font-weight: 600;
-    font-size: 20px;
+    margin: 0 0 4px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
     line-height: 1.2;
   }
   .tl-cc__body {
     margin: 0;
-    font-family: var(--typeBasePrimary), var(--typeBaseFallback);
-    font-size: 16px;
-    line-height: 1.6;
+    font-size: 13px;
+    line-height: 1.45;
   }
   .tl-cc__body a {
     color: inherit;
     text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-  .tl-cc__actions {
-    margin-top: 14px;
-    text-align: center;
   }
   .tl-cc__btns {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 8px;
+    margin-top: 12px;
   }
-  .tl-cc__btns .btn {
-    width: 100%;
-    min-height: 44px;
-    margin: 0;
-    padding-left: 8px;
-    padding-right: 8px;
-  }
+  .tl-cc__btn,
   .tl-cc__choose {
-    display: inline-block;
-    min-height: 44px;
-    padding: 0 8px;
-    background: none;
-    border: 0;
-    font-family: var(--typeBasePrimary), var(--typeBaseFallback);
-    font-weight: 500;
+    box-sizing: border-box;
+    margin: 0;
+    border-radius: 2px;
+    font-family: inherit;
     font-size: 16px;
-    color: inherit;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    opacity: 0.75;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: normal;
+    text-transform: none;
     cursor: pointer;
   }
-  .tl-cc__choose:hover,
-  .tl-cc__choose:focus-visible {
-    opacity: 1;
+  .tl-cc__btn {
+    min-height: 44px;
+    padding: 8px 10px;
+    background: #A64029;
+    color: #FFFFFF;
+    border: 1px solid #FFFFFF;
+  }
+  .tl-cc__btn:hover,
+  .tl-cc__btn:focus-visible {
+    background: #8E3622;
+  }
+  .tl-cc__choose {
+    grid-column: 1 / -1;
+    order: 3;
+    min-height: 36px;
+    padding: 6px;
+    background: none;
+    border: 0;
+    color: inherit;
+    text-decoration: underline;
   }
   @media only screen and (min-width: 769px) {
     .tl-cc {
-      padding: 20px 32px;
+      width: 70%;
+      padding: 32px;
     }
-    .tl-cc__inner {
-      display: flex;
-      align-items: center;
-      gap: 40px;
+    .tl-cc__title {
+      font-size: 19px;
+      margin-bottom: 10px;
     }
-    .tl-cc__text {
-      flex: 1 1 auto;
-    }
-    .tl-cc__actions {
-      flex: 0 0 auto;
-      margin-top: 0;
-      display: flex;
-      align-items: center;
-      gap: 16px;
+    .tl-cc__body {
+      font-size: 16px;
+      line-height: 1.3;
     }
     .tl-cc__btns {
-      grid-template-columns: 150px 150px;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-top: 15px;
     }
     .tl-cc__choose {
-      order: -1;
+      grid-column: auto;
+      order: 0;
+      min-height: 37px;
+      padding: 8px 25px;
+    }
+    .tl-cc__btn {
+      min-height: 37px;
+      padding: 8px 25px;
     }
   }
 {% endstyle %}
