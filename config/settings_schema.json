@@ -868,6 +868,13 @@
       },
       {
         "type": "checkbox",
+        "id": "tl_christmas_six",
+        "label": "The Christmas Six is running",
+        "info": "Shows the Christmas Six lines on wine pages and in the cart, the gift message box, and free delivery on six in the delivery bar. On from the merge, 3 Nov 2026, with the two Shopify discounts. The lines hide themselves over Black Friday and after Wed 16 Dec 23:59.",
+        "default": true
+      },
+      {
+        "type": "checkbox",
         "id": "cart_terms_conditions_enable",
         "label": "t:settings_schema.cart.settings.cart_terms_conditions_enable.label"
       },

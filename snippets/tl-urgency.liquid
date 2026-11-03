@@ -1,0 +1,207 @@
+{% comment %}
+  TIKVES LONDON · URGENCY LINES · 2 Nov 2026 · REF · HORMOZI OFFER IN FULL v4
+  Words and dates come from window.TL, set by snippets/tl-dates in the head.
+  Each element starts with a static line that is true until its deadline, so
+  a visitor without JavaScript never reads anything false; the script then
+  swaps in the live count, and removes any line whose window has closed or not
+  yet opened. Server-side, a line is only rendered inside its window plus a
+  day either side, because Shopify can serve a cached page; the script is the
+  final word on the minute.
+
+  Parameters: mode, one of
+  · 'bar'        the slides for the announcement bar (inside #AnnouncementSlider)
+  · 'bar-script' the script that sorts those slides; render it right after the
+                 slider closes, before theme.js starts the slideshow
+  · 'line'       the lines under the price on product pages and in the cart
+  · 'band'       the homepage band
+
+  Epoch seconds, UTC, matching tl-dates:
+  bfTeaser 1795478400 · bfStart 1795737600 · bfEnd 1796083199
+  xmasEnd 1797465599 · giftEnd 1798156799
+{% endcomment %}
+{%- liquid
+  assign tl_now = 'now' | date: '%s' | plus: 0
+  assign tl_slack = 86400
+  assign tl_show_bf = false
+  assign tl_show_xmas = false
+  assign tl_show_gift = false
+  assign tl_bf_from = 1795478400 | minus: tl_slack
+  assign tl_bf_to = 1796083199 | plus: tl_slack
+  assign tl_xmas_to = 1797465599 | plus: tl_slack
+  assign tl_gift_from = 1797465599 | minus: tl_slack
+  assign tl_gift_to = 1798156799 | plus: tl_slack
+  if tl_now >= tl_bf_from and tl_now <= tl_bf_to
+    assign tl_show_bf = true
+  endif
+  if tl_now <= tl_xmas_to
+    assign tl_show_xmas = true
+  endif
+  if tl_now >= tl_gift_from and tl_now <= tl_gift_to
+    assign tl_show_gift = true
+  endif
+  if settings.tl_christmas_six
+    assign tl_xmas_link = '/collections/the-christmas-six'
+    assign tl_xmas_link_text = 'The Christmas Six'
+  else
+    assign tl_xmas_link = '/collections/gifts'
+    assign tl_xmas_link_text = 'Gifts'
+  endif
+-%}
+
+{%- case mode -%}
+
+  {%- when 'bar' -%}
+    {%- if tl_show_bf -%}
+      <div class="announcement-slider__slide" data-tl-slide="bf">
+        <a class="announcement-link" href="/collections/all">
+          <span class="announcement-text" data-tl-fill="bf">Black Friday: 15% off every bottle, case and set</span>
+          <span class="announcement-link-text">Friday to Monday</span>
+        </a>
+      </div>
+    {%- endif -%}
+    {%- if tl_show_xmas -%}
+      <div class="announcement-slider__slide" data-tl-slide="xmas">
+        <a class="announcement-link" href="{{ tl_xmas_link }}">
+          <span class="announcement-text" data-tl-fill="xmasCount">Order by Wednesday 16 December</span>
+          <span class="announcement-link-text">{{ tl_xmas_link_text }}</span>
+        </a>
+      </div>
+    {%- endif -%}
+    {%- if tl_show_gift -%}
+      <div class="announcement-slider__slide" data-tl-slide="gift">
+        <a class="announcement-link" href="/products/gift-card">
+          <span class="announcement-text" data-tl-fill="gift">A gift card comes by email, straight away</span>
+          <span class="announcement-link-text">Gift card</span>
+        </a>
+      </div>
+    {%- endif -%}
+
+  {%- when 'bar-script' -%}
+    <script>
+      (function () {
+        if (!window.TL) return;
+        var bar = document.getElementById('AnnouncementSlider');
+        if (!bar) return;
+        var t = TL.now();
+        bar.querySelectorAll('[data-tl-slide]').forEach(function (slide) {
+          var el = slide.querySelector('[data-tl-fill]');
+          var text = el ? TL.texts[el.getAttribute('data-tl-fill')](t) : '';
+          if (!text) { slide.parentNode.removeChild(slide); return; }
+          el.textContent = text.replace(/\.$/, '');
+        });
+        var slides = bar.querySelectorAll('.announcement-slider__slide');
+        slides.forEach(function (s, i) { s.setAttribute('data-index', i); });
+        bar.setAttribute('data-block-count', slides.length);
+      })();
+    </script>
+
+  {%- when 'line' -%}
+    {%- if tl_show_bf or tl_show_xmas or tl_show_gift -%}
+      <div class="tl-urgency" data-tl-lines>
+        {%- if tl_show_bf -%}<p class="tl-urgency__line" data-tl-fill="bf">Black Friday: 15% off every bottle, case and set, Friday 27 to Monday 30 November.</p>{%- endif -%}
+        {%- if tl_show_xmas -%}<p class="tl-urgency__line" data-tl-fill="xmasLine">Order by Wednesday 16 December for Christmas delivery.</p>{%- endif -%}
+        {%- if tl_show_gift -%}<p class="tl-urgency__line" data-tl-fill="gift">Too late for Christmas delivery? <a href="/products/gift-card">A gift card</a> comes by email, straight away.</p>{%- endif -%}
+      </div>
+      <style>
+        .tl-urgency{margin:12px 0 0;font-size:14px;line-height:1.5}
+        .tl-urgency__line{margin:0 0 4px}
+        .tl-urgency__line:last-child{margin:0}
+        .tl-urgency a{text-decoration:underline;text-underline-offset:3px;color:inherit}
+      </style>
+      <script>
+        (function () {
+          if (!window.TL) return;
+          var s = document.currentScript;
+          var box = s && s.parentNode && s.parentNode.querySelector('[data-tl-lines]:not([data-tl-done])');
+          if (!box) return;
+          box.setAttribute('data-tl-done', '');
+          var t = TL.now();
+          box.querySelectorAll('[data-tl-fill]').forEach(function (el) {
+            var key = el.getAttribute('data-tl-fill');
+            var text = TL.texts[key](t);
+            if (!text) { el.parentNode.removeChild(el); return; }
+            if (key === 'gift') {
+              el.innerHTML = 'Too late for Christmas delivery? <a href="/products/gift-card">A gift card<\/a> comes by email, straight away.';
+            } else {
+              el.textContent = text;
+            }
+          });
+          if (!box.querySelector('[data-tl-fill]')) box.parentNode.removeChild(box);
+        })();
+      </script>
+    {%- endif -%}
+
+  {%- when 'band' -%}
+    {%- if tl_show_bf or tl_show_xmas or tl_show_gift -%}
+      <div class="tl-band" data-tl-band>
+        {%- if tl_show_bf -%}
+          <div class="tl-band__panel" data-tl-panel="bf">
+            <h2 class="tl-band__title" data-tl-title-teaser="Black Friday Starts Friday" data-tl-title-live="Black Friday">Black Friday</h2>
+            <p class="tl-band__line" data-tl-fill="bf">15% off every bottle, case and set, Friday 27 to Monday 30 November.</p>
+            <a class="btn tl-band__btn" href="/collections/all">Shop Everything</a>
+          </div>
+        {%- endif -%}
+        {%- if tl_show_xmas -%}
+          <div class="tl-band__panel" data-tl-panel="xmas">
+            {%- if settings.tl_christmas_six -%}
+              <h2 class="tl-band__title">The Christmas Six</h2>
+              <p class="tl-band__line">Six bottles from the Christmas Six wines, 10% off and delivered free in Great Britain.</p>
+              <p class="tl-band__count" data-tl-fill="xmasCount">Order by Wednesday 16 December for Christmas delivery.</p>
+              <a class="btn tl-band__btn" href="/collections/the-christmas-six">Build Your Six</a>
+            {%- else -%}
+              <h2 class="tl-band__title">Order For Christmas</h2>
+              <p class="tl-band__line">Order by Wednesday 16 December for Christmas delivery.</p>
+              <p class="tl-band__count" data-tl-fill="xmasCount"></p>
+              <a class="btn tl-band__btn" href="/collections/gifts">Shop Gifts</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+        {%- if tl_show_gift -%}
+          <div class="tl-band__panel" data-tl-panel="gift">
+            <h2 class="tl-band__title">Too Late For Delivery?</h2>
+            <p class="tl-band__line">A gift card comes by email, straight away. They choose the wine.</p>
+            <a class="btn tl-band__btn" href="/products/gift-card">Buy A Gift Card</a>
+          </div>
+        {%- endif -%}
+      </div>
+      <style>
+        .tl-band{padding:36px 0 28px;text-align:center}
+        .tl-band__panel{max-width:640px;margin:0 auto}
+        .tl-band__title{margin:0 0 10px}
+        .tl-band__line{margin:0 0 6px}
+        .tl-band__count{margin:0 0 18px;font-weight:600}
+        .tl-band__line + .tl-band__btn{margin-top:12px}
+      </style>
+      <script>
+        (function () {
+          if (!window.TL) return;
+          var band = document.querySelector('[data-tl-band]:not([data-tl-done])');
+          if (!band) return;
+          band.setAttribute('data-tl-done', '');
+          var t = TL.now();
+          var p = TL.phase(t);
+          var pick = p.bfLive || p.bfTeaser ? 'bf' : (p.xmas ? 'xmas' : (p.gift ? 'gift' : ''));
+          band.querySelectorAll('[data-tl-panel]').forEach(function (panel) {
+            if (panel.getAttribute('data-tl-panel') !== pick) panel.parentNode.removeChild(panel);
+          });
+          var panel = band.querySelector('[data-tl-panel]');
+          if (!panel) { band.parentNode.removeChild(band); return; }
+          if (pick === 'bf') {
+            var h = panel.querySelector('.tl-band__title');
+            h.textContent = p.bfTeaser ? h.getAttribute('data-tl-title-teaser') : h.getAttribute('data-tl-title-live');
+            var line = panel.querySelector('[data-tl-fill="bf"]');
+            if (p.bfTeaser) {
+              line.textContent = '15% off every bottle, case and set, Friday 27 to Monday 30 November.';
+            } else {
+              line.textContent = TL.texts.bf(t).replace(/^Black Friday: |^Last day of Black Friday: /, function (m) { return m.indexOf('Last') === 0 ? 'Last day. ' : ''; });
+            }
+          }
+          if (pick === 'xmas') {
+            var c = panel.querySelector('[data-tl-fill="xmasCount"]');
+            if (c) c.textContent = TL.texts.xmasCount(t);
+          }
+        })();
+      </script>
+    {%- endif -%}
+
+{%- endcase -%}

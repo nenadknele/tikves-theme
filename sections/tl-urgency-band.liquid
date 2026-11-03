@@ -1,0 +1,30 @@
+{% comment %}
+  TIKVES LONDON · HOMEPAGE URGENCY BAND · 2 Nov 2026 · REF · HORMOZI OFFER IN FULL v4
+  One band, one message at a time, chosen by the clock in snippets/tl-dates:
+  Black Friday (the line from Tue 24 Nov, the offer Fri 27 to Mon 30 Nov),
+  else the Christmas Six or the Christmas order-by date, else the gift card
+  from 17 to 24 December. After that it renders nothing at all.
+  Homepage rulings it follows: the one cream with no darker band and no lines,
+  headings in title case, words centred on the phone, tight spacing.
+  All the words and logic live in snippets/tl-urgency, mode 'band'.
+{% endcomment %}
+<div class="page-width">
+  {%- render 'tl-urgency', mode: 'band' -%}
+</div>
+
+{% schema %}
+{
+  "name": "Countdown band",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Black Friday, then the Christmas Six or the Christmas order-by date, then the gift card, each in its own dates. The words and dates live in the theme code, not here, so they can't drift from the discounts."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Countdown band"
+    }
+  ]
+}
+{% endschema %}

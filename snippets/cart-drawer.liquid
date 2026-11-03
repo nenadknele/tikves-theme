@@ -27,6 +27,7 @@
             moved twice.
           {% endcomment %}
           {% render 'tl-delivery-summary' %}
+          {% render 'tl-christmas-six' %}
 
           <div data-products class="appear-animation appear-delay-2"></div>
 
@@ -47,6 +48,14 @@
             open by default when the customer has already written a note, so nothing they typed
             is ever hidden from them.
           {% endcomment %}
+          {% comment %} THE CHRISTMAS SIX gift message, 2 Nov 2026, REF v3. A cart attribute, NOT the cart note: the note is the safe-place field and its wording is with the solicitor. Shows on the order under Additional details. {% endcomment %}
+          {% if settings.tl_christmas_six %}
+            <details class="tl-note tl-gift"{% if cart.attributes['Gift message'] != blank %} open{% endif %}>
+              <summary class="tl-note__summary">Add a gift message</summary>
+              <label for="CartGiftDrawer">We'll put it in the box. Free.</label>
+              <textarea name="attributes[Gift message]" class="input-full" id="CartGiftDrawer" rows="2" maxlength="300">{{ cart.attributes['Gift message'] }}</textarea>
+            </details>
+          {% endif %}
           {% if settings.cart_notes_enable %}
             <details class="appear-animation appear-delay-3 tl-note"{% if cart.note != blank %} open{% endif %}>
               <summary class="tl-note__summary">Add delivery instructions</summary>
@@ -73,6 +82,7 @@
             {% endif %}
           </div>
 
+          {% render 'tl-urgency', mode: 'line' %}
           <div class="cart__item-sub cart__item-row">
             <div class="ajaxcart__subtotal">{{ 'cart.general.subtotal' | t }}</div>
             <div data-subtotal>{{ cart.total_price | money }}</div>

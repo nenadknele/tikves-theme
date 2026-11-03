@@ -159,6 +159,13 @@
                 {%- endunless -%}
               {%- endfor -%}
             </div>
+            {%- comment -%} THE CHRISTMAS SIX, 2 Nov 2026, REF v3: the small yes leads to a six. Built from the bottles in this result that count towards the offer. Hidden when none do, or when the offer is off. {%- endcomment -%}
+            {%- if settings.tl_christmas_six -%}
+              <div class="tkfy__six tl-six-timed" data-tkfy-six hidden>
+                <button type="button" class="tkfy__six-btn" data-tkfy-six-add>Make it your Christmas Six</button>
+                <p class="tkfy__six-line" data-tkfy-six-line></p>
+              </div>
+            {%- endif -%}
             <div class="tkfy__after">
               <a class="tkfy__browse" href="{{ col.url }}">{{ s.see_all_label | replace: '[collection]', col.title | escape }}</a>
             </div>
@@ -186,6 +193,56 @@
 </div>
 
 {%- render 'tikves-gatc-handler' -%}
+
+{%- if settings.tl_christmas_six -%}
+<script>
+  (function () {
+    var root = document.getElementById('tkfy-{{ section.id }}');
+    if (!root) return;
+    [].slice.call(root.querySelectorAll('[data-tkfy-result]')).forEach(function (result) {
+      var box = result.querySelector('[data-tkfy-six]');
+      if (!box) return;
+      var picks = [].slice.call(result.querySelectorAll('[data-six-vid]')).map(function (c) {
+        return { id: Number(c.getAttribute('data-six-vid')), title: c.getAttribute('data-six-title') };
+      });
+      if (!picks.length) return;
+      var counts = picks.map(function () { return 0; });
+      for (var i = 0; i < 6; i++) counts[i % picks.length] += 1;
+      var words = { 1: 'one', 2: 'two', 3: 'three', 6: 'six' };
+      var desc = picks.length === 1
+        ? 'Six of ' + picks[0].title + '.'
+        : (counts[0] === counts[counts.length - 1] ? (words[counts[0]] || counts[0]) + ' of each' : 'A mix of these') + '.';
+      box.querySelector('[data-tkfy-six-line]').textContent =
+        desc.charAt(0).toUpperCase() + desc.slice(1) + ' 10% off and free delivery, until Wednesday 16 December.';
+      var btn = box.querySelector('[data-tkfy-six-add]');
+      btn.addEventListener('click', function () {
+        btn.disabled = true;
+        btn.textContent = 'Adding';
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items: picks.map(function (p, k) { return { id: p.id, quantity: counts[k] }; }) })
+        })
+          .then(function (r) { if (!r.ok) throw r; return r.json(); })
+          .then(function () {
+            document.dispatchEvent(new CustomEvent('cart:build'));
+            document.dispatchEvent(new CustomEvent('ajaxProduct:added'));
+            btn.textContent = 'In your bag';
+          })
+          .catch(function () { btn.disabled = false; btn.textContent = 'Make it your Christmas Six'; });
+      });
+      box.hidden = false;
+    });
+  })();
+</script>
+<style>
+  #tkfy-{{ section.id }} .tkfy__six { text-align: center; margin: 28px 0 0; }
+  #tkfy-{{ section.id }} .tkfy__six[hidden] { display: none; }
+  #tkfy-{{ section.id }} .tkfy__six-btn { border: 1px solid currentColor; background: none; color: inherit; font: inherit; padding: 14px 26px; cursor: pointer; border-radius: 2px; }
+  #tkfy-{{ section.id }} .tkfy__six-btn[disabled] { opacity: .6; cursor: default; }
+  #tkfy-{{ section.id }} .tkfy__six-line { margin: 10px 0 0; font-size: 14px; }
+</style>
+{%- endif -%}
 
 <script>
   (function () {

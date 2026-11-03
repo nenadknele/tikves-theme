@@ -152,9 +152,11 @@
                   {%- when 'separator' -%}
                     <div class="product-block" {{ block.shopify_attributes }}><hr></div>
                   {%- when 'text' -%}
+                    {%- if block.settings.text != blank -%}
                     <div class="product-block" {{ block.shopify_attributes }}>
                       {{ block.settings.text }}
                     </div>
+                    {%- endif -%}
                   {%- when 'tab' -%}
                     {% assign tab_id = block.id | append: product.id %}
                     {% capture tab_content %}

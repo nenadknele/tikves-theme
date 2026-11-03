@@ -18,6 +18,10 @@
       <a href="{{ product.url }}" class="cart__item-name">
         {{ product.product.title }}
       </a>
+      {%- comment -%} Live stock count, 2 Nov 2026, REF v4. The store's own number, at 60 or fewer. {%- endcomment -%}
+      {%- if product.variant.inventory_management == 'shopify' and product.variant.inventory_quantity > 0 and product.variant.inventory_quantity <= 60 -%}
+        <div class="cart__item--variants tl-cart-stock">Only {{ product.variant.inventory_quantity }} left.</div>
+      {%- endif -%}
       {%- unless product.product.has_only_default_variant -%}
         <div class="cart__item--variants">
           {%- for option in product.options_with_values -%}

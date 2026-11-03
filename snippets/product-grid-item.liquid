@@ -80,6 +80,20 @@ policy asks for ABV on the landing page. Operator approved in chat.
           {{ 'products.product.sold_out' | t }}
         </div>
       {%- endunless -%}
+      {%- comment -%}
+        SCARCITY BADGES, 2 Nov 2026, REF · HORMOZI OFFER IN FULL v4. One badge
+        per card: sold out (above) wins, then the live count at 60 or fewer,
+        then the rarity badge where the rarity note is set. The count is the
+        store's own number when the page is built. Never type a number here.
+      {%- endcomment -%}
+      {%- if product.available -%}
+        {%- assign tl_v = product.selected_or_first_available_variant -%}
+        {%- if tl_v.inventory_management == 'shopify' and tl_v.inventory_quantity > 0 and tl_v.inventory_quantity <= 60 -%}
+          <div class="grid-product__tag grid-product__tag--custom tl-tag">Only {{ tl_v.inventory_quantity }} left</div>
+        {%- elsif product.metafields.custom.rarity_note.value != blank -%}
+          <div class="grid-product__tag grid-product__tag--custom tl-tag">Hard to find in the UK</div>
+        {%- endif -%}
+      {%- endif -%}
       {%- if on_sale and product.available -%}
         <div class="grid-product__tag grid-product__tag--sale">
           {{ 'products.general.sale' | t }}

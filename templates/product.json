@@ -26,8 +26,20 @@
         "inventory_status": {
           "type": "inventory_status",
           "settings": {
-            "inventory_threshold": 0,
+            "inventory_threshold": 60,
             "inventory_transfers_enable": false
+          }
+        },
+        "rarity": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.custom.rarity_note.value }}"
+          }
+        },
+        "urgency": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Countdown and timed lines, 2 Nov 2026, REF v4. Words and dates live in snippets/tl-dates. {% endcomment %}{% render 'tl-urgency', mode: 'line' %}"
           }
         },
         "back_in_stock": {
@@ -57,7 +69,7 @@
         "price",
         "variant_picker",
         "buy_buttons",
-        "inventory_status",
+        "inventory_status", "rarity", "urgency",
         "back_in_stock",
         "guarantee",
         "separator-1",
