@@ -5733,7 +5733,9 @@ theme.recentlyViewed = {
   
     _calculate() {
       // Find time difference and convert to integer
-      const timeDifference = +new Date(`${this.month}/${this.day}/${this.year} ${this.hour}:${this.minute}:00`).getTime() - +new Date().getTime();
+      // Tikves London, 3 Nov 2026: the deadline is UK time for every visitor, never the visitor's own clock.
+      // Our countdown dates fall in GMT, so UK time is UTC. A date in British Summer Time would need an hour off.
+      const timeDifference = Date.UTC(+this.year, +this.month - 1, +this.day, +this.hour, +this.minute, 0) - Date.now();
       // If time difference is greater than 0, calculate remaining time
       if (timeDifference > 0) {
         const intervals = {

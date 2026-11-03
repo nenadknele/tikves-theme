@@ -1,39 +1,61 @@
 /*
- * The Christmas Six page, 3 Nov 2026. Festive Barovo photograph with the
- * heading and Build Your Six button (wide crop on desktop, phone crop on the
- * phone), how it works, the three ready-made sixes, then the eleven wines.
- * Used only by /collections/the-christmas-six. Remove after 16 Dec.
+ * The Christmas Six page, 3 Nov 2026, after the Zipify bundle builders on
+ * overtone.co and boombeauty.com. The theme countdown to Wed 16 Dec 23:59 UK
+ * on the festive Barovo photograph (wide crop on desktop, phone crop on the
+ * phone), how it works, the three ready-made sixes, then Build Your Own Six,
+ * a six-slot builder over the eleven wines. Used only by
+ * /collections/the-christmas-six. Remove after 16 Dec.
  */
+
 {
   "sections": {
-    "festive-hero": {
-      "type": "tikves-hero",
+    "countdown": {
+      "type": "countdown",
+      "blocks": {
+        "content": {
+          "type": "content",
+          "settings": {
+            "heading": "The Christmas Six",
+            "heading_size": "h1",
+            "text": "<p>Any six of our eleven Christmas wines. 10% off, delivered free in Great Britain. Order by Wednesday 16 December for Christmas delivery.</p>",
+            "content_alignment": "center"
+          }
+        },
+        "timer": {
+          "type": "timer",
+          "settings": {
+            "year": 2026,
+            "month": "12",
+            "day": "16",
+            "hour": "23",
+            "minute": "59",
+            "hide_timer": true,
+            "text": "<p>Too late for Christmas delivery? <a href=\"/products/gift-card\">A gift card</a> comes by email, straight away.</p>"
+          }
+        },
+        "button": {
+          "type": "button",
+          "settings": {
+            "button": "Build Your Six",
+            "button_link": "/collections/the-christmas-six#tl-build",
+            "button_style": "solid"
+          }
+        }
+      },
+      "block_order": [
+        "content",
+        "timer",
+        "button"
+      ],
       "settings": {
-        "image": "shopify://shop_images/barovo-hero-desktop-169.jpg",
-        "image_mobile": "shopify://shop_images/barovo-hero-phone-tight.jpg",
-        "lcp": true,
-        "focal_desktop": "center bottom",
-        "focal_mobile": "center center",
-        "heading": "The Christmas Six",
-        "subheading": "Any six of our eleven Christmas wines. 10% off, delivered free in Great Britain.",
-        "button_label": "Build Your Six",
-        "heading_tag": "h1",
-        "text_panel": false,
-        "stack_mobile": true,
-        "scrim": 46,
-        "height_mobile": 340,
-        "ratio_desktop": "fixed",
-        "height_desktop": 560,
-        "button_link": "/collections/the-christmas-six#tl-sixes",
-        "button_style": "solid",
-        "button_size": "large",
-        "valign": "flex-end",
-        "text_width_mobile": 70,
-        "text_width_desktop": 420,
-        "title_size_mobile": 26,
-        "title_size_desktop": 44,
-        "sub_size_mobile": 15,
-        "sub_size_desktop": 18
+        "layout": "hero",
+        "full_width": true,
+        "text_color": "#ffffff",
+        "background_color": "#2b1a14",
+        "background_image": "shopify://shop_images/barovo-hero-desktop-169.jpg",
+        "mobile_image": "shopify://shop_images/barovo-hero-phone-tight.jpg",
+        "overlay_color": "#000000",
+        "overlay_opacity": 44
       }
     },
     "six-page": {
@@ -105,59 +127,22 @@
         "white",
         "table"
       ],
-      "settings": {}
-    },
-    "collection-header": {
-      "type": "collection-header",
       "settings": {
-        "enable": false,
-        "collection_image_enable": false,
-        "parallax": true,
-        "parallax_direction": "top"
+        "more_heading": "Or Build Your Own Six",
+        "more_text": "Pick from all eleven wines below. Your six fills up as you go."
       }
     },
-    "main-collection": {
-      "type": "main-collection",
-      "blocks": {
-        "collection_description": {
-          "type": "collection_description",
-          "settings": {}
-        },
-        "subcollections": {
-          "type": "subcollections",
-          "settings": {
-            "subcollections_per_row": 5
-          }
-        },
-        "product_grid": {
-          "type": "product_grid",
-          "settings": {
-            "enable_collection_count": true,
-            "per_row": 4,
-            "rows_per_page": 10,
-            "mobile_flush_grid": true
-          }
-        }
-      },
-      "block_order": [
-        "collection_description",
-        "subcollections",
-        "product_grid"
-      ],
+    "builder": {
+      "type": "tl-six-builder",
       "settings": {
-        "enable_sidebar": true,
-        "collapsed": true,
-        "filter_style": "drawer",
-        "enable_color_swatches": true,
-        "enable_swatch_labels": true,
-        "enable_sort": true
+        "heading": "",
+        "text": ""
       }
     }
   },
   "order": [
-    "festive-hero",
+    "countdown",
     "six-page",
-    "collection-header",
-    "main-collection"
+    "builder"
   ]
 }

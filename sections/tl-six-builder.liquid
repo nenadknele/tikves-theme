@@ -1,0 +1,228 @@
+{% comment %}
+  TIKVES LONDON · BUILD YOUR SIX · 3 Nov 2026
+  A six-slot builder for the Christmas Six page, after the Zipify Bundle
+  Builder that overtone.co and boombeauty.com run, built in the theme so there
+  is no app fee. Every wine in the collection gets "Add to your six"; a tray of
+  six slots fills as she picks, with a progress line; one button puts the lot
+  in the basket and opens the cart. The 10% and free delivery are the two
+  Shopify automatic discounts, so nothing here sets a price: it reads the live
+  price and the live stock count, and says what checkout will do.
+  Desktop: the tray sits beside the grid and follows the scroll.
+  Phone: the tray is a bar fixed to the bottom of the screen.
+{% endcomment %}
+<style>
+  .tl-sb{padding:16px 0 150px}
+  .tl-sb__head{text-align:center;max-width:640px;margin:0 auto 22px}
+  .tl-sb__head h2{margin:0 0 8px}
+  .tl-sb__head p{margin:0}
+  .tl-sb__wrap{display:block}
+  .tl-sb__grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .tl-sb__card{display:flex;flex-direction:column;border:1px solid rgba(0,0,0,.12);border-radius:4px;overflow:hidden}
+  .tl-sb__img{display:block;background:rgba(0,0,0,.03)}
+  .tl-sb__img img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover}
+  .tl-sb__body{padding:10px 10px 12px;display:flex;flex-direction:column;flex:1;gap:4px}
+  .tl-sb__title{font-size:15px;line-height:1.3;margin:0}
+  .tl-sb__title a{color:inherit;text-decoration:none}
+  .tl-sb__price{font-size:14px;margin:0}
+  .tl-sb__left{font-size:13px;margin:0;font-weight:600}
+  .tl-sb__ctrl{margin-top:auto;padding-top:8px}
+  .tl-sb__add{width:100%}
+  .tl-sb__step{display:none;align-items:center;justify-content:space-between;border:1px solid currentColor;border-radius:999px;height:40px}
+  .tl-sb__step button{background:none;border:0;width:44px;height:40px;font-size:20px;cursor:pointer;color:inherit}
+  .tl-sb__step span{font-weight:600}
+  .tl-sb__card.is-in .tl-sb__add{display:none}
+  .tl-sb__card.is-in .tl-sb__step{display:flex}
+  .tl-sb__tray{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--colorBody,#f6efe8);border-top:1px solid rgba(0,0,0,.15);padding:10px 16px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+  .tl-sb__tray h3{display:none}
+  .tl-sb__slots{display:flex;gap:6px;margin:0 0 8px}
+  .tl-sb__slot{flex:1;aspect-ratio:1;max-width:44px;border:1px dashed rgba(0,0,0,.35);border-radius:4px;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:12px;opacity:.8}
+  .tl-sb__slot img{width:100%;height:100%;object-fit:cover}
+  .tl-sb__slot.is-full{border-style:solid;opacity:1}
+  .tl-sb__bar{height:4px;background:rgba(0,0,0,.1);border-radius:4px;overflow:hidden;margin:0 0 8px}
+  .tl-sb__bar i{display:block;height:100%;width:0;background:currentColor;transition:width .25s}
+  .tl-sb__msg{font-size:14px;line-height:1.35;margin:0 0 8px}
+  .tl-sb__row{display:flex;gap:10px;align-items:center}
+  .tl-sb__go{flex:1}
+  .tl-sb__go[disabled]{opacity:.5;cursor:not-allowed}
+  .tl-sb__clear{background:none;border:0;text-decoration:underline;text-underline-offset:3px;font-size:13px;cursor:pointer;color:inherit;padding:0}
+  @media (min-width:769px){
+    .tl-sb{padding:24px 0 48px}
+    .tl-sb__wrap{display:grid;grid-template-columns:1fr 320px;gap:28px;align-items:start}
+    .tl-sb__grid{grid-template-columns:repeat(3,1fr);gap:18px}
+    .tl-sb__tray{position:sticky;top:110px;left:auto;right:auto;bottom:auto;z-index:2;border:1px solid rgba(0,0,0,.15);border-radius:4px;padding:18px;box-shadow:none}
+    .tl-sb__tray h3{display:block;margin:0 0 12px}
+    .tl-sb__slots{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+    .tl-sb__slot{max-width:none;aspect-ratio:3/4}
+    .tl-sb__row{flex-direction:column;align-items:stretch}
+  }
+</style>
+
+<div class="page-width tl-sb" id="tl-build" data-tl-sb>
+  {%- if section.settings.heading != blank or section.settings.text != blank -%}
+  <div class="tl-sb__head">
+    {%- if section.settings.heading != blank -%}<h2>{{ section.settings.heading | escape }}</h2>{%- endif -%}
+    {%- if section.settings.text != blank -%}<p>{{ section.settings.text | escape }}</p>{%- endif -%}
+  </div>
+  {%- endif -%}
+
+  <div class="tl-sb__wrap">
+    <div class="tl-sb__grid">
+      {%- for p in collection.products limit: 24 -%}
+        {%- assign v = p.selected_or_first_available_variant -%}
+        {%- liquid
+          assign max = 99
+          if v.inventory_management != blank and v.inventory_policy == 'deny'
+            assign max = v.inventory_quantity
+          endif
+        -%}
+        <div class="tl-sb__card" data-tl-sb-card data-id="{{ v.id }}" data-max="{{ max }}" data-title="{{ p.title | escape }}" data-img="{{ p.featured_image | image_url: width: 160 }}">
+          <a class="tl-sb__img" href="{{ p.url }}">
+            {%- if p.featured_image -%}
+              {{ p.featured_image | image_url: width: 600 | image_tag: loading: 'lazy', widths: '200,300,400,600', sizes: '(min-width: 769px) 240px, 50vw', alt: p.title }}
+            {%- endif -%}
+          </a>
+          <div class="tl-sb__body">
+            <p class="tl-sb__title"><a href="{{ p.url }}">{{ p.title }}</a></p>
+            <p class="tl-sb__price">{{ v.price | money }}</p>
+            {%- if v.available and v.inventory_management != blank and v.inventory_quantity <= 60 -%}
+              <p class="tl-sb__left">Only {{ v.inventory_quantity }} left.</p>
+            {%- endif -%}
+            <div class="tl-sb__ctrl">
+              {%- if v.available -%}
+                <button type="button" class="btn btn--small tl-sb__add" data-tl-sb-add>Add To Your Six</button>
+                <div class="tl-sb__step" aria-live="polite">
+                  <button type="button" data-tl-sb-minus aria-label="One fewer {{ p.title | escape }}">&minus;</button>
+                  <span data-tl-sb-qty>0</span>
+                  <button type="button" data-tl-sb-plus aria-label="One more {{ p.title | escape }}">+</button>
+                </div>
+              {%- else -%}
+                <p class="tl-sb__left">Sold out for now.</p>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <aside class="tl-sb__tray" aria-label="Your six">
+      <h3>Your Six</h3>
+      <div class="tl-sb__slots" data-tl-sb-slots></div>
+      <div class="tl-sb__bar"><i data-tl-sb-bar></i></div>
+      <p class="tl-sb__msg" data-tl-sb-msg>Pick six bottles. 10% comes off at checkout and delivery is free in Great Britain.</p>
+      <div class="tl-sb__row">
+        <button type="button" class="btn tl-sb__go" data-tl-sb-go disabled>Put Your Six In The Basket</button>
+        <button type="button" class="tl-sb__clear" data-tl-sb-clear hidden>Start again</button>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<script>
+(function () {
+  var root = document.querySelector('[data-tl-sb]');
+  if (!root) return;
+  var pick = {};   // variant id -> qty
+  var order = [];  // variant ids in the order picked, one entry per bottle
+  var cards = {};
+  root.querySelectorAll('[data-tl-sb-card]').forEach(function (c) { cards[c.dataset.id] = c; });
+  var slots = root.querySelector('[data-tl-sb-slots]');
+  var bar = root.querySelector('[data-tl-sb-bar]');
+  var msg = root.querySelector('[data-tl-sb-msg]');
+  var go = root.querySelector('[data-tl-sb-go]');
+  var clear = root.querySelector('[data-tl-sb-clear]');
+
+  function total() { return order.length; }
+
+  function render() {
+    var n = total();
+    var shown = Math.max(6, n <= 6 ? 6 : 12);
+    var html = '';
+    for (var i = 0; i < shown; i++) {
+      var id = order[i];
+      if (id) {
+        var c = cards[id];
+        html += '<div class="tl-sb__slot is-full"><img src="' + c.dataset.img + '" alt="' + c.dataset.title + '"></div>';
+      } else {
+        html += '<div class="tl-sb__slot">' + (i + 1) + '</div>';
+      }
+    }
+    slots.innerHTML = html;
+    bar.style.width = Math.min(100, Math.round(n / 6 * 100)) + '%';
+    if (n === 0) {
+      msg.innerHTML = 'Pick six bottles. 10% comes off at checkout and delivery is free in Great Britain.';
+    } else if (n < 6) {
+      var left = 6 - n;
+      msg.innerHTML = '<strong>' + n + ' of 6.</strong> Add ' + left + ' more for 10% off and free delivery.';
+    } else if (n < 12) {
+      msg.innerHTML = '<strong>That’s your Christmas Six.</strong> 10% off and free delivery are on. Stocking up for the season? Make it twelve.';
+    } else {
+      msg.innerHTML = '<strong>Twelve for the season.</strong> 10% off every bottle, delivered free.';
+    }
+    go.disabled = n === 0;
+    go.textContent = n >= 6 ? 'Put Your ' + (n === 6 ? 'Six' : n + ' Bottles') + ' In The Basket' : (n === 0 ? 'Put Your Six In The Basket' : 'Put ' + n + ' In The Basket');
+    clear.hidden = n === 0;
+    Object.keys(cards).forEach(function (id) {
+      var q = pick[id] || 0;
+      cards[id].classList.toggle('is-in', q > 0);
+      var qe = cards[id].querySelector('[data-tl-sb-qty]');
+      if (qe) qe.textContent = q;
+    });
+  }
+
+  function add(id) {
+    var c = cards[id];
+    var max = parseInt(c.dataset.max, 10) || 99;
+    if ((pick[id] || 0) >= max) return;
+    pick[id] = (pick[id] || 0) + 1;
+    order.push(id);
+    render();
+  }
+  function remove(id) {
+    if (!pick[id]) return;
+    pick[id]--;
+    var at = order.lastIndexOf(id);
+    if (at > -1) order.splice(at, 1);
+    if (!pick[id]) delete pick[id];
+    render();
+  }
+
+  root.addEventListener('click', function (e) {
+    var card = e.target.closest('[data-tl-sb-card]');
+    if (e.target.closest('[data-tl-sb-add]') || e.target.closest('[data-tl-sb-plus]')) { add(card.dataset.id); return; }
+    if (e.target.closest('[data-tl-sb-minus]')) { remove(card.dataset.id); return; }
+  });
+  clear.addEventListener('click', function () { pick = {}; order = []; render(); });
+  go.addEventListener('click', function () {
+    var items = Object.keys(pick).map(function (id) { return { id: +id, quantity: pick[id] }; });
+    if (!items.length) return;
+    go.disabled = true;
+    go.setAttribute('aria-busy', 'true');
+    fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({ items: items })
+    }).then(function (r) {
+      if (r.ok) { window.location.href = '/cart'; return; }
+      return r.json().then(function (j) {
+        msg.innerHTML = (j && j.description) ? j.description : 'Something went wrong. Please try again.';
+        go.disabled = false;
+      });
+    }).catch(function () {
+      msg.innerHTML = 'Something went wrong. Please try again.';
+      go.disabled = false;
+    });
+  });
+  render();
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Build your six",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Build Your Own Six" },
+    { "type": "text", "id": "text", "label": "Line", "default": "Pick any six of the eleven wines. Mix them however you like." }
+  ],
+  "enabled_on": { "templates": ["collection"] }
+}
+{% endschema %}
