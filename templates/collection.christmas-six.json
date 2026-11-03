@@ -1,6 +1,7 @@
 /*
- * The Christmas Six page, 3 Nov 2026. The festive Barovo photograph above the
- * normal collection header: wide crop on desktop, phone crop on the phone.
+ * The Christmas Six page, 3 Nov 2026. Festive Barovo photograph with the
+ * heading and Build Your Six button (wide crop on desktop, phone crop on the
+ * phone), how it works, the three ready-made sixes, then the eleven wines.
  * Used only by /collections/the-christmas-six. Remove after 16 Dec.
  */
 {
@@ -13,22 +14,103 @@
         "lcp": true,
         "focal_desktop": "center bottom",
         "focal_mobile": "center center",
-        "heading": "",
-        "subheading": "",
-        "button_label": "",
-        "heading_tag": "h2",
+        "heading": "The Christmas Six",
+        "subheading": "Any six of our eleven Christmas wines. 10% off, delivered free in Great Britain.",
+        "button_label": "Build Your Six",
+        "heading_tag": "h1",
         "text_panel": false,
-        "stack_mobile": false,
-        "scrim": 0,
+        "stack_mobile": true,
+        "scrim": 46,
         "height_mobile": 340,
         "ratio_desktop": "fixed",
-        "height_desktop": 520
+        "height_desktop": 560,
+        "button_link": "/collections/the-christmas-six#tl-sixes",
+        "button_style": "solid",
+        "button_size": "large",
+        "valign": "flex-end",
+        "text_width_mobile": 70,
+        "text_width_desktop": 420,
+        "title_size_mobile": 26,
+        "title_size_desktop": 44,
+        "sub_size_mobile": 15,
+        "sub_size_desktop": 18
       }
+    },
+    "six-page": {
+      "type": "tl-six-page",
+      "blocks": {
+        "red": {
+          "type": "six",
+          "settings": {
+            "title": "The Red Six",
+            "text": "Barovo Red and T'ga za Jug, with two Kratošija and two Babuna Red. For the roast and the cheeseboard.",
+            "button": "Put The Red Six In Your Basket",
+            "product_1": "barovo-red",
+            "qty_1": 1,
+            "product_2": "tga-za-jug",
+            "qty_2": 1,
+            "product_3": "kratosija",
+            "qty_3": 2,
+            "product_4": "babuna-red",
+            "qty_4": 2,
+            "product_5": "",
+            "qty_5": 0,
+            "product_6": "",
+            "qty_6": 0
+          }
+        },
+        "white": {
+          "type": "six",
+          "settings": {
+            "title": "The White Six",
+            "text": "Bela Voda White and Alexandria Premium Cuvée White, with two Smederevka and two Temjanika Luda Mara. For fish, starters and people arriving.",
+            "button": "Put The White Six In Your Basket",
+            "product_1": "bela-voda-white",
+            "qty_1": 1,
+            "product_2": "alexandria-premium-cuvee-white",
+            "qty_2": 1,
+            "product_3": "smederevka",
+            "qty_3": 2,
+            "product_4": "temjanika-luda-mara",
+            "qty_4": 2,
+            "product_5": "",
+            "qty_5": 0,
+            "product_6": "",
+            "qty_6": 0
+          }
+        },
+        "table": {
+          "type": "six",
+          "settings": {
+            "title": "The Table Six",
+            "text": "Alexandria Premium Cuvée Red and Rosé, with one each of Smederevka, Temjanika Luda Mara, Kratošija and Babuna Red. Something for every course.",
+            "button": "Put The Table Six In Your Basket",
+            "product_1": "alexandria-premium-cuvee-red",
+            "qty_1": 1,
+            "product_2": "alexandria-premium-cuvee-rose",
+            "qty_2": 1,
+            "product_3": "smederevka",
+            "qty_3": 1,
+            "product_4": "temjanika-luda-mara",
+            "qty_4": 1,
+            "product_5": "kratosija",
+            "qty_5": 1,
+            "product_6": "babuna-red",
+            "qty_6": 1
+          }
+        }
+      },
+      "block_order": [
+        "red",
+        "white",
+        "table"
+      ],
+      "settings": {}
     },
     "collection-header": {
       "type": "collection-header",
       "settings": {
-        "enable": true,
+        "enable": false,
         "collection_image_enable": false,
         "parallax": true,
         "parallax_direction": "top"
@@ -74,6 +156,7 @@
   },
   "order": [
     "festive-hero",
+    "six-page",
     "collection-header",
     "main-collection"
   ]
