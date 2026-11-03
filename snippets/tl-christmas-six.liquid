@@ -1,11 +1,11 @@
 {% comment %}
   THE CHRISTMAS MIX, 3 Nov 2026 (was the Christmas Six, REF v3).
-  Cart line for the offer: progress to the next step (4 bottles 5%, 6 bottles
-  7% and free delivery, 12 bottles 10%), the downsell to the pairs and trios. Renders nothing unless the offer is
+  Cart line for the offer: progress to the next step (2 bottles 3%, 4 bottles 5%,
+  6 bottles 7% and free delivery, 12 bottles 10%). Renders nothing unless the offer is
   switched on in theme settings (Cart, "The Christmas Mix is running").
   Switch it on only on the day the two parked Shopify discounts start, and
   off on the day they end. A line that promises a discount with no discount
-  behind it is a false promise. The three steps here must match the three
+  behind it is a false promise. The four steps here must match the four
   Shopify discounts.
 
   WHICH BOTTLES COUNT: products with the field custom.christmas_six = true.
@@ -49,9 +49,12 @@
     if (n === 0) { root.hidden = true; return; }
     function b(k) { return k + ' bottle' + (k === 1 ? '' : 's'); }
     var freeNote = units >= 6 ? '' : ' and free delivery';
-    if (n < 4) {
-      line.innerHTML = '<strong>The Christmas Mix.<\/strong> Add ' + b(4 - n) + ' more of our wines for 5% off, until Wednesday 16 December. Six get 7% off and free delivery.';
-      more.innerHTML = 'Not after four? <a href="/collections/sets">Our pairs and trios<\/a> are made for two or three.';
+    if (n < 2) {
+      line.innerHTML = '<strong>The Christmas Mix.<\/strong> Add 1 more of our wines for 3% off, until Wednesday 16 December. Four get 5%, six get 7% and free delivery.';
+      more.textContent = '';
+    } else if (n < 4) {
+      line.innerHTML = '<strong>3% off is on.<\/strong> Add ' + b(4 - n) + ' more for 5% off. Six get 7% and free delivery.';
+      more.textContent = '';
     } else if (n < 6) {
       line.innerHTML = '<strong>5% off is on.<\/strong> Add ' + b(6 - n) + ' more for 7% off' + freeNote + '.';
       more.textContent = 'Twelve bottles get 10% off.';

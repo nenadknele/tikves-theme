@@ -3,8 +3,8 @@
   The case builder for the Christmas Mix page, after the Zipify Bundle Builder
   that overtone.co and boombeauty.com run, built in the theme so there is no
   app fee. Single bottles only. Tabs filter Reds, Whites and Rosé. Every wine
-  gets "Add To Your Mix"; a bar fills towards the three steps (4 bottles 5%,
-  6 bottles 7% and free delivery, 12 bottles 10%); one button puts the lot in
+  gets "Add To Your Mix"; a bar fills towards the four steps (2 bottles 3%,
+  4 bottles 5%, 6 bottles 7% and free delivery, 12 bottles 10%); one button puts the lot in
   the basket and opens the cart.
   The discounts are Shopify automatic discounts, one per step, on the scope
   collection "Offer scope · The Christmas Mix". Shopify applies the best one.
@@ -14,7 +14,7 @@
   Desktop: the tray sits beside the grid and follows the scroll.
   Phone: a compact bar fixed to the bottom of the screen. It slides up once
   the wines are on screen or a bottle is in. Like Overtone, it carries no
-  sentences: the count, the bar with its three marks, and the button. While
+  sentences: the count, the bar with its four marks, and the button. While
   it's up, the chat and accessibility buttons lift above it (tikves-site-css).
 {% endcomment %}
 <style>
@@ -72,13 +72,13 @@
 
   /* Hero tier boxes. The list lives in the countdown section's text on this
      template; this section is only on this page, so the style rides here. */
-  .countdown__richtext ul.tl-tiers,.countdown__richtext ul{list-style:none;display:flex;justify-content:center;gap:8px;margin:16px auto 4px;padding:0;max-width:560px}
-  .countdown__richtext ul li{flex:1 1 0;margin:0;padding:10px 6px;border:1px solid rgba(255,255,255,.85);border-radius:4px;background:rgba(0,0,0,.28);text-align:center;font-size:12px;line-height:1.3;letter-spacing:.06em;text-transform:uppercase}
+  .countdown__richtext ul.tl-tiers,.countdown__richtext ul{list-style:none;display:flex;justify-content:center;gap:8px;margin:16px auto 4px;padding:0;max-width:680px}
+  .countdown__richtext ul li{flex:1 1 0;min-width:0;margin:0;padding:8px 4px;border:1px solid rgba(255,255,255,.85);border-radius:4px;background:rgba(0,0,0,.28);text-align:center;font-size:10px;line-height:1.3;letter-spacing:.04em;text-transform:uppercase}
   .countdown__richtext ul li::before{content:none}
-  .countdown__richtext ul li strong{display:block;font-size:24px;line-height:1.1;letter-spacing:0;text-transform:none;margin:2px 0 0}
+  .countdown__richtext ul li strong{display:block;font-size:20px;line-height:1.1;letter-spacing:0;text-transform:none;margin:2px 0 0}
   @media (min-width:769px){
     .countdown__richtext ul{gap:12px}
-    .countdown__richtext ul li{padding:12px 10px;font-size:13px}
+    .countdown__richtext ul li{padding:12px 10px;font-size:13px;letter-spacing:.06em}
     .countdown__richtext ul li strong{font-size:30px}
   }
 
@@ -193,8 +193,9 @@
       <div class="tl-sb__slots" data-tl-sb-slots></div>
       <div class="tl-sb__track" aria-hidden="true">
         <i data-tl-sb-bar></i>
-        <div class="tl-sb__mark" data-at="4" style="left:33.33%"><b>5%</b><span>4<em> bottles</em></span></div>
-        <div class="tl-sb__mark" data-at="6" style="left:50%"><b>7%</b><span>6<em> bottles</em></span></div>
+        <div class="tl-sb__mark" data-at="2" style="left:16.67%"><b>3%</b><span>2</span></div>
+        <div class="tl-sb__mark" data-at="4" style="left:33.33%"><b>5%</b><span>4</span></div>
+        <div class="tl-sb__mark" data-at="6" style="left:50%"><b>7%</b><span>6</span></div>
         <div class="tl-sb__mark" data-at="12" style="left:100%"><b>10%</b><span>12<em> bottles</em></span></div>
       </div>
       <p class="tl-sb__msg" data-tl-sb-msg aria-live="polite"></p>
@@ -277,9 +278,11 @@
     marks.forEach(function (m) { m.classList.toggle('is-on', n >= +m.dataset.at); });
     count.textContent = bottles(n);
     if (n === 0) {
-      msg.innerHTML = 'Four bottles get 5% off. Six get 7% and free delivery. Twelve get 10%.';
+      msg.innerHTML = 'Two bottles get 3% off. Four get 5%. Six get 7% and free delivery. Twelve get 10%.';
+    } else if (n < 2) {
+      msg.innerHTML = '<strong>Add 1 more bottle for 3% off.</strong>';
     } else if (n < 4) {
-      msg.innerHTML = '<strong>Add ' + bottles(4 - n) + ' more for 5% off.</strong>';
+      msg.innerHTML = '<strong>3% off is on.</strong> Add ' + bottles(4 - n) + ' more for 5% off.';
     } else if (n < 6) {
       msg.innerHTML = '<strong>5% off is on.</strong> Add ' + bottles(6 - n) + ' more for 7% off and free delivery.';
     } else if (n < 12) {
@@ -291,7 +294,7 @@
     // price after that step's discount in green with the full price struck
     // through, and the button shows the total. Rounded per line, the way
     // Shopify rounds a percentage discount.
-    var pct = n >= 12 ? 10 : (n >= 6 ? 7 : (n >= 4 ? 5 : 0));
+    var pct = n >= 12 ? 10 : (n >= 6 ? 7 : (n >= 4 ? 5 : (n >= 2 ? 3 : 0)));
     var full = 0, paid = 0;
     Object.keys(pick).forEach(function (id) {
       var line = (+cards[id].dataset.price || 0) * pick[id];
