@@ -1,69 +1,158 @@
 {%- comment -%}
-  2 Nov 2026, consent rate. The cookie choice becomes the age gate's second
-  step, so a visitor meets one box, not two stacked pop-ups.
+  Cookie banner. 3 Nov 2026, the operator asked for a proper cookie banner:
+  a bar at the bottom of the page, not a second step inside the age gate.
+  This replaces the in-gate step of 2 Nov. The age gate is untouched and
+  goes back to asking only the age question.
 
-  This section sits in the popup group directly after age-verification-popup.
-  On load it moves its own markup inside the gate's box. The gate section and
-  theme.js are untouched.
-
-  - Tap Yes on the age question. If Shopify says this visitor's region needs a
-    cookie choice (Shopify.customerPrivacy.shouldShowBanner), the gate stays
-    open and shows this step instead.
-  - Reject all and Accept all carry equal weight and both close the gate.
-    Choose cookies closes the gate and opens Shopify's own preferences panel.
-  - The choice is saved through Shopify's own consent API (setTrackingConsent),
-    so Google, Meta and every pixel get the official signal, as they do from
-    Shopify's banner today.
-  - If the consent API is not ready, or the region needs no choice, the gate
-    closes as before and Shopify's own banner stays the fallback. Nothing is
-    set without a choice. Age and cookies stay two separate answers.
+  - Shows once the age gate is closed, and only when Shopify says this
+    visitor's region needs a cookie choice (Shopify.customerPrivacy
+    .shouldShowBanner). It never sits on top of the age gate.
+  - Reject all and Accept all carry equal weight. Choose cookies opens
+    Shopify's own preferences panel.
+  - The choice is saved through Shopify's own consent API
+    (setTrackingConsent), so every pixel gets the official signal.
+  - Shopify's own banner is hidden only while this one is on screen. If this
+    script fails or the consent API never loads, Shopify's banner stays the
+    fallback. Nothing is set without a choice.
+  - The section keeps its old file name and type so popup-group.json needs
+    no change.
 {%- endcomment -%}
 
-<div class="tl-consent-step" data-tl-consent-step hidden>
-  <h2 class="h3">Cookies</h2>
-  <div class="rte">
-    <div class="enlarge-text">
-      <p>We need some to run the shop. With your OK, others show us what works and help our ads reach the right people. Your choice, and you can change it any time. More in our <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>.</p>
-    </div>
+<div class="tl-cc" data-tl-cc role="region" aria-labelledby="tl-cc-title" hidden>
+  <p class="tl-cc__title" id="tl-cc-title">Cookies</p>
+  <p class="tl-cc__body">We use cookies to run the shop. With your OK, we and our partners, Shopify included, also use them for analytics and ads. Nothing optional is set unless you accept. More in our <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>.</p>
+  <div class="tl-cc__btns">
+    <button type="button" class="tl-cc__choose" data-tl-cc-choose>Choose cookies</button>
+    <button type="button" class="tl-cc__btn" data-tl-cc-accept>Accept all</button>
+    <button type="button" class="tl-cc__btn" data-tl-cc-reject>Reject all</button>
   </div>
-  <div class="age-verification-popup__btns-wrapper tl-consent-step__btns">
-    <button type="button" class="btn" data-tl-consent-reject>Reject all</button>
-    <button type="button" class="btn" data-tl-consent-accept>Accept all</button>
-  </div>
-  <button type="button" class="tl-consent-step__choose" data-tl-consent-choose>Choose cookies</button>
 </div>
 
 {% style %}
-  .tl-consent-step__btns .btn {
-    min-height: 44px;
+  /* 3 Nov 2026: the operator asked for this bar to look the same as Shopify's
+     own cookie banner. Sizes, spacing, corners and shadow are read off that
+     banner on the live shop. Colours are the brand's Paper, Ink and Terra
+     Rossa; type is Inter throughout, as in Shopify's banner. */
+  html.tl-cc-on #shopify-pc__banner {
+    display: none !important;
   }
-  .tl-consent-step__choose {
-    display: inline-block;
-    margin-top: 14px;
+  .tl-cc {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    box-sizing: border-box;
+    width: calc(100% - 37px);
+    padding: 16px 16px 14px;
+    background: #F5EFE7;
+    color: #1F2328;
+    border-radius: 3px 3px 0 0;
+    box-shadow: 0 4px 10px rgba(63, 63, 68, 0.4);
+    font-family: var(--typeBasePrimary), var(--typeBaseFallback);
+    font-size: 16px;
+    line-height: 1.6;
+    transition: transform 0.3s ease;
+  }
+  .tl-cc[hidden] {
+    display: none;
+  }
+  .tl-cc--leaving {
+    transform: translate(-50%, 110%);
+  }
+  .tl-cc__title {
+    margin: 0 0 4px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .tl-cc__body {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .tl-cc__body a {
+    color: inherit;
+    text-decoration: underline;
+  }
+  .tl-cc__btns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+  .tl-cc__btn,
+  .tl-cc__choose {
+    box-sizing: border-box;
+    margin: 0;
+    border-radius: 2px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: normal;
+    text-transform: none;
+    cursor: pointer;
+  }
+  .tl-cc__btn {
     min-height: 44px;
-    padding: 0;
+    padding: 8px 10px;
+    background: #A64029;
+    color: #FFFFFF;
+    border: 1px solid #FFFFFF;
+  }
+  .tl-cc__btn:hover,
+  .tl-cc__btn:focus-visible {
+    background: #8E3622;
+  }
+  .tl-cc__choose {
+    grid-column: 1 / -1;
+    order: 3;
+    min-height: 36px;
+    padding: 6px;
     background: none;
     border: 0;
-    text-decoration: underline;
-    font: inherit;
     color: inherit;
-    cursor: pointer;
+    text-decoration: underline;
+  }
+  @media only screen and (min-width: 769px) {
+    .tl-cc {
+      width: 70%;
+      padding: 32px;
+    }
+    .tl-cc__title {
+      font-size: 19px;
+      margin-bottom: 10px;
+    }
+    .tl-cc__body {
+      font-size: 16px;
+      line-height: 1.3;
+    }
+    .tl-cc__btns {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 20px;
+      margin-top: 15px;
+    }
+    .tl-cc__choose {
+      grid-column: auto;
+      order: 0;
+      min-height: 37px;
+      padding: 8px 25px;
+    }
+    .tl-cc__btn {
+      min-height: 37px;
+      padding: 8px 25px;
+    }
   }
 {% endstyle %}
 
 <script>
   (function () {
-    var step = document.querySelector('[data-tl-consent-step]');
-    var root = document.querySelector('age-verification-popup');
-    if (!step || !root) return;
-    var wrapper = root.querySelector('.age-verification-popup__content-wrapper');
-    var yes = root.querySelector('[data-age-verification-popup-exit-button]');
-    var question = root.querySelector('[data-age-verification-popup-content]');
-    if (!wrapper || !yes || !question) return;
-
-    wrapper.appendChild(step);
-
-    var released = false;
+    var bar = document.querySelector('[data-tl-cc]');
+    if (!bar) return;
+    var gate = document.querySelector('age-verification-popup');
+    var shown = false;
 
     function privacy() {
       return window.Shopify && window.Shopify.customerPrivacy;
@@ -72,66 +161,75 @@
     function needsChoice() {
       var p = privacy();
       try {
-        return !!(p && p.shouldShowBanner && p.setTrackingConsent && p.shouldShowBanner());
+        if (!(p && p.shouldShowBanner && p.setTrackingConsent && p.shouldShowBanner())) return false;
+        // shouldShowBanner stays true after a choice, so also check whether one exists.
+        var c = p.currentVisitorConsent ? p.currentVisitorConsent() : null;
+        return !c || (!c.analytics && !c.marketing && !c.preferences);
       } catch (e) {
         return false;
       }
     }
 
-    function hideShopifyBanner() {
-      var b = document.getElementById('shopify-pc__banner');
-      if (b) b.style.display = 'none';
+    function gateOpen() {
+      return !!(gate && gate.classList.contains('modal--is-active'));
     }
 
-    // Close the gate the normal way: theme.js sets the age cookie, closes the modal and fires its event.
-    function passGate() {
-      released = true;
-      yes.click();
+    function show() {
+      if (shown || gateOpen() || !needsChoice()) return;
+      shown = true;
+      document.documentElement.classList.add('tl-cc-on');
+      bar.hidden = false;
     }
 
-    // Runs before theme.js's own Yes handler, which is attached without capture.
-    yes.addEventListener('click', function (e) {
-      if (released || !needsChoice()) return;
-      e.preventDefault();
-      e.stopImmediatePropagation();
-      question.classList.remove('age-verification-popup__content--active');
-      question.hidden = true;
-      step.hidden = false;
-      var first = step.querySelector('button');
-      if (first) first.focus();
-    }, true);
+    function hide() {
+      bar.classList.add('tl-cc--leaving');
+      // Keep Shopify's own banner hidden after our bar closes. It is not told
+      // a choice was made on this page, so unhiding it would show a second
+      // banner straight after the first. The next page load reads the saved
+      // choice and shows neither.
+      setTimeout(function () {
+        bar.hidden = true;
+      }, 300);
+    }
 
     function save(all) {
       var p = privacy();
-      if (!p || !p.setTrackingConsent) {
-        passGate();
-        return;
-      }
-      p.setTrackingConsent(
-        { analytics: all, marketing: all, preferences: all },
-        function () {
-          hideShopifyBanner();
-          passGate();
-        }
-      );
+      if (!p || !p.setTrackingConsent) return;
+      p.setTrackingConsent({ analytics: all, marketing: all, preferences: all }, hide);
     }
 
-    step.querySelector('[data-tl-consent-accept]').addEventListener('click', function () { save(true); });
-    step.querySelector('[data-tl-consent-reject]').addEventListener('click', function () { save(false); });
-    step.querySelector('[data-tl-consent-choose]').addEventListener('click', function () {
-      passGate();
-      setTimeout(function () {
-        if (window.privacyBanner && window.privacyBanner.showPreferences) {
-          window.privacyBanner.showPreferences();
-        }
-      }, 300);
+    bar.querySelector('[data-tl-cc-accept]').addEventListener('click', function () { save(true); });
+    bar.querySelector('[data-tl-cc-reject]').addEventListener('click', function () { save(false); });
+    bar.querySelector('[data-tl-cc-choose]').addEventListener('click', function () {
+      if (window.privacyBanner && window.privacyBanner.showPreferences) {
+        hide();
+        window.privacyBanner.showPreferences();
+      }
     });
+
+    // Try for a few seconds: the consent API loads after the page, and the
+    // age gate may still be open. Once it closes, the next check shows the bar.
+    var tries = 0;
+    var timer = setInterval(function () {
+      tries += 1;
+      show();
+      if (shown || tries > 40) clearInterval(timer);
+    }, 250);
+
+    // After the age gate's Yes, check again straight away.
+    if (gate) {
+      gate.addEventListener('click', function (e) {
+        if (e.target.closest('[data-age-verification-popup-exit-button]')) {
+          setTimeout(show, 400);
+        }
+      });
+    }
   })();
 </script>
 
 {% schema %}
   {
-    "name": "Cookie step in age gate",
+    "name": "Cookie banner",
     "settings": []
   }
 {% endschema %}
