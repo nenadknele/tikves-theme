@@ -8,15 +8,16 @@
   the basket and opens the cart.
   The discounts are Shopify automatic discounts, one per step, on the scope
   collection "Offer scope · The Christmas Mix". Shopify applies the best one.
-  Nothing here sets a price. If a step changes in Shopify, change the three
-  numbers in tl_steps below in the same pass.
+  Nothing here sets a price. If a step changes in Shopify, change the marks
+  and messages in this file, the hero boxes in the template, and the lines in
+  tl-christmas-six, tl-urgency, product.wine and Find Your Wine in one pass.
   Desktop: the tray sits beside the grid and follows the scroll.
   Phone: a compact bar fixed to the bottom of the screen. It slides up once
   the wines are on screen or a bottle is in. While it's up, the Shopify Inbox
   chat bubble steps aside so it doesn't sit on the bar or the Add buttons.
 {% endcomment %}
 <style>
-  .tl-sb{padding:0 0 150px}
+  .tl-sb{padding-top:0;padding-bottom:150px}
   .tl-sb__tabs{position:sticky;top:var(--tl-sb-top,0px);z-index:3;background:var(--colorBody,#f6efe8);display:flex;gap:8px;justify-content:center;padding:14px 0;margin:0 0 6px;overflow-x:auto;-webkit-overflow-scrolling:touch}
   .tl-sb__tab{flex:0 0 auto;border:1px solid currentColor;border-radius:999px;background:none;color:inherit;padding:9px 18px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;cursor:pointer;min-height:40px}
   .tl-sb__tab[aria-pressed="true"]{background:#2b1a14;border-color:#2b1a14;color:#fff}
@@ -52,6 +53,7 @@
   .tl-sb__track i{position:absolute;left:0;top:0;bottom:0;width:0;background:#2b1a14;border-radius:6px;transition:width .25s}
   .tl-sb__mark{position:absolute;top:50%;transform:translate(-50%,-50%);text-align:center}
   .tl-sb__mark b{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#efe6dc;border:1px solid rgba(0,0,0,.15);font-size:12px}
+  .tl-sb__mark span em{font-style:normal}
   .tl-sb__mark span{position:absolute;top:38px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;opacity:.75}
   .tl-sb__mark.is-on b{background:#2b1a14;border-color:#2b1a14;color:#fff}
   .tl-sb__msg{font-size:13px;line-height:1.35;margin:0 0 10px}
@@ -79,7 +81,9 @@
     .tl-sb__tabs{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px;justify-content:flex-start}
   }
   @media (min-width:769px){
-    .tl-sb{padding:0 0 56px}
+    .tl-sb{padding-bottom:56px}
+    .tl-sb__mark span em{display:none}
+    .tl-sb__track{margin:16px 18px 30px}
     .tl-sb__tabs{gap:12px;padding:18px 0}
     .tl-sb__how{gap:16px;margin-bottom:24px}
     .tl-sb__how li{font-size:14px;padding:14px}
@@ -96,7 +100,7 @@
   }
 </style>
 
-{%- comment -%} The three steps. Must match the three Shopify discounts. {%- endcomment -%}
+{%- comment -%} Count the kinds so a tab only shows when it has wines. {%- endcomment -%}
 {%- liquid
   assign reds = 0
   assign whites = 0
@@ -180,9 +184,9 @@
       <div class="tl-sb__slots" data-tl-sb-slots></div>
       <div class="tl-sb__track" aria-hidden="true">
         <i data-tl-sb-bar></i>
-        <div class="tl-sb__mark" data-at="4" style="left:33.33%"><b>5%</b><span>4 bottles</span></div>
-        <div class="tl-sb__mark" data-at="6" style="left:50%"><b>7%</b><span>6 bottles</span></div>
-        <div class="tl-sb__mark" data-at="12" style="left:100%"><b>10%</b><span>12 bottles</span></div>
+        <div class="tl-sb__mark" data-at="4" style="left:33.33%"><b>5%</b><span>4<em> bottles</em></span></div>
+        <div class="tl-sb__mark" data-at="6" style="left:50%"><b>7%</b><span>6<em> bottles</em></span></div>
+        <div class="tl-sb__mark" data-at="12" style="left:100%"><b>10%</b><span>12<em> bottles</em></span></div>
       </div>
       <p class="tl-sb__msg" data-tl-sb-msg aria-live="polite"></p>
       <div class="tl-sb__row">
