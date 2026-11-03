@@ -3,8 +3,8 @@
   The case builder for the Christmas Mix page, after the Zipify Bundle Builder
   that overtone.co and boombeauty.com run, built in the theme so there is no
   app fee. Single bottles only. Tabs filter Reds, Whites and Rosé. Every wine
-  gets "Add To Your Mix"; a bar fills towards the four steps (2 bottles 3%,
-  4 bottles 5%, 6 bottles 7% and free delivery, 12 bottles 10%); one button puts the lot in
+  gets "Add To Your Mix"; a bar fills towards the steps, as Overtone does
+  them (2 bottles 5%, 4 or more 10%, free delivery from 6); one button puts the lot in
   the basket and opens the cart.
   The discounts are Shopify automatic discounts, one per step, on the scope
   collection "Offer scope · The Christmas Mix". Shopify applies the best one.
@@ -14,7 +14,7 @@
   Desktop: the tray sits beside the grid and follows the scroll.
   Phone: a compact bar fixed to the bottom of the screen. It slides up once
   the wines are on screen or a bottle is in. Like Overtone, it carries no
-  sentences: the count, the bar with its four marks, and the button. While
+  sentences: the count, the bar with its marks, and the button. While
   it's up, the chat and accessibility buttons lift above it (tikves-site-css).
 {% endcomment %}
 <style>
@@ -58,6 +58,8 @@
   .tl-sb__mark b{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:#efe6dc;border:1px solid rgba(0,0,0,.15);font-size:12px}
   .tl-sb__mark span em{font-style:normal}
   .tl-sb__mark span{position:absolute;top:38px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;opacity:.75}
+  .tl-sb__mark--ship b{font-size:10px}
+  .tl-sb__mark--ship span{left:auto;right:-14px;transform:none}
   .tl-sb__mark.is-on b{background:#2b1a14;border-color:#2b1a14;color:#fff}
   .tl-sb__msg{font-size:13px;line-height:1.35;margin:0 0 10px}
   .tl-sb__row{display:flex;gap:12px;align-items:center}
@@ -193,10 +195,9 @@
       <div class="tl-sb__slots" data-tl-sb-slots></div>
       <div class="tl-sb__track" aria-hidden="true">
         <i data-tl-sb-bar></i>
-        <div class="tl-sb__mark" data-at="2" style="left:16.67%"><b>3%</b><span>2</span></div>
-        <div class="tl-sb__mark" data-at="4" style="left:33.33%"><b>5%</b><span>4</span></div>
-        <div class="tl-sb__mark" data-at="6" style="left:50%"><b>7%</b><span>6</span></div>
-        <div class="tl-sb__mark" data-at="12" style="left:100%"><b>10%</b><span>12<em> bottles</em></span></div>
+        <div class="tl-sb__mark" data-at="2" style="left:33.33%"><b>5%</b><span>2 bottles</span></div>
+        <div class="tl-sb__mark" data-at="4" style="left:66.67%"><b>10%</b><span>4+ bottles</span></div>
+        <div class="tl-sb__mark tl-sb__mark--ship" data-at="6" style="left:100%"><b>Free</b><span>6+ free delivery</span></div>
       </div>
       <p class="tl-sb__msg" data-tl-sb-msg aria-live="polite"></p>
       <div class="tl-sb__row">
@@ -274,27 +275,25 @@
       }
     }
     slots.innerHTML = html;
-    bar.style.width = Math.min(100, Math.round(n / 12 * 100)) + '%';
+    bar.style.width = Math.min(100, Math.round(n / 6 * 100)) + '%';
     marks.forEach(function (m) { m.classList.toggle('is-on', n >= +m.dataset.at); });
     count.textContent = bottles(n);
     if (n === 0) {
-      msg.innerHTML = 'Two bottles get 3% off. Four get 5%. Six get 7% and free delivery. Twelve get 10%.';
+      msg.innerHTML = 'Two bottles get 5% off. Four or more get 10%. Six or more come with free delivery.';
     } else if (n < 2) {
-      msg.innerHTML = '<strong>Add 1 more bottle for 3% off.</strong>';
+      msg.innerHTML = '<strong>Add 1 more bottle for 5% off.</strong>';
     } else if (n < 4) {
-      msg.innerHTML = '<strong>3% off is on.</strong> Add ' + bottles(4 - n) + ' more for 5% off.';
+      msg.innerHTML = '<strong>5% off is on.</strong> Add ' + bottles(4 - n) + ' more for 10% off.';
     } else if (n < 6) {
-      msg.innerHTML = '<strong>5% off is on.</strong> Add ' + bottles(6 - n) + ' more for 7% off and free delivery.';
-    } else if (n < 12) {
-      msg.innerHTML = '<strong>7% off and free delivery are on.</strong> Add ' + bottles(12 - n) + ' more for 10% off.';
+      msg.innerHTML = '<strong>10% off is on.</strong> Add ' + bottles(6 - n) + ' more for free delivery.';
     } else {
-      msg.innerHTML = '<strong>10% off and free delivery are on.</strong> That’s the best price on your mix.';
+      msg.innerHTML = '<strong>10% off and free delivery are on.</strong>';
     }
     // Prices, like Overtone: once a step is reached, every bottle shows the
     // price after that step's discount in green with the full price struck
     // through, and the button shows the total. Rounded per line, the way
     // Shopify rounds a percentage discount.
-    var pct = n >= 12 ? 10 : (n >= 6 ? 7 : (n >= 4 ? 5 : (n >= 2 ? 3 : 0)));
+    var pct = n >= 4 ? 10 : (n >= 2 ? 5 : 0);
     var full = 0, paid = 0;
     Object.keys(pick).forEach(function (id) {
       var line = (+cards[id].dataset.price || 0) * pick[id];
