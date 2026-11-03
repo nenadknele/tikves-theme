@@ -5,7 +5,8 @@
   app fee. Single bottles only. Tabs filter Reds, Whites and Rosé. Every wine
   gets "Add To Your Mix"; a bar fills towards the steps, as Overtone does
   them (2 bottles 5%, 4 or more 10%, free delivery from 6); one button puts the lot in
-  the basket and opens the cart.
+  the basket and opens the cart. A mix stops at 12 bottles, as Overtone's
+  stops at its top step: past that the Add and + buttons grey out.
   The discounts are Shopify automatic discounts, one per step, on the scope
   collection "Offer scope · The Christmas Mix". Shopify applies the best one.
   Nothing here sets a price. If a step changes in Shopify, change the marks
@@ -45,6 +46,8 @@
   .tl-sb__step span{font-weight:600}
   .tl-sb__card.is-in .tl-sb__add{display:none}
   .tl-sb__card.is-in .tl-sb__step{display:flex}
+  .tl-sb__add[disabled]{background:#a9a29c!important;border-color:#a9a29c!important;cursor:not-allowed}
+  .tl-sb__step button[disabled]{opacity:.3;cursor:not-allowed}
 
   .tl-sb__tray{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--colorBody,#f6efe8);border-top:1px solid rgba(0,0,0,.15);padding:10px 16px calc(10px + env(safe-area-inset-bottom));box-shadow:0 -4px 16px rgba(0,0,0,.08);transform:translateY(110%);transition:transform .3s ease;visibility:hidden}
   .tl-sb__tray.is-up{transform:none;visibility:visible}
@@ -192,7 +195,7 @@
     <aside class="tl-sb__tray" aria-label="Your mix">
       <div class="tl-sb__trayhead">
         <h3>Your Mix</h3>
-        <span class="tl-sb__count" data-tl-sb-count>0 / 6</span>
+        <span class="tl-sb__count" data-tl-sb-count>0 / 12</span>
       </div>
       <div class="tl-sb__slots" data-tl-sb-slots></div>
       <div class="tl-sb__track" aria-hidden="true">
@@ -279,7 +282,7 @@
     slots.innerHTML = html;
     bar.style.width = Math.min(100, Math.round(n / 6 * 100)) + '%';
     marks.forEach(function (m) { m.classList.toggle('is-on', n >= +m.dataset.at); });
-    count.textContent = n <= 6 ? n + ' / 6' : bottles(n);
+    count.textContent = n + ' / 12';
     if (n === 0) {
       msg.innerHTML = 'Two bottles get 5% off. Four or more get 10%. Six or more come with free delivery.';
     } else if (n < 2) {
@@ -320,11 +323,18 @@
       cards[id].classList.toggle('is-in', q > 0);
       var qe = cards[id].querySelector('[data-tl-sb-qty]');
       if (qe) qe.textContent = q;
+      var capped = n >= MAX || q >= (parseInt(cards[id].dataset.max, 10) || 99);
+      var ab = cards[id].querySelector('[data-tl-sb-add]');
+      var pb = cards[id].querySelector('[data-tl-sb-plus]');
+      if (ab) ab.disabled = n >= MAX;
+      if (pb) pb.disabled = capped;
     });
     lift();
   }
 
+  var MAX = 12;
   function add(id) {
+    if (total() >= MAX) return;
     var c = cards[id];
     var max = parseInt(c.dataset.max, 10) || 99;
     if ((pick[id] || 0) >= max) return;
