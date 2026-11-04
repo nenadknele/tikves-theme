@@ -28,7 +28,7 @@
         "tile_mobile": 22,
         "tile_desktop": 28,
         "btn_size": 13,
-        "keys_all": "hero,ladder,best,education,region_image,singles,producer_text,mw_voices,trust,newsletter,tk_chips,tk_kumova,tile_precision,tile_checked,tile_start,video_band"
+        "keys_all": "hero,mix_image,ladder,best,education,region_image,singles,producer_text,mw_voices,trust,newsletter,tk_chips,tk_kumova,tile_precision,tile_checked,tile_start,video_band"
       }
     },
     "hero": {
@@ -403,36 +403,14 @@
       }
     },
     "mix_image": {
-      "type": "tikves-hero",
+      "type": "tikves-split",
       "settings": {
         "image": "shopify://shop_images/IMG_3066.jpg",
-        "image_mobile": "shopify://shop_images/IMG_3066.jpg",
-        "lcp": false,
-        "image_link": "shopify://collections/the-christmas-mix",
-        "image_link_label": "The Christmas Mix",
-        "focal_desktop": "center center",
-        "focal_mobile": "center center",
-        "heading": "The Christmas Mix",
-        "heading_tag": "h2",
-        "title_caps": false,
-        "subheading": "Buy 2 for 5% off. Buy 4 or more for 10% off.",
-        "text_panel": false,
-        "stack_mobile": false,
-        "valign": "flex-end",
-        "button_label": "Build Your Mix",
-        "button_link": "shopify://collections/the-christmas-mix",
-        "button_style": "solid",
-        "button_size": "medium",
-        "text_width_mobile": 80,
-        "text_width_desktop": 480,
-        "title_size_mobile": 26,
-        "title_size_desktop": 42,
-        "sub_size_mobile": 14,
-        "sub_size_desktop": 17,
-        "height_mobile": 340,
-        "ratio_desktop": "fixed",
-        "height_desktop": 520,
-        "scrim": 50
+        "media_position": "right",
+        "title": "The Christmas Mix",
+        "text": "<p>Mix any of our wines. Buy 2 for 5% off. Buy 4 or more for 10% off. Six or more delivered free in Great Britain.</p>",
+        "link_label": "Build Your Mix",
+        "link_url": "shopify://collections/the-christmas-mix"
       }
     }
   },
