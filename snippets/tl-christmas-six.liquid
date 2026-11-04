@@ -1,7 +1,8 @@
 {% comment %}
   THE CHRISTMAS MIX, 3 Nov 2026 (was the Christmas Six, REF v3).
   Cart line for the offer: progress to the next step (2 bottles 5%, 4 or more 10%,
-  free delivery from 6). Renders nothing unless the offer is
+  then free delivery at £100 or more, the shop's own rate). Free delivery from
+  six bottles was dropped on his word of 4 Nov 2026. Renders nothing unless the offer is
   switched on in theme settings (Cart, "The Christmas Mix is running").
   Switch it on only on the day the two parked Shopify discounts start, and
   off on the day they end. A line that promises a discount with no discount
@@ -39,14 +40,12 @@
   if (!roots.length) return;
   function render(root, cart) {
     var ids = (root.dataset.ids || '').split(',').filter(Boolean).map(Number);
-    var n = 0, units = 0;
-    // Free delivery comes two ways: six or more bottles (the Mix discount),
-    // or £100 or more after discounts (the shop's own rate, see
-    // tl-delivery-summary). Either one counts, so a basket that already
-    // ships free is never told to add bottles for it. 3 Nov 2026.
-    var freeDel = ((cart && cart.total_price) || 0) >= 10000;
+    var n = 0;
+    // Free delivery is £100 or more after discounts, the shop's own rate
+    // (see tl-delivery-summary). The six-bottle rule was dropped 4 Nov 2026.
+    var paid = (cart && cart.total_price) || 0;
+    var freeDel = paid >= 10000;
     ((cart && cart.items) || []).forEach(function (item) {
-      if (!item.gift_card) units += item.quantity;
       if (ids.indexOf(item.product_id) > -1) n += item.quantity;
     });
     var line = root.querySelector('[data-tl-six-line]');
@@ -58,8 +57,8 @@
       line.innerHTML = '<strong>The Christmas Mix.<\/strong> Add 1 more of our wines for 5% off, until Wednesday 16 December. Four or more get 10%.';
     } else if (n < 4) {
       line.innerHTML = '<strong>5% off is on.<\/strong> Add ' + (4 - n) + ' more ' + (4 - n === 1 ? 'bottle' : 'bottles') + ' for 10% off.';
-    } else if (units < 6 && !freeDel) {
-      line.innerHTML = '<strong>10% off is on.<\/strong> Add ' + (6 - units) + ' more ' + (6 - units === 1 ? 'bottle' : 'bottles') + ' for free delivery.';
+    } else if (!freeDel) {
+      line.innerHTML = '<strong>10% off is on.<\/strong> £' + ((10000 - paid) / 100).toFixed(2) + ' more for free delivery.';
     } else {
       line.innerHTML = '<strong>10% off and free delivery are on.<\/strong>';
     }

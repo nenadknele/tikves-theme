@@ -213,7 +213,7 @@
         ? 'Six of ' + picks[0].title + '.'
         : (counts[0] === counts[counts.length - 1] ? (words[counts[0]] || counts[0]) + ' of each' : 'A mix of these') + '.';
       box.querySelector('[data-tkfy-six-line]').textContent =
-        desc.charAt(0).toUpperCase() + desc.slice(1) + ' 10% off and free delivery, until Wednesday 16 December.';
+        desc.charAt(0).toUpperCase() + desc.slice(1) + ' 10% off, until Wednesday 16 December.';
       var btn = box.querySelector('[data-tkfy-six-add]');
       btn.addEventListener('click', function () {
         btn.disabled = true;
