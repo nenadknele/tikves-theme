@@ -37,7 +37,6 @@
   .tl-sb__title a{color:inherit;text-decoration:none}
   .tl-sb__price{font-size:14px;margin:0}
   .tl-sb__price .is-off{color:#1f7a3a;font-weight:700}
-  .tl-sb__price s{opacity:.6;margin-left:6px}
   .tl-sb__left{font-size:13px;margin:0;font-weight:600}
   .tl-sb__ctrl{margin-top:auto;padding-top:8px}
   .tl-sb__add{width:100%;padding-left:6px;padding-right:6px;letter-spacing:.08em;white-space:nowrap;background:#1f2328!important;border-color:#1f2328!important;color:#fff!important}
@@ -71,7 +70,6 @@
   .tl-sb__go[aria-busy="true"]{opacity:.8!important}
   .tl-sb__total{letter-spacing:0;text-transform:none;font-weight:700}
   .tl-sb__total .is-off{color:#6fdc8c}
-  .tl-sb__total s{opacity:.7;margin-left:6px;font-weight:400}
   .tl-sb__clear[hidden]{display:none}
   .tl-sb__clear{background:none;border:0;text-decoration:underline;text-underline-offset:3px;font-size:13px;cursor:pointer;color:inherit;padding:0}
 
@@ -325,10 +323,11 @@
     } else {
       msg.innerHTML = '<strong>10% off and free delivery are on.</strong>';
     }
-    // Prices, like Overtone: once a step is reached, every bottle shows the
-    // price after that step's discount in green with the full price struck
-    // through, and the button shows the total. Rounded per line, the way
-    // Shopify rounds a percentage discount.
+    // Prices: once a step is reached, every bottle shows the price after
+    // that step's discount in green, and the button shows the total the same
+    // way. No struck full price beside it, his ruling of 4 Nov 2026: no
+    // crossed-out prices on the shop. Rounded per line, the way Shopify
+    // rounds a percentage discount.
     var pct = n >= 4 ? 10 : (n >= 2 ? 5 : 0);
     var full = 0, paid = 0;
     Object.keys(pick).forEach(function (id) {
@@ -341,12 +340,12 @@
       var pr = +cards[id].dataset.price || 0;
       if (!pe) return;
       pe.innerHTML = pct
-        ? '<span class="is-off">' + money(Math.round(pr * (100 - pct) / 100)) + '</span><s>' + money(pr) + '</s>'
+        ? '<span class="is-off">' + money(Math.round(pr * (100 - pct) / 100)) + '</span>'
         : money(pr);
     });
     go.classList.toggle('is-empty', n === 0);
     totalEl.innerHTML = n === 0 ? '' : (pct
-      ? '<span class="is-off">' + money(paid) + '</span><s>' + money(full) + '</s>'
+      ? '<span class="is-off">' + money(paid) + '</span>'
       : money(full));
     clear.hidden = n === 0;
     Object.keys(cards).forEach(function (id) {
