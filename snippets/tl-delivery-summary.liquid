@@ -46,7 +46,7 @@
      data-threshold="{{ tl_threshold }}"
      data-case-bottles="{{ tl_case_bottles }}"
      data-case-ids="{{ tl_case_ids | strip }}"
-     data-six-free="{% if settings.tl_christmas_six %}true{% endif %}">
+>
 
   <p class="tl-cart-delivery__count" data-tl-count></p>
   <p class="tl-cart-delivery__threshold" data-tl-threshold></p>
@@ -175,17 +175,8 @@
 
     var total = (cart && cart.total_price) || 0;
     var remaining = threshold - total;
-    // THE CHRISTMAS SIX, 2 Nov 2026, REF · HORMOZI OFFER IN FULL v3. While the
-    // offer is switched on in theme settings, Shopify's free-shipping discount
-    // gives free delivery on six or more units in the cart, whatever the total.
-    // Shopify counts line-item units, so a case counts as one, not six.
-    // Mirror that here or this line would ask for money on a basket that
-    // already ships free.
-    if (root.dataset.sixFree === 'true') {
-      var units = 0;
-      items.forEach(function (item) { if (!item.gift_card) units += item.quantity; });
-      if (units >= 6) remaining = 0;
-    }
+    // Free delivery from six units (the Christmas Six and then the Mix) was
+    // dropped on his word of 4 Nov 2026. The £100 threshold is the only rule.
     var threshEl = root.querySelector('[data-tl-threshold]');
 
     if (threshEl) {

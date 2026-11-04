@@ -3,7 +3,7 @@
  * overtone.co and boombeauty.com. The theme countdown to Wed 16 Dec 23:59 UK
  * on the fireplace toast over the Christmas roast, heading and the steps as
  * boxes only, no sentence and no button (his word, 3 Nov),
- * as Overtone does them (buy 2 5%, buy 4+ 10%, buy 6+ free delivery), then
+ * as Overtone does them (buy 2 5%, buy 4+ 10%, free delivery at £100 or more), then
  * the builder: Reds, Whites and Rosé tabs over every single bottle in the
  * offer. Used only by /collections/the-christmas-mix. Remove after 16 Dec.
  */
@@ -18,7 +18,7 @@
           "settings": {
             "heading": "The Christmas Mix",
             "heading_size": "h1",
-            "text": "<ul><li>Buy 2<strong>5%</strong>off</li><li>Buy 4+<strong>10%</strong>off</li><li>Buy 6+<strong>Free</strong>delivery</li></ul>",
+            "text": "<ul><li>Buy 2<strong>5%</strong>off</li><li>Buy 4+<strong>10%</strong>off</li><li>£100+<strong>Free</strong>delivery</li></ul>",
             "content_alignment": "center"
           }
         },

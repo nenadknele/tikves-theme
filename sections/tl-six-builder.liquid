@@ -4,7 +4,8 @@
   that overtone.co and boombeauty.com run, built in the theme so there is no
   app fee. Single bottles only. Tabs filter Reds, Whites and Rosé. Every wine
   gets "Add To Your Mix"; a bar fills towards the steps, as Overtone does
-  them (2 bottles 5%, 4 or more 10%, free delivery from 6); one button puts the lot in
+  them (2 bottles 5%, 4 or more 10%, then free delivery at £100 or more after the
+  discount, the shop's own rate); one button puts the lot in
   the basket and opens the cart. A mix stops at 12 bottles, as Overtone's
   stops at its top step: past that the Add and + buttons grey out.
   The discounts are Shopify automatic discounts, one per step, on the scope
@@ -221,7 +222,7 @@
         <i data-tl-sb-bar></i>
         <div class="tl-sb__mark" data-at="2" style="left:33.33%"><b>5%</b><span>2 bottles</span></div>
         <div class="tl-sb__mark" data-at="4" style="left:66.67%"><b>10%</b><span>4+ bottles</span></div>
-        <div class="tl-sb__mark tl-sb__mark--ship" data-at="6" style="left:100%"><b>Free</b><span>6+ free delivery</span></div>
+        <div class="tl-sb__mark tl-sb__mark--ship" data-at="ship" style="left:100%"><b>Free</b><span>£100+ free delivery</span></div>
       </div>
       <p class="tl-sb__msg" data-tl-sb-msg aria-live="polite"></p>
       <div class="tl-sb__row">
@@ -299,29 +300,28 @@
       }
     }
     slots.innerHTML = html;
-    bar.style.width = Math.min(100, Math.round(n / 6 * 100)) + '%';
-    // Free delivery comes two ways: six or more bottles (the Mix), or £100
-    // or more after the discount (the shop's own rate, England, Scotland
-    // and Wales). Either one lights the Free mark and the message says so,
-    // so nobody is asked to add bottles for something they already have.
+    // Free delivery is the shop's own rate only: £100 or more after the
+    // discount, England, Scotland and Wales. Free delivery from six bottles
+    // was dropped on his word of 4 Nov 2026. The Free mark lights at £100.
     var stepPct = n >= 4 ? 10 : (n >= 2 ? 5 : 0), paidNow = 0;
     Object.keys(pick).forEach(function (id) {
       paidNow += Math.round((+cards[id].dataset.price || 0) * pick[id] * (100 - stepPct) / 100);
     });
-    var freeDel = n >= 6 || paidNow >= 10000;
+    var freeDel = paidNow >= 10000;
+    bar.style.width = freeDel ? '100%' : Math.min(66.67, Math.round(n / 4 * 66.67 * 100) / 100) + '%';
     marks.forEach(function (m) {
-      var at = +m.dataset.at;
-      m.classList.toggle('is-on', n >= at || (at === 6 && freeDel));
+      var at = m.dataset.at;
+      m.classList.toggle('is-on', at === 'ship' ? freeDel : n >= +at);
     });
     count.textContent = n + ' / 12';
     if (n === 0) {
-      msg.innerHTML = 'Two bottles get 5% off. Four or more get 10%. Six or more come with free delivery.';
+      msg.innerHTML = 'Two bottles get 5% off. Four or more get 10%. Delivery is free on £100 or more.';
     } else if (n < 2) {
       msg.innerHTML = '<strong>Add 1 more bottle for 5% off.</strong>';
     } else if (n < 4) {
       msg.innerHTML = '<strong>5% off is on.</strong> Add ' + (4 - n) + ' more ' + (4 - n === 1 ? 'bottle' : 'bottles') + ' for 10% off.';
     } else if (!freeDel) {
-      msg.innerHTML = '<strong>10% off is on.</strong> Add ' + (6 - n) + ' more ' + (6 - n === 1 ? 'bottle' : 'bottles') + ' for free delivery.';
+      msg.innerHTML = '<strong>10% off is on.</strong> ' + money(10000 - paidNow) + ' more for free delivery.';
     } else {
       msg.innerHTML = '<strong>10% off and free delivery are on.</strong>';
     }
