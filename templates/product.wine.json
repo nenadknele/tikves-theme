@@ -38,18 +38,6 @@
             "inventory_transfers_enable": false
           }
         },
-        "rarity": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.metafields.custom.rarity_note.value }}"
-          }
-        },
-        "urgency": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Countdown and timed lines, 2 Nov 2026, REF v4. Words and dates live in snippets/tl-dates. {% endcomment %}{% render 'tl-urgency', mode: 'line' %}"
-          }
-        },
         "back_in_stock": {
           "type": "custom",
           "settings": {
@@ -59,7 +47,7 @@
         "christmas_six": {
           "type": "custom",
           "settings": {
-            "code": "{% comment %} THE CHRISTMAS MIX, 3 Nov 2026 (was the Christmas Six). Shows only while the offer is switched on in theme settings, and only on wines with custom.christmas_six. {% endcomment %}{% if settings.tl_christmas_six and product.metafields.custom.christmas_six.value == true %}<p class=\"tl-pdp-six tl-six-timed\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Part of the Christmas Mix.</strong> Mix any of our wines. Buy 2 for 5% off, buy 4 or more for 10% off. Six or more delivered free in Great Britain. Until Wednesday 16 December.</p>{% endif %}"
+            "code": "{% comment %} THE CHRISTMAS MIX, 3 Nov 2026 (was the Christmas Six). Shows only while the offer is switched on in theme settings, and only on wines with custom.christmas_six. {% endcomment %}{% if settings.tl_christmas_six and product.metafields.custom.christmas_six.value == true %}<p class=\"tl-pdp-six tl-six-timed\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Part of the Christmas Mix.</strong> Mix any of our wines. Buy 2 for 5% off, buy 4 or more for 10% off. Until Wednesday 16 December.</p>{% endif %}"
           }
         },
         "guarantee": {
@@ -136,7 +124,8 @@
         "price",
         "quantity",
         "buy_buttons",
-        "inventory_status", "rarity", "christmas_six", "urgency",
+        "inventory_status",
+        "christmas_six",
         "back_in_stock",
         "guarantee",
         "sales_point-secure",
