@@ -439,7 +439,26 @@
       bottom: calc(var(--tl-tray-h, 0px) + 12px) !important;
     }
   }
+  /* Cart line, 3 Nov 2026: "each" after the bottle price, and the discount
+     line kept short with its amount on one line. */
+  .tl-cart-each { font-size: 0.8em; opacity: 0.75; }
+  .tl-cart-off { display: block; line-height: 1.35; margin-top: 2px; }
+  .tl-nowrap { white-space: nowrap; }
 {% endstyle %}
+{%- if template.name == 'cart' -%}
+{% style %}
+  /* Cart page on the phone, 3 Nov 2026, his word: the access icon sat on the
+     "I agree with the terms" tickbox. On this page it moves to the right,
+     stacked above the chat button. */
+  @media only screen and (max-width: 768px) {
+    #accessease-icon.accessease-icon {
+      left: auto !important;
+      right: 22px !important;
+      bottom: 84px !important;
+    }
+  }
+{% endstyle %}
+{%- endif -%}
 
 {%- comment -%}
   CHRISTMAS MIX IN THE MENU, 3 Nov 2026, on his word. The top-row link

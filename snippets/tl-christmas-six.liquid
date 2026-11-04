@@ -40,6 +40,11 @@
   function render(root, cart) {
     var ids = (root.dataset.ids || '').split(',').filter(Boolean).map(Number);
     var n = 0, units = 0;
+    // Free delivery comes two ways: six or more bottles (the Mix discount),
+    // or £100 or more after discounts (the shop's own rate, see
+    // tl-delivery-summary). Either one counts, so a basket that already
+    // ships free is never told to add bottles for it. 3 Nov 2026.
+    var freeDel = ((cart && cart.total_price) || 0) >= 10000;
     ((cart && cart.items) || []).forEach(function (item) {
       if (!item.gift_card) units += item.quantity;
       if (ids.indexOf(item.product_id) > -1) n += item.quantity;
@@ -52,11 +57,11 @@
     if (n < 2) {
       line.innerHTML = '<strong>The Christmas Mix.<\/strong> Add 1 more of our wines for 5% off, until Wednesday 16 December. Four or more get 10%.';
     } else if (n < 4) {
-      line.innerHTML = '<strong>5% off is on.<\/strong> Add ' + b(4 - n) + ' more for 10% off.';
-    } else if (n < 6 && units < 6) {
-      line.innerHTML = '<strong>10% off is on.<\/strong> Add ' + b(6 - units) + ' more for free delivery.';
+      line.innerHTML = '<strong>5% off is on.<\/strong> Add ' + (4 - n) + ' more ' + (4 - n === 1 ? 'bottle' : 'bottles') + ' for 10% off.';
+    } else if (units < 6 && !freeDel) {
+      line.innerHTML = '<strong>10% off is on.<\/strong> Add ' + (6 - units) + ' more ' + (6 - units === 1 ? 'bottle' : 'bottles') + ' for free delivery.';
     } else {
-      line.innerHTML = '<strong>10% off' + (units >= 6 ? ' and free delivery are' : ' is') + ' on.<\/strong>';
+      line.innerHTML = '<strong>10% off and free delivery are on.<\/strong>';
     }
     root.hidden = false;
   }
