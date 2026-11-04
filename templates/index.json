@@ -62,8 +62,7 @@
         "ratio_desktop": "fixed",
         "height_desktop": 640,
         "scrim": 50
-      },
-      "disabled": true
+      }
     },
     "tl_urgency": {
       "type": "tl-urgency-band",
@@ -403,60 +402,44 @@
         "bottom_padding": false
       }
     },
-    "mix_hero": {
-      "type": "countdown",
-      "blocks": {
-        "content": {
-          "type": "content",
-          "settings": {
-            "heading": "The Christmas Mix",
-            "heading_size": "h1",
-            "text": "<ul><li>Buy 2<strong>5%</strong>off</li><li>Buy 4+<strong>10%</strong>off</li><li>Buy 6+<strong>Free</strong>delivery</li></ul>",
-            "content_alignment": "center"
-          }
-        },
-        "timer": {
-          "type": "timer",
-          "settings": {
-            "year": 2026,
-            "month": "12",
-            "day": "16",
-            "hour": "23",
-            "minute": "59",
-            "hide_timer": true,
-            "text": "<p>Too late for Christmas delivery? <a href=\"/products/gift-card\">A gift card</a> comes by email, straight away.</p>"
-          }
-        },
-        "button": {
-          "type": "button",
-          "settings": {
-            "button": "Build Your Mix",
-            "button_link": "shopify://collections/the-christmas-mix",
-            "button_style": "solid"
-          }
-        }
-      },
-      "block_order": [
-        "content",
-        "timer",
-        "button"
-      ],
+    "mix_image": {
+      "type": "tikves-hero",
       "settings": {
-        "layout": "hero",
-        "full_width": true,
-        "text_color": "#ffffff",
-        "background_color": "#2b1a14",
-        "background_image": "shopify://shop_images/IMG_3066.jpg",
-        "mobile_image": "shopify://shop_images/IMG_3066.jpg",
-        "overlay_color": "#000000",
-        "overlay_opacity": 34
+        "image": "shopify://shop_images/IMG_3066.jpg",
+        "image_mobile": "shopify://shop_images/IMG_3066.jpg",
+        "lcp": false,
+        "image_link": "shopify://collections/the-christmas-mix",
+        "image_link_label": "The Christmas Mix",
+        "focal_desktop": "center center",
+        "focal_mobile": "center center",
+        "heading": "The Christmas Mix",
+        "heading_tag": "h2",
+        "title_caps": false,
+        "subheading": "Buy 2 for 5% off. Buy 4 or more for 10% off.",
+        "text_panel": false,
+        "stack_mobile": false,
+        "valign": "flex-end",
+        "button_label": "Build Your Mix",
+        "button_link": "shopify://collections/the-christmas-mix",
+        "button_style": "solid",
+        "button_size": "medium",
+        "text_width_mobile": 80,
+        "text_width_desktop": 480,
+        "title_size_mobile": 26,
+        "title_size_desktop": 42,
+        "sub_size_mobile": 14,
+        "sub_size_desktop": 17,
+        "height_mobile": 340,
+        "ratio_desktop": "fixed",
+        "height_desktop": 520,
+        "scrim": 50
       }
     }
   },
   "order": [
     "tk_design",
-    "mix_hero",
     "hero",
+    "mix_image",
     "tl_urgency",
     "best",
     "ladder",
