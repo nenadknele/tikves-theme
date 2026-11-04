@@ -38,18 +38,6 @@
             "inventory_transfers_enable": false
           }
         },
-        "rarity": {
-          "type": "text",
-          "settings": {
-            "text": "{{ product.metafields.custom.rarity_note.value }}"
-          }
-        },
-        "urgency": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Countdown and timed lines, 2 Nov 2026, REF v4. Words and dates live in snippets/tl-dates. {% endcomment %}{% render 'tl-urgency', mode: 'line' %}"
-          }
-        },
         "back_in_stock": {
           "type": "custom",
           "settings": {
@@ -136,7 +124,8 @@
         "price",
         "quantity",
         "buy_buttons",
-        "inventory_status", "rarity", "christmas_six", "urgency",
+        "inventory_status",
+        "christmas_six",
         "back_in_stock",
         "guarantee",
         "sales_point-secure",
