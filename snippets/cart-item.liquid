@@ -93,14 +93,21 @@
           and is banned on every surface. The line now shows the bottle price once,
           and the code underneath with what it takes off. The subtotal shows what
           the customer pays. Do not restore the strikethrough.
+
+          3 Nov 2026, his word: the discount line was the full discount title in
+          a narrow column and broke over five lines. It now shows "each" after
+          the bottle price when there is more than one, and only the last part
+          of the title (the Mix titles end "· 10% off") with the amount kept on
+          one line. Titles with no "·" show in full.
         {%- endcomment -%}
         <span class="cart__price">
-          {{ product.original_price | money }}
+          {{ product.original_price | money }}{% if product.quantity > 1 %}<span class="tl-cart-each"> each</span>{% endif %}
         </span>
 
         {%- if product.line_level_discount_allocations != blank -%}
           {%- for discount_allocation in product.line_level_discount_allocations -%}
-            <small class="cart__discount">{{ discount_allocation.discount_application.title }} (-{{ discount_allocation.amount | money }})</small>
+            {%- assign tl_off_title = discount_allocation.discount_application.title | split: ' · ' | last -%}
+            <small class="cart__discount tl-cart-off">{{ tl_off_title }} <span class="tl-nowrap">(-{{ discount_allocation.amount | money }})</span></small>
           {%- endfor -%}
         {%- endif -%}
 
