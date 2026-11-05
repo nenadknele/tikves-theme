@@ -12,7 +12,7 @@
     "tk_design": {
       "type": "tikves-home-design",
       "settings": {
-        "band_color": "#F6EEE8",
+        "band_color": "#f6eee8",
         "keys_band": "ladder,best,singles,mw_voices,tk_kumova,tk_chips",
         "keys_pad": "ladder,best,singles,mw_voices,newsletter,tk_chips,tk_kumova",
         "pad_mobile": 28,
@@ -64,6 +64,17 @@
         "scrim": 50
       }
     },
+    "mix_image": {
+      "type": "tikves-split",
+      "settings": {
+        "image": "shopify://shop_images/IMG_3066.jpg",
+        "media_position": "right",
+        "title": "The Christmas Mix",
+        "text": "<p>Mix any of our wines. Buy 2 for 5% off. Buy 4 or more for 10% off. Order by Wednesday 16 December for Christmas delivery.</p>",
+        "link_label": "Build Your Mix",
+        "link_url": "shopify://collections/the-christmas-mix"
+      }
+    },
     "tl_urgency": {
       "type": "tl-urgency-band",
       "settings": {
@@ -111,7 +122,7 @@
         "image": "shopify://shop_images/homepage-winery-2.jpg",
         "media_position": "right",
         "title": "Straight From the Winery",
-        "text": "<p>Most wine from this part of Europe reaches a UK shelf through an importer, then a distributor, then a retailer. Ours does not. We buy it at the winery and we ship it here. That is the whole chain.</p>",
+        "text": "<p>Most wine from this part of Europe reaches a UK shelf through an importer, then a distributor, then a retailer. Some of ours comes a shorter way. We buy it at the winery and ship it here ourselves.</p>",
         "link_label": "How we buy our wine",
         "link_url": "shopify://pages/about-us"
       }
@@ -193,7 +204,7 @@
         "portrait_size": 130,
         "round_images": true,
         "credit": "",
-        "color_background": "#F6EEE8",
+        "color_background": "#f6eee8",
         "color_text": "#1f2328"
       }
     },
@@ -266,40 +277,6 @@
         "scrim": 0
       }
     },
-    "video_band": {
-      "type": "hero-video",
-      "settings": {
-        "title": "First Light Over Tikveš",
-        "title_size": 60,
-        "subheading": "The valley behind our Macedonian wines. One bottle of Alexandria white, on a barrel, at sunrise.",
-        "link_text": "Shop the whites",
-        "link": "shopify://collections/whites",
-        "color_accent": "rgba(0,0,0,0)",
-        "text_align": "vertical-bottom horizontal-center",
-        "video_url": "https://cdn.shopify.com/videos/c/o/v/4f9c79c0ac8c4b66bc11d9b5da363a6e.mp4",
-        "poster": "shopify://shop_images/video-band-poster-first-light.jpg",
-        "overlay_opacity": 20,
-        "section_height": "550px",
-        "mobile_height": "400px"
-      }
-    },
-    "tk_chips": {
-      "type": "tikves-collection-chips",
-      "settings": {
-        "menu": "collection-chips",
-        "heading": "Shop by Collection",
-        "outline_color": "#1f2328",
-        "outline_strength": 100,
-        "active_bg": "#1f2328",
-        "active_text": "#f6eee8",
-        "text_size": 12,
-        "text_size_desktop": 13,
-        "stretch_desktop": true,
-        "padding_top": 0,
-        "padding_bottom": 0,
-        "layout": "pills"
-      }
-    },
     "trust": {
       "type": "text-with-icons",
       "blocks": {
@@ -353,6 +330,40 @@
         "divider": false
       }
     },
+    "video_band": {
+      "type": "hero-video",
+      "settings": {
+        "title": "First Light Over Tikveš",
+        "title_size": 60,
+        "subheading": "The valley behind our Macedonian wines. One bottle of Alexandria white, on a barrel, at sunrise.",
+        "link_text": "Shop the whites",
+        "link": "shopify://collections/whites",
+        "color_accent": "rgba(0,0,0,0)",
+        "text_align": "vertical-bottom horizontal-center",
+        "video_url": "https://cdn.shopify.com/videos/c/o/v/4f9c79c0ac8c4b66bc11d9b5da363a6e.mp4",
+        "poster": "shopify://shop_images/video-band-poster-first-light.jpg",
+        "overlay_opacity": 20,
+        "section_height": "550px",
+        "mobile_height": "400px"
+      }
+    },
+    "tk_chips": {
+      "type": "tikves-collection-chips",
+      "settings": {
+        "menu": "collection-chips",
+        "layout": "pills",
+        "heading": "Shop by Collection",
+        "outline_color": "#1f2328",
+        "outline_strength": 100,
+        "active_bg": "#1f2328",
+        "active_text": "#f6eee8",
+        "text_size": 12,
+        "text_size_desktop": 13,
+        "stretch_desktop": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      }
+    },
     "newsletter": {
       "type": "newsletter",
       "blocks": {
@@ -400,17 +411,6 @@
         "color_text": "#1f2328",
         "top_padding": false,
         "bottom_padding": false
-      }
-    },
-    "mix_image": {
-      "type": "tikves-split",
-      "settings": {
-        "image": "shopify://shop_images/IMG_3066.jpg",
-        "media_position": "right",
-        "title": "The Christmas Mix",
-        "text": "<p>Mix any of our wines. Buy 2 for 5% off. Buy 4 or more for 10% off. Order by Wednesday 16 December for Christmas delivery.</p>",
-        "link_label": "Build Your Mix",
-        "link_url": "shopify://collections/the-christmas-mix"
       }
     }
   },
