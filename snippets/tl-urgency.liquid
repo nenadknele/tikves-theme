@@ -36,6 +36,9 @@
   if tl_now <= tl_xmas_to
     assign tl_show_xmas = true
   endif
+  if mode == 'band' and hide_xmas == true
+    assign tl_show_xmas = false
+  endif
   if tl_now >= tl_gift_from and tl_now <= tl_gift_to
     assign tl_show_gift = true
   endif
