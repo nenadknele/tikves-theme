@@ -94,8 +94,21 @@
 {%- if template.suffix == 'christmas-six' -%}
   {%- assign tl_hide_popup = true -%}
 {%- endif -%}
+{%- comment -%} The Black Friday early bird pages, 6 Nov 2026: one sign-up per page, so the joining gift popup stays off the sign-up and thank-you pages. {%- endcomment -%}
+{%- if template.suffix == 'early-bird' or template.suffix == 'early-bird-thanks' -%}
+  {%- assign tl_hide_popup = true -%}
+{%- endif -%}
 
 {% unless tl_hide_popup %}
+
+{%- comment -%} 6 Nov 2026: someone who has just joined the Black Friday early bird list (flag set by sections/tl-early-bird.liquid) is not shown the joining gift popup as well. The theme reads this cookie and treats the popup as already seen. {%- endcomment -%}
+<script>
+  try {
+    if (localStorage.getItem('tl_earlybird') === '1') {
+      document.cookie = 'newsletter-{{ section.id }}=opened; path=/; max-age=17280000';
+    }
+  } catch (e) {}
+</script>
 
 {% for block in section.blocks %}
   {% if block.type == 'header' %}

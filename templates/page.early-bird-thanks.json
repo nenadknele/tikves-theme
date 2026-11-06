@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "main": {
+      "type": "tl-early-bird-thanks",
+      "settings": {
+        "heading": "You're in.",
+        "text": "<p>At midnight on Friday 27 November, the first Black Friday email comes to you.</p><p>Before then we'll send a short note on what's worth a look. Nothing to do now.</p>",
+        "button_label": "Look at the wines",
+        "button_link": "shopify:\/\/collections\/all-wines"
+      }
+    }
+  },
+  "order": ["main"]
+}

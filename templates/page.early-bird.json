@@ -1,0 +1,21 @@
+{
+  "sections": {
+    "main": {
+      "type": "tl-early-bird",
+      "settings": {
+        "image": "shopify:\/\/shop_images\/barovo-hero-desktop-169.jpg",
+        "image_mobile": "shopify:\/\/shop_images\/barovo-hero-phone-tight.jpg",
+        "image_alt": "A bottle of Barovo Red",
+        "heading": "Black Friday. Hear it first.",
+        "text": "Our Black Friday starts at midnight on Friday 27 November. Join the list and the first email comes to you then.",
+        "placeholder": "Your email",
+        "consent_label": "Yes, email me about Black Friday, and Tikveš London's emails after it. I can unsubscribe at any time.",
+        "button_label": "Hear it first",
+        "age_line": "You must be 18 or over to join.",
+        "done_text": "You're in. The first Black Friday email comes to you at midnight on Friday 27 November.",
+        "thanks_path": "\/pages\/early-bird-thanks"
+      }
+    }
+  },
+  "order": ["main"]
+}
