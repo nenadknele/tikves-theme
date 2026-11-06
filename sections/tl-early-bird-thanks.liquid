@@ -1,0 +1,43 @@
+{%- comment -%}
+  Black Friday early bird thank-you page, 6 Nov 2026. Where the sign-up
+  form on /pages/early-bird lands. Says what happens next and nothing else.
+{%- endcomment -%}
+
+<div class="tl-ebt">
+  <h1 class="tl-ebt__head">{{ section.settings.heading }}</h1>
+  {%- if section.settings.text != blank -%}
+    <div class="tl-ebt__text">{{ section.settings.text }}</div>
+  {%- endif -%}
+  {%- if section.settings.button_label != blank -%}
+    <a href="{{ section.settings.button_link | default: '/collections/all-wines' }}" class="btn tl-ebt__btn">{{ section.settings.button_label }}</a>
+  {%- endif -%}
+</div>
+
+<script>
+  try { localStorage.setItem('tl_earlybird', '1'); } catch (e) {}
+</script>
+
+{%- style -%}
+  .tl-ebt { max-width: 520px; margin: 0 auto; padding: 48px 16px 56px; box-sizing: border-box; text-align: center; }
+  .tl-ebt__head { margin: 0 0 14px; font-size: 32px; line-height: 1.15; }
+  .tl-ebt__text p { margin: 0 0 12px; font-size: 16px; line-height: 1.5; }
+  .tl-ebt__btn { display: inline-block; width: 100%; min-height: 48px; margin-top: 12px; }
+  @media (min-width: 769px) {
+    .tl-ebt { padding: 80px 16px; }
+    .tl-ebt__head { font-size: 40px; }
+    .tl-ebt__btn { width: auto; min-width: 260px; }
+  }
+{%- endstyle -%}
+
+{% schema %}
+{
+  "name": "Early bird thank-you",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "You're in." },
+    { "type": "richtext", "id": "text", "label": "Text", "default": "<p>At midnight on Friday 27 November, the first Black Friday email comes to you.</p><p>Before then we'll send a short note on what's worth a look. Nothing to do now.</p>" },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Look at the wines" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ]
+}
+{% endschema %}

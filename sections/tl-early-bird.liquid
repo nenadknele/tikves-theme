@@ -1,0 +1,147 @@
+{%- comment -%}
+  Black Friday early bird sign-up, 6 Nov 2026. Operator go of 6 Nov 2026
+  on the route: our own form on a Shopify page, no Klaviyo form, because
+  Klaviyo loads only after a yes to cookies (layout/theme.liquid,
+  klaviyo-consent-loader) and an embedded Klaviyo form would be empty for
+  anyone who says no.
+
+  HOW IT WORKS
+  The store's own customer form, like the joining gift popup. It tags the
+  customer prospect,earlybird. The tag crosses into Klaviyo as
+  properties['Shopify Tags'] and the early bird segment reads it.
+  The joining gift welcome segment reads gift, news and the popup list,
+  never earlybird, so an early bird gets no joining gift emails.
+
+  CONSENT
+  The tick is required and never pre-ticked. The form cannot be sent
+  without it, so only people who tick join. The tick has no name, so
+  nothing extra is posted; the form itself is the consent, as the popup.
+  The words beside the tick say what they will get: the Black Friday
+  emails and our emails after it. 18 or over is stated under the box.
+
+  AFTER JOINING
+  The customer goes to the thank-you page (thanks_path). Previewed on any
+  other page through ?view=early-bird, it returns to the same page with
+  ?view=early-bird-thanks instead, so the flow can be tested on a theme
+  copy before the page is published.
+  A flag in localStorage keeps the joining gift popup from opening for
+  someone who has just joined here (sections/newsletter-popup.liquid).
+  It is set only once the join has gone through: on the thank-you page,
+  or on the success message here if the thank-you page cannot load.
+  Not on submit, because Shopify's bot check can stop the form after it.
+{%- endcomment -%}
+
+{%- liquid
+  if page.handle == 'early-bird'
+    assign tl_eb_return = section.settings.thanks_path
+  else
+    assign tl_eb_return = request.path | append: '?view=early-bird-thanks'
+  endif
+  assign tl_eb_form_id = 'tl-early-bird-' | append: section.id
+-%}
+
+<div class="tl-eb" id="TlEarlyBird-{{ section.id }}">
+  {%- if section.settings.image != blank -%}
+    <div class="tl-eb__media">
+      {%- if section.settings.image_mobile != blank -%}
+        <div class="tl-eb__img tl-eb__img--phone">
+          {%- render 'image-element',
+            img: section.settings.image_mobile,
+            img_width: 1000,
+            sizes: '100vw',
+            loading: 'eager',
+            alt: section.settings.image_alt,
+          -%}
+        </div>
+        <div class="tl-eb__img tl-eb__img--desk">
+      {%- else -%}
+        <div class="tl-eb__img">
+      {%- endif -%}
+          {%- render 'image-element',
+            img: section.settings.image,
+            img_width: 1600,
+            sizes: '(min-width: 769px) 50vw, 100vw',
+            loading: 'eager',
+            alt: section.settings.image_alt,
+          -%}
+        </div>
+    </div>
+  {%- endif -%}
+
+  <div class="tl-eb__body">
+    <h1 class="tl-eb__head">{{ section.settings.heading }}</h1>
+    {%- if section.settings.text != blank -%}
+      <p class="tl-eb__text">{{ section.settings.text }}</p>
+    {%- endif -%}
+
+    {% form 'customer', id: tl_eb_form_id, class: 'tl-eb__form' %}
+      {%- if form.posted_successfully? -%}
+        <p class="tl-eb__done">{{ section.settings.done_text }}</p>
+        <script>try { localStorage.setItem('tl_earlybird', '1'); } catch (e) {}</script>
+      {%- else -%}
+        {%- if form.errors -%}
+          <div class="tl-eb__errors">{{ form.errors | default_errors }}</div>
+        {%- endif -%}
+        <input type="hidden" name="contact[tags]" value="prospect,earlybird">
+        <input type="hidden" name="contact[context]" value="earlybird">
+        <input type="hidden" name="return_to" value="{{ tl_eb_return }}">
+        <label for="TlEbEmail-{{ section.id }}" class="hidden-label">{{ section.settings.placeholder }}</label>
+        <input type="email" name="contact[email]" id="TlEbEmail-{{ section.id }}" class="tl-eb__input" placeholder="{{ section.settings.placeholder }}" autocomplete="email" autocorrect="off" autocapitalize="off" inputmode="email" spellcheck="false" required>
+        <label class="tl-eb__tick">
+          <input type="checkbox" required>
+          <span>{{ section.settings.consent_label }}</span>
+        </label>
+        <button type="submit" class="btn tl-eb__btn">{{ section.settings.button_label }}</button>
+        {%- if section.settings.age_line != blank -%}
+          <p class="tl-eb__fine">{{ section.settings.age_line }}</p>
+        {%- endif -%}
+      {%- endif -%}
+    {% endform %}
+  </div>
+</div>
+
+{%- style -%}
+  .tl-eb { display: flex; flex-direction: column; }
+  .tl-eb__img img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  .tl-eb__img--phone { height: 30vh; max-height: 280px; }
+  .tl-eb__img--desk { display: none; }
+  .tl-eb__body { padding: 18px 16px 36px; max-width: 520px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+  .tl-eb__head { margin: 0 0 8px; font-size: 28px; line-height: 1.15; }
+  .tl-eb__text { margin: 0 0 18px; font-size: 16px; line-height: 1.5; }
+  .tl-eb__input { width: 100%; min-height: 48px; font-size: 16px; padding: 0 14px; box-sizing: border-box; margin: 0 0 12px; }
+  .tl-eb__tick { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 16px; font-size: 14px; line-height: 1.45; cursor: pointer; text-align: left; }
+  .tl-eb__tick, .tl-eb__tick span { text-transform: none; letter-spacing: 0; font-weight: 400; font-family: inherit; }
+  .tl-eb__tick input { flex: 0 0 auto; width: 20px; height: 20px; margin: 1px 0 0; }
+  .tl-eb__btn { width: 100%; min-height: 48px; }
+  .tl-eb__fine { margin: 12px 0 0; font-size: 13px; line-height: 1.4; opacity: .75; }
+  .tl-eb__done { font-size: 16px; line-height: 1.5; }
+  .tl-eb__errors { margin: 0 0 12px; }
+  @media (min-width: 769px) {
+    .tl-eb { flex-direction: row; align-items: stretch; min-height: 560px; }
+    .tl-eb__media { flex: 1 1 50%; }
+    .tl-eb__img--phone { display: none; }
+    .tl-eb__img:not(.tl-eb__img--phone) { display: block; height: 100%; }
+    .tl-eb__body { flex: 1 1 50%; align-self: center; padding: 48px; }
+    .tl-eb__head { font-size: 40px; }
+  }
+{%- endstyle -%}
+
+{% schema %}
+{
+  "name": "Early bird sign-up",
+  "tag": "section",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Photo" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Photo on the phone" },
+    { "type": "text", "id": "image_alt", "label": "Photo description", "default": "A bottle of Barovo Red" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Black Friday. Hear it first." },
+    { "type": "textarea", "id": "text", "label": "Line", "default": "Our Black Friday starts at midnight on Friday 27 November. Join the list and the first email comes to you then." },
+    { "type": "text", "id": "placeholder", "label": "Email box", "default": "Your email" },
+    { "type": "textarea", "id": "consent_label", "label": "Tick box words", "default": "Yes, email me about Black Friday, and Tikveš London's emails after it. I can unsubscribe at any time." },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Hear it first" },
+    { "type": "text", "id": "age_line", "label": "Age line", "default": "You must be 18 or over to join." },
+    { "type": "text", "id": "done_text", "label": "Shown if the thank-you page cannot load", "default": "You're in. The first Black Friday email comes to you at midnight on Friday 27 November." },
+    { "type": "text", "id": "thanks_path", "label": "Thank-you page", "default": "/pages/early-bird-thanks" }
+  ]
+}
+{% endschema %}
