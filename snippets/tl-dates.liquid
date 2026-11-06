@@ -42,8 +42,9 @@
     function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
     function phase(t) {
       return {
-        bfTeaser: t >= D.bfTeaser && t < D.bfStart,
-        bfLive: t >= D.bfStart && t <= D.bfEnd,
+        // Black Friday withdrawn 6 Nov 2026 on his word, to be rebuilt from scratch.
+        bfTeaser: false,
+        bfLive: false,
         xmas: t <= D.xmasEnd,
         gift: t > D.xmasEnd && t <= D.giftEnd
       };
@@ -71,6 +72,7 @@
         return 'Order by Wednesday 16 December for Christmas delivery. ' + tail;
       },
       bf: function (t) {
+        return ''; // Black Friday withdrawn 6 Nov 2026.
         var p = phase(t);
         if (p.bfTeaser) return 'Black Friday starts Friday: ' + BF + '.';
         if (!p.bfLive) return '';
