@@ -66,6 +66,7 @@
     },
     "mix_image": {
       "type": "tikves-split",
+      "disabled": true,
       "settings": {
         "image": "shopify://shop_images/IMG_3066.jpg",
         "media_position": "right",
@@ -78,7 +79,7 @@
     "tl_urgency": {
       "type": "tl-urgency-band",
       "settings": {
-        "hide_xmas": true
+        "hide_xmas": false
       }
     },
     "best": {
