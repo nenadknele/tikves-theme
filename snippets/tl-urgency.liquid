@@ -30,9 +30,9 @@
   assign tl_xmas_to = 1797465599 | plus: tl_slack
   assign tl_gift_from = 1797465599 | minus: tl_slack
   assign tl_gift_to = 1798156799 | plus: tl_slack
-  if tl_now >= tl_bf_from and tl_now <= tl_bf_to
-    assign tl_show_bf = true
-  endif
+  comment
+    Black Friday withdrawn 6 Nov 2026 on his word, to be rebuilt from scratch. tl_show_bf stays false.
+  endcomment
   if tl_now <= tl_xmas_to
     assign tl_show_xmas = true
   endif
