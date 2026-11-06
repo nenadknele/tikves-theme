@@ -1,0 +1,188 @@
+{%- comment -%}
+  TIKVES LONDON · THE CHRISTMAS MIX ON A WINE PAGE · 6 Nov 2026
+  His word, 6 Nov 2026: a shopper must be able to use the Mix straight from
+  the wine page, the way overtone.co and boombeauty.com keep the offer one tap
+  away. Rendered from the custom block under Inventory status in
+  templates/product.wine.json. It replaces the plain Mix line of 5 Nov.
+
+  WHAT IT SHOWS, his picks of 6 Nov 2026:
+  · The Mix line, words unchanged from 5 Nov.
+  · Quick picks: Add 2 of this wine (5% off) and Add 4 (10% off), each with
+    the price after the step in green. Green price only, no struck full price,
+    his ruling of 4 Nov 2026, confirmed 6 Nov.
+  · A row of other Mix wines, same colour first, each with a one-tap Add.
+  · While it shows, the "Also in these cases" row is hidden: cases are not in
+    the Mix. It comes back over Black Friday and after Wed 16 Dec on its own.
+
+  WHEN IT SHOWS: theme setting "The Christmas Mix is running" on, the wine
+  carries custom.christmas_six, and it is in stock. The row reads the all-wines
+  collection and keeps only wines with custom.christmas_six, the same list the
+  cart line uses; the offer scope collection is not on the Online Store, so
+  Liquid cannot read it. The class tl-six-timed
+  hides it over the Black Friday weekend and after the cut-off (tl-dates).
+
+  PRICES: nothing here sets a price. The Shopify automatic discounts do.
+  The green figure is this wine's price times the bottles, less the step,
+  rounded per line the way Shopify rounds it. The steps count every Mix
+  bottle in the basket, so a shopper who already has some may get more off
+  than the button says, never less. If a step changes in Shopify, change it
+  here, in tl-christmas-six, tl-six-builder and the Mix page in one pass.
+
+  ADDING: posts to /cart/add.js, then refreshes and opens the cart drawer,
+  the same events tikves-gatc-handler fires. If the script fails the form
+  posts normally to /cart.
+{%- endcomment -%}
+{%- liquid
+  assign mix_v = product.selected_or_first_available_variant
+  assign mix_on = false
+  if settings.tl_christmas_six and product.metafields.custom.christmas_six.value == true and product.available
+    assign mix_on = true
+  endif
+-%}
+{%- if mix_on -%}
+{%- liquid
+  assign p = mix_v.price
+  assign two_full = p | times: 2
+  assign two = two_full | times: 95 | divided_by: 100.0 | round
+  assign four_full = p | times: 4
+  assign four = four_full | times: 90 | divided_by: 100.0 | round
+  assign can_two = true
+  assign can_four = true
+  if mix_v.inventory_management == 'shopify' and mix_v.inventory_policy == 'deny'
+    if mix_v.inventory_quantity < 2
+      assign can_two = false
+    endif
+    if mix_v.inventory_quantity < 4
+      assign can_four = false
+    endif
+  endif
+  assign scope = collections['all-wines']
+-%}
+<div class="tl-mp tl-six-timed" data-tl-mp>
+  <p class="tl-mp__line"><strong>Part of the Christmas Mix.</strong> Mix any of our wines. Buy 2 for 5% off, buy 4 or more for 10% off. Until Wednesday 16 December.</p>
+
+  <div class="tl-mp__picks">
+    {%- if can_two -%}
+    <form class="tl-mp__form" action="{{ routes.cart_add_url }}" method="post" data-tl-mp-add>
+      <input type="hidden" name="id" value="{{ mix_v.id }}">
+      <input type="hidden" name="quantity" value="2">
+      <button type="submit" class="tl-mp__pick">
+        <span class="tl-mp__qty">Add 2 bottles</span>
+        <span class="tl-mp__deal">5% off · <b>{{ two | money }}</b></span>
+      </button>
+    </form>
+    {%- endif -%}
+    {%- if can_four -%}
+    <form class="tl-mp__form" action="{{ routes.cart_add_url }}" method="post" data-tl-mp-add>
+      <input type="hidden" name="id" value="{{ mix_v.id }}">
+      <input type="hidden" name="quantity" value="4">
+      <button type="submit" class="tl-mp__pick">
+        <span class="tl-mp__qty">Add 4 bottles</span>
+        <span class="tl-mp__deal">10% off · <b>{{ four | money }}</b></span>
+      </button>
+    </form>
+    {%- endif -%}
+  </div>
+  <p class="tl-mp__note">Any of our wines count together. <a href="/collections/the-christmas-mix">Build your Mix</a></p>
+
+  {%- if scope != blank -%}
+  {%- capture mix_cards -%}
+    {%- assign shown = 0 -%}
+    {%- for pass in (1..2) -%}
+      {%- for w in scope.products -%}
+        {%- if shown >= 8 -%}{%- break -%}{%- endif -%}
+        {%- if w.id == product.id or w.available == false -%}{%- continue -%}{%- endif -%}
+        {%- unless w.metafields.custom.christmas_six.value == true -%}{%- continue -%}{%- endunless -%}
+        {%- if pass == 1 and w.type != product.type -%}{%- continue -%}{%- endif -%}
+        {%- if pass == 2 and w.type == product.type -%}{%- continue -%}{%- endif -%}
+        {%- assign wv = w.selected_or_first_available_variant -%}
+        <div class="tl-mp__card">
+          <a class="tl-mp__img" href="{{ w.url }}">
+            {%- if w.featured_image -%}
+              {{ w.featured_image | image_url: width: 300 | image_tag: loading: 'lazy', alt: w.featured_image.alt | default: w.title, widths: '150,300' }}
+            {%- endif -%}
+          </a>
+          <a class="tl-mp__name" href="{{ w.url }}">{{ w.title }}</a>
+          {%- if w.metafields.custom.tile_line != blank -%}<span class="tl-mp__desc">{{ w.metafields.custom.tile_line }}</span>{%- endif -%}
+          <span class="tl-mp__price">{{ wv.price | money }}</span>
+          <form class="tl-mp__form" action="{{ routes.cart_add_url }}" method="post" data-tl-mp-add>
+            <input type="hidden" name="id" value="{{ wv.id }}">
+            <input type="hidden" name="quantity" value="1">
+            <button type="submit" class="tl-mp__add">Add to your Mix</button>
+          </form>
+        </div>
+        {%- assign shown = shown | plus: 1 -%}
+      {%- endfor -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if shown > 0 -%}
+  <div class="tl-mp__row">
+    <p class="tl-mp__rowhead">Add another wine to your Mix</p>
+    <div class="tl-mp__scroll">{{ mix_cards }}</div>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+</div>
+<style>
+  .tl-mp{margin:14px 0 0;font-size:14px;line-height:1.5}
+  .tl-mp p{margin:0}
+  .tl-mp__picks{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 0}
+  .tl-mp__form{margin:0}
+  .tl-mp__pick{width:100%;display:flex;flex-direction:column;align-items:center;gap:2px;padding:10px 8px;border:1.5px solid #1f2328;border-radius:8px;background:transparent;color:#1f2328;cursor:pointer;line-height:1.3;font:inherit}
+  .tl-mp__pick:hover{background:rgba(0,0,0,.04)}
+  .tl-mp__pick[disabled]{opacity:.6;cursor:default}
+  .tl-mp__qty{font-weight:600;font-size:14px}
+  .tl-mp__deal{font-size:13px}
+  .tl-mp__deal b{color:#1f7a3a;font-weight:700}
+  .tl-mp__note{margin:8px 0 0 !important;font-size:13px;opacity:.85}
+  .tl-mp__note a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+  .tl-mp__row{margin:18px 0 0}
+  .tl-mp__rowhead{font-weight:600;margin:0 0 8px !important}
+  .tl-mp__scroll{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding:0 0 8px}
+  .tl-mp__card{flex:0 0 136px;scroll-snap-align:start;display:flex;flex-direction:column;gap:3px;font-size:13px;line-height:1.3}
+  .tl-mp__img{display:block;background:rgba(0,0,0,.03);border-radius:4px;overflow:hidden}
+  .tl-mp__img img{display:block;width:100%;height:auto;aspect-ratio:3/4;object-fit:cover}
+  .tl-mp__name{color:inherit;text-decoration:none;font-weight:600;margin-top:4px}
+  .tl-mp__desc{opacity:.7;font-size:12px}
+  .tl-mp__price{font-size:13px}
+  .tl-mp__card .tl-mp__form{margin-top:auto;padding-top:6px}
+  .tl-mp__add{width:100%;padding:8px 6px;border:1px solid #A64029;border-radius:999px;background:#A64029;color:#fff;font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;line-height:1.2}
+  .tl-mp__add[disabled]{opacity:.6;cursor:default}
+  html:not(.tl-bf-live):not(.tl-xmas-over) product-recommendations[data-intent="complementary"]{display:none !important}
+</style>
+<script>
+(function () {
+  if (window.tlMixPdp) return;
+  window.tlMixPdp = true;
+  document.addEventListener('submit', function (e) {
+    var form = e.target.closest ? e.target.closest('[data-tl-mp-add]') : null;
+    if (!form) return;
+    e.preventDefault();
+    var btn = form.querySelector('button');
+    if (!btn || btn.disabled) return;
+    var html = btn.innerHTML;
+    btn.disabled = true;
+    btn.textContent = 'Adding';
+    fetch('/cart/add.js', { method: 'POST', headers: { 'Accept': 'application/json' }, body: new FormData(form) })
+      .then(function (r) { if (!r.ok) { throw new Error('add failed'); } return r.json(); })
+      .then(function () { return fetch('/cart.js', { headers: { 'Accept': 'application/json' } }).then(function (r) { return r.json(); }); })
+      .then(function (cart) {
+        var num = document.querySelector('.cart-link__bubble-num');
+        if (num) { num.textContent = cart.item_count; }
+        var bub = document.querySelector('.cart-link__bubble');
+        if (bub) { bub.classList.add('cart-link__bubble--visible'); }
+        document.dispatchEvent(new CustomEvent('cart:build'));
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
+        document.dispatchEvent(new CustomEvent('cart:open'));
+        btn.textContent = 'Added';
+        setTimeout(function () { btn.disabled = false; btn.innerHTML = html; }, 2500);
+      })
+      .catch(function () {
+        btn.disabled = false;
+        btn.innerHTML = html;
+        form.submit();
+      });
+  });
+})();
+</script>
+{%- endif -%}

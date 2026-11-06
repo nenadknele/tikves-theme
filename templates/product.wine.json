@@ -50,7 +50,7 @@
         "custom_gXHzAU": {
           "type": "custom",
           "settings": {
-            "code": "{% if settings.tl_christmas_six and product.metafields.custom.christmas_six.value == true %}<p class=\"tl-pdp-six tl-six-timed\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Part of the Christmas Mix.</strong> Mix any of our wines. Buy 2 for 5% off, buy 4 or more for 10% off. Until Wednesday 16 December.</p>{% endif %}"
+            "code": "{% comment %} The Christmas Mix on the wine page, 6 Nov 2026. Line, quick picks and the add another wine row live in snippets/tl-mix-pdp.liquid. {% endcomment %}{% render 'tl-mix-pdp', product: product %}"
           }
         },
         "back_in_stock": {
