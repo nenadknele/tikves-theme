@@ -1,5 +1,11 @@
 {% comment %}
   Cart and cart drawer delivery block. Rebuilt 28 Aug 2026.
+  7 Nov 2026, operator: "check overtone for these and implement the same".
+  Laid out as Overtone's cart: the free-delivery line centred at the top with
+  a progress bar under it. The single suggestion that sat here moved below
+  the bottles into snippets/tl-cart-recommend.liquid, as Overtone's
+  "Recommended for you" list. Its gap-closing logic moved with it and still
+  reads the pool and cases lists below.
   Amended 30 Aug 2026: THE SUGGESTION NO LONGER DISAPPEARS ONCE THE
   THRESHOLD IS CLEARED. See the SUGGESTION note below.
   Amended 9 Oct 2026, operator instruction: WHEN NO SINGLE BOTTLE CLOSES
@@ -48,21 +54,9 @@
      data-case-ids="{{ tl_case_ids | strip }}"
 >
 
-  <p class="tl-cart-delivery__count" data-tl-count></p>
   <p class="tl-cart-delivery__threshold" data-tl-threshold></p>
-
-  <div class="tl-suggest" data-tl-suggest hidden>
-    <p class="tl-suggest__label" data-tl-suggest-label></p>
-    <div class="tl-suggest__row">
-      <a class="tl-suggest__link" data-tl-suggest-link href="#">
-        <img class="tl-suggest__img" data-tl-suggest-img alt="" width="44" height="44" loading="lazy">
-        <span class="tl-suggest__name" data-tl-suggest-name></span>
-      </a>
-      <button type="button" class="tl-suggest__add" data-tl-suggest-add>Add</button>
-    </div>
-  </div>
-
-  <p class="tl-cart-delivery__link"><a href="/pages/delivery">Delivery costs and timings</a></p>
+  <div class="tl-bar" aria-hidden="true"><span class="tl-bar__fill" data-tl-bar></span></div>
+  <p class="tl-cart-delivery__meta"><span data-tl-count></span><span class="tl-cart-delivery__link"><a href="/pages/delivery">Delivery costs and timings</a></span></p>
 
   <script type="application/json" data-tl-pool>
     [
@@ -113,19 +107,14 @@
 </div>
 
 <style>
-  .tl-cart-delivery{border-top:1px solid #B9AC9B;margin-top:18px;padding-top:14px;font-size:13px;line-height:1.5}
-  .tl-cart-delivery p{margin:0 0 6px}
-  .tl-cart-delivery p:last-child{margin:0}
-  .tl-cart-delivery__count{opacity:.75}
-  .tl-suggest{border-top:1px solid rgba(0,0,0,.08);margin-top:10px;padding-top:10px}
-  .tl-suggest[hidden]{display:none}
-  .tl-suggest__label{margin:0 0 6px}
-  .tl-suggest__row{display:flex;align-items:center;gap:10px}
-  .tl-suggest__link{display:flex;align-items:center;gap:10px;flex:1 1 auto;min-width:0;text-decoration:none}
-  .tl-suggest__img{width:44px;height:44px;object-fit:contain;flex:0 0 auto}
-  .tl-suggest__name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .tl-suggest__add{flex:0 0 auto;border:1px solid currentColor;background:none;color:inherit;font:inherit;font-size:12px;padding:5px 12px;cursor:pointer;border-radius:2px}
-  .tl-suggest__add[disabled]{opacity:.5;cursor:default}
+  .tl-cart-delivery{border-top:1px solid #B9AC9B;margin-top:18px;padding-top:16px;font-size:13px;line-height:1.5;text-align:center}
+  .tl-cart-delivery p{margin:0}
+  .tl-cart-delivery__threshold{font-size:14px}
+  .tl-bar{height:6px;border-radius:999px;background:#E4DBCF;overflow:hidden;margin:10px 0 8px}
+  .tl-bar__fill{display:block;height:100%;width:0;border-radius:999px;background:#A64029;transition:width .35s ease}
+  .tl-cart-delivery__meta{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;opacity:.8;font-size:12px}
+  .tl-cart-delivery__meta span:empty{display:none}
+  .tl-cart-delivery__link a{color:inherit;text-decoration:underline;text-underline-offset:3px}
   .tl-note__help{font-size:13px;line-height:1.5;margin:4px 0 6px;opacity:.8}
 </style>
 
@@ -179,75 +168,20 @@
     // dropped on his word of 4 Nov 2026. The £100 threshold is the only rule.
     var threshEl = root.querySelector('[data-tl-threshold]');
 
+    var barEl = root.querySelector('[data-tl-bar]');
+    if (barEl && threshold > 0) {
+      barEl.style.width = Math.max(0, Math.min(100, (total / threshold) * 100)) + '%';
+    }
+
     if (threshEl) {
       if (remaining <= 0) {
         threshEl.innerHTML = '<strong>Free delivery<\/strong> to England, Scotland and Wales.';
       } else {
-        threshEl.innerHTML = '<strong>' + money(remaining) + ' more<\/strong> for free delivery to England, Scotland and Wales.';
+        threshEl.innerHTML = 'You\u2019re <strong>' + money(remaining) + '<\/strong> away from free delivery to England, Scotland and Wales.';
       }
     }
 
-    var box = root.querySelector('[data-tl-suggest]');
-    if (!box) return;
-
-    if (!items.length) { box.hidden = true; return; }
-
-    var available = pool.filter(function (p) { return !inCart[p.id]; });
-    var availableCases = cases.filter(function (p) { return !inCart[p.id]; });
-
-    var pick = null, label = '';
-
-    if (remaining > 0) {
-      // Below the threshold. First choice: the cheapest bottle that closes the gap.
-      var closers = available.filter(function (p) { return p.price >= remaining; });
-      if (closers.length) {
-        pick = closers[0];
-        label = 'Add this and delivery is free';
-      } else if (availableCases.length) {
-        // 9 Oct 2026: no single bottle closes it, so offer the cheapest case.
-        // Every case is over the threshold on its own.
-        pick = availableCases[0];
-        label = 'Add a case of six and delivery is free';
-      } else if (available.length) {
-        // No case to offer: the dearest bottle closes the most of the gap.
-        pick = available[available.length - 1];
-        label = 'Closer to free delivery';
-      }
-    } else if (available.length) {
-      // Above it: pair with the dearest bottle not already in the bag.
-      pick = available[available.length - 1];
-      label = 'Pairs with this';
-    }
-
-    if (!pick) { box.hidden = true; return; }
-
-    box.querySelector('[data-tl-suggest-label]').textContent = label;
-    box.querySelector('[data-tl-suggest-name]').textContent = pick.title + ' · ' + money(pick.price);
-    box.querySelector('[data-tl-suggest-link]').href = pick.url;
-
-    var img = box.querySelector('[data-tl-suggest-img]');
-    if (pick.img) { img.src = pick.img; img.hidden = false; } else { img.hidden = true; }
-
-    var btn = box.querySelector('[data-tl-suggest-add]');
-    btn.disabled = false;
-    btn.textContent = 'Add';
-    btn.onclick = function () {
-      btn.disabled = true;
-      btn.textContent = 'Adding';
-      fetch('/cart/add.js', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items: [{ id: pick.vid, quantity: 1 }] })
-      })
-        .then(function (r) { return r.json(); })
-        .then(function () {
-          document.dispatchEvent(new CustomEvent('cart:build'));
-          refresh();
-        })
-        .catch(function () { btn.disabled = false; btn.textContent = 'Add'; });
-    };
-
-    box.hidden = false;
+    // The suggestion now lives below the bottles, in tl-cart-recommend.
   }
 
   function refresh() {

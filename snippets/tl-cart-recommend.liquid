@@ -1,0 +1,186 @@
+{% comment %}
+  RECOMMENDED FOR YOU, cart drawer and cart page. 7 Nov 2026, operator:
+  "they can add to cart to qualify upsale cross sale check overtone for these
+  and implement the same to my shop".
+
+  Laid out as Overtone's cart, read live the same day: a short list under the
+  bottles, each row a picture, the name, the price and a filled Add button
+  that adds straight from the cart.
+
+  WHAT FILLS IT, in order, up to three rows:
+  1. Below the free-delivery line, the item that gets the basket there. The
+     cheapest bottle that closes the gap, or if none does, the cheapest case
+     in stock, which always clears it. This is the 9 Oct 2026 rule, moved here
+     from tl-delivery-summary, whose pool and cases lists it still reads.
+     Its row says "Delivery is free with this".
+  2. Then Shopify's own recommendations for the first bottle in the basket:
+     complementary first (set in Search and Discovery), then related.
+
+  NEVER: a gift card, anything sold out or unpriced, anything already in the
+  basket. No crossed-out price, no saving, no "free" anything but delivery,
+  no countdown. Overtone's free gift step and its savings line are offers,
+  and offers live in consumer email only (tikves-merchandising). The threshold
+  is read from the delivery block's data-threshold, so it changes in one place.
+
+  WHY JAVASCRIPT: theme.js re-renders only [data-products] when the cart
+  changes, so this list re-reads /cart.js on the same events as the delivery
+  block. Remove the script and remove the list with it.
+{% endcomment %}
+
+<div class="tl-recs" data-tl-recs hidden>
+  <p class="tl-recs__title">Recommended for you</p>
+  <div class="tl-recs__list" data-tl-recs-list></div>
+</div>
+
+<style>
+  .tl-recs{border-top:1px solid #B9AC9B;margin-top:18px;padding-top:16px}
+  .tl-recs[hidden]{display:none}
+  .tl-recs__title{margin:0 0 12px;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+  .tl-rec{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(0,0,0,.08)}
+  .tl-rec:last-child{border-bottom:0}
+  .tl-rec__img{flex:0 0 64px;width:64px;height:64px;background:#EAE3D9;display:flex;align-items:center;justify-content:center}
+  .tl-rec__img img{max-width:56px;max-height:56px;object-fit:contain;display:block}
+  .tl-rec__info{flex:1 1 auto;min-width:0;text-decoration:none;color:inherit}
+  .tl-rec__name{display:block;font-size:14px;line-height:1.3}
+  .tl-rec__price{display:block;font-size:13px;margin-top:2px}
+  .tl-rec__note{display:block;font-size:12px;margin-top:2px;color:#A64029}
+  .tl-rec__add{flex:0 0 auto;border:0;border-radius:999px;background:#1F2328;color:#FFFFFF;font:inherit;font-size:13px;font-weight:500;padding:9px 20px;cursor:pointer;min-height:40px}
+  .tl-rec__add[disabled]{opacity:.55;cursor:default}
+</style>
+
+<script>
+(function () {
+  var roots = document.querySelectorAll('[data-tl-recs]');
+  if (!roots.length) return;
+  var MAX = 3;
+  var recCache = {};
+
+  function money(cents) {
+    try {
+      if (window.theme && theme.Currency && theme.settings && theme.settings.moneyFormat) {
+        return theme.Currency.formatMoney(cents, theme.settings.moneyFormat);
+      }
+    } catch (e) {}
+    return '£' + (cents / 100).toFixed(2);
+  }
+
+  function readJson(sel) {
+    var el = document.querySelector(sel);
+    if (!el) return [];
+    try { return JSON.parse(el.textContent) || []; } catch (e) { return []; }
+  }
+
+  function threshold() {
+    var d = document.querySelector('[data-tl-delivery]');
+    return d ? (parseInt(d.dataset.threshold, 10) || 0) : 0;
+  }
+
+  function img(src) {
+    if (!src) return '';
+    if (src.indexOf('//') === 0) src = 'https:' + src;
+    // Serve from the shop's own /cdn/shop path, as every other image here.
+    src = src.replace(/^https?:\/\/cdn\.shopify\.com\/s\/files\/[^/]+\/[^/]+\/[^/]+\/[^/]+\/files\//, '/cdn/shop/files/');
+    return src + (src.indexOf('?') > -1 ? '&' : '?') + 'width=120';
+  }
+
+  function fromRec(p) {
+    var v = (p.variants || []).filter(function (x) { return x.available; })[0];
+    if (!v || !p.available) return null;
+    if (p.gift_card || /gift card/i.test(p.type || '') || p.handle === 'gift-card') return null;
+    if (!v.price) return null;
+    return { id: p.id, vid: v.id, title: p.title, price: v.price, url: p.url, img: p.featured_image };
+  }
+
+  function recs(pid) {
+    if (!recCache[pid]) {
+      recCache[pid] = Promise.all(['complementary', 'related'].map(function (intent) {
+        return fetch('/recommendations/products.json?product_id=' + pid + '&limit=6&intent=' + intent)
+          .then(function (r) { return r.ok ? r.json() : { products: [] }; })
+          .then(function (d) { return d.products || []; })
+          .catch(function () { return []; });
+      })).then(function (lists) { return lists[0].concat(lists[1]); });
+    }
+    return recCache[pid];
+  }
+
+  function row(pick) {
+    var el = document.createElement('div');
+    el.className = 'tl-rec';
+    var a = document.createElement('a');
+    a.className = 'tl-rec__img'; a.href = pick.url;
+    if (pick.img) { var i = document.createElement('img'); i.src = img(pick.img); i.alt = ''; i.loading = 'lazy'; a.appendChild(i); }
+    var info = document.createElement('a');
+    info.className = 'tl-rec__info'; info.href = pick.url;
+    var n = document.createElement('span'); n.className = 'tl-rec__name'; n.textContent = pick.title; info.appendChild(n);
+    var pr = document.createElement('span'); pr.className = 'tl-rec__price'; pr.textContent = money(pick.price); info.appendChild(pr);
+    if (pick.note) { var no = document.createElement('span'); no.className = 'tl-rec__note'; no.textContent = pick.note; info.appendChild(no); }
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'tl-rec__add'; b.textContent = 'Add';
+    b.setAttribute('aria-label', 'Add ' + pick.title + ' to cart');
+    b.onclick = function () {
+      b.disabled = true; b.textContent = 'Adding';
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: [{ id: pick.vid, quantity: 1 }] })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function () { document.dispatchEvent(new CustomEvent('cart:build')); refresh(); })
+        .catch(function () { b.disabled = false; b.textContent = 'Add'; });
+    };
+    el.appendChild(a); el.appendChild(info); el.appendChild(b);
+    return el;
+  }
+
+  var seq = 0;
+  function render(cart) {
+    var mine = ++seq;
+    var items = ((cart && cart.items) || []).filter(function (i) { return !i.gift_card; });
+    if (!items.length) { roots.forEach(function (r) { r.hidden = true; }); return; }
+
+    var inCart = {};
+    (cart.items || []).forEach(function (i) { inCart[i.product_id] = true; });
+    var picks = [], seen = {};
+    function take(p, note) {
+      if (!p || inCart[p.id] || seen[p.id] || picks.length >= MAX) return;
+      seen[p.id] = true;
+      picks.push({ id: p.id, vid: p.vid, title: p.title, price: p.price, url: p.url, img: p.img, note: note || '' });
+    }
+
+    var remaining = threshold() - (cart.total_price || 0);
+    if (remaining > 0) {
+      var pool = readJson('[data-tl-pool]').filter(function (p) { return !inCart[p.id]; });
+      var cases = readJson('[data-tl-cases]').filter(function (p) { return !inCart[p.id]; });
+      var closers = pool.filter(function (p) { return p.price >= remaining; });
+      if (closers.length) take(closers[0], 'Delivery is free with this');
+      else if (cases.length) take(cases[0], 'Delivery is free with this');
+    }
+
+    recs(items[0].product_id).then(function (list) {
+      if (mine !== seq) return;
+      list.forEach(function (p) { take(fromRec(p)); });
+      roots.forEach(function (root) {
+        var box = root.querySelector('[data-tl-recs-list]');
+        box.innerHTML = '';
+        picks.forEach(function (p) { box.appendChild(row(p)); });
+        root.hidden = picks.length === 0;
+      });
+    });
+  }
+
+  function refresh() {
+    fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(render)
+      .catch(function () {});
+  }
+
+  document.addEventListener('cart:updated', function (evt) {
+    if (evt.detail && evt.detail.cart && evt.detail.cart.items) render(evt.detail.cart);
+    else refresh();
+  });
+  document.addEventListener('ajaxProduct:added', refresh);
+  document.addEventListener('cart:build', refresh);
+  refresh();
+})();
+</script>
