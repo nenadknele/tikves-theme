@@ -3560,7 +3560,9 @@ theme.recentlyViewed = {
       });
   
       document.addEventListener(`modalOpen.${this.newsletterId}`, () => this.hide());
-      document.addEventListener(`modalClose.${this.newsletterId}`, () => this.show());
+      // 7 Nov 2026: the 10% badge shows as soon as the popup is closed, not
+      // after the popup's own delay a second time.
+      document.addEventListener(`modalClose.${this.newsletterId}`, () => this.show(0));
       document.addEventListener(`newsletter:openReminder`, () => this.show(0));
   
       this.closeBtn.addEventListener('click', () => {
