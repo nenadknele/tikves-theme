@@ -16,25 +16,30 @@
     7 Nov 2026, operator: the tab becomes Overtone's round badge. A dark
     circle bottom left reading "10% Off", with a small round close button
     on its top right edge. Tapping the circle reopens the popup.
-
-    7 Nov 2026: the accessibility menu icon also sits bottom left, 16px in,
-    and the badge covered it. The badge now starts at 64px from the left so
-    the icon stays clear and tappable.
+  {% endcomment %}
+  {% comment %}
+    7 Nov 2026, operator: "same like overtone". Read live on overtone.co the
+    same day: a 64px black circle, 20px in from the bottom left corner, the
+    label in plain white sans at 14px, no shadow, no close button. Their
+    accessibility icon sits above the badge, not beside it, so ours moves up
+    the same way, set in snippets/tikves-site-css.liquid. The badge sits in
+    the corner and the accessibility menu icon is centred above it. Tapping the badge reopens
+    the signup popup.
   {% endcomment %}
   {% style %}
     newsletter-reminder {
       --newsletterReminderPadding: 0;
-      left: 64px;
-      bottom: 16px;
-      width: 84px;
-      height: 84px;
+      left: 20px;
+      bottom: 20px;
+      width: 64px;
+      height: 64px;
       max-width: none;
       padding: 0;
       border-radius: 50%;
-      background-color: #1F2328;
-      color: #F5EFE7;
+      background-color: #000000;
+      color: #FFFFFF;
       overflow: visible;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+      box-shadow: none;
     }
 
     newsletter-reminder .newsletter-reminder__content {
@@ -50,45 +55,20 @@
 
     newsletter-reminder .newsletter-reminder__message.h3 {
       margin: 0;
-      padding: 0 8px;
-      font-size: 15px;
+      padding: 0 6px;
+      font-family: var(--typeBasePrimary), sans-serif;
+      font-size: 14px;
+      font-weight: 500;
       line-height: 1.15;
-      letter-spacing: 0.01em;
+      letter-spacing: 0;
+      text-transform: none;
       text-align: center;
-      white-space: normal;
-      color: #F5EFE7;
+      white-space: nowrap;
+      color: #FFFFFF;
     }
 
     newsletter-reminder.modal--square .modal__close {
-      position: absolute;
-      top: -6px;
-      right: -6px;
-      bottom: auto;
-      left: auto;
-      width: 26px;
-      height: 26px;
-      min-width: 0;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0;
-      line-height: 0;
-      overflow: hidden;
-      border-radius: 50%;
-      background-color: #1F2328;
-      color: #F5EFE7;
-      border: 2px solid #F5EFE7;
-    }
-
-    newsletter-reminder.modal--square .modal__close::after {
-      content: none;
-    }
-
-    newsletter-reminder.modal--square .modal__close .icon {
-      width: 10px;
-      height: 10px;
-      display: block;
+      display: none;
     }
   {% endstyle %}
 

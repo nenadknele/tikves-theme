@@ -401,7 +401,11 @@
   go. The Shopify Inbox button becomes a round icon with no "Chat" label
   (Inbox exports its button as the part "activator"). The AccessEase icon
   drops to a small circle in the bottom-left, just above the joining gift
-  reminder so the two don't sit on each other. On the Christmas Mix page
+  reminder so the two don't sit on each other.
+  7 Nov 2026, "same like overtone": the 10% badge sits in the bottom-left
+  corner, 20px in, 64px round, and the icon is centred above it at 36px in
+  and 100px up, as Overtone stacks theirs. On the Christmas Mix page both
+  lift above the basket bar. On the Christmas Mix page
   both lift above the basket bar while it is up (tl-six-builder sets
   --tl-tray-h and the class tl-mix-tray-up).
 {%- endcomment -%}
@@ -420,8 +424,8 @@
     width: 32px !important;
     height: 32px !important;
     min-width: 0 !important;
-    left: 16px !important;
-    bottom: 64px !important;
+    left: 36px !important;
+    bottom: 100px !important;
   }
   #accessease-icon.accessease-icon svg.accessease-icon-wrapper {
     width: 100% !important;
@@ -436,7 +440,10 @@
       transform: translateY(calc(-1 * var(--tl-tray-h, 0px)));
     }
     html.tl-mix-tray-up #accessease-icon.accessease-icon {
-      bottom: calc(var(--tl-tray-h, 0px) + 12px) !important;
+      bottom: calc(var(--tl-tray-h, 0px) + 96px) !important;
+    }
+    html.tl-mix-tray-up newsletter-reminder {
+      bottom: calc(var(--tl-tray-h, 0px) + 16px) !important;
     }
   }
   /* Cart line, 3 Nov 2026: "each" after the bottle price, and the discount
