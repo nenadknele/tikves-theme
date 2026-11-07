@@ -401,7 +401,11 @@
   go. The Shopify Inbox button becomes a round icon with no "Chat" label
   (Inbox exports its button as the part "activator"). The AccessEase icon
   drops to a small circle in the bottom-left, just above the joining gift
-  reminder so the two don't sit on each other. On the Christmas Mix page
+  reminder so the two don't sit on each other.
+  7 Nov 2026, "same like overtone": the 10% badge sits in the bottom-left
+  corner and the icon sits above it, as Overtone stacks theirs. Desktop:
+  icon 20px in and 140px up. Phone: 14px in and 86px up. On the Christmas Mix page both
+  lift above the basket bar. On the Christmas Mix page
   both lift above the basket bar while it is up (tl-six-builder sets
   --tl-tray-h and the class tl-mix-tray-up).
 {%- endcomment -%}
@@ -420,8 +424,14 @@
     width: 32px !important;
     height: 32px !important;
     min-width: 0 !important;
-    left: 16px !important;
-    bottom: 64px !important;
+    left: 20px !important;
+    bottom: 140px !important;
+  }
+  @media only screen and (max-width: 768px) {
+    #accessease-icon.accessease-icon {
+      left: 14px !important;
+      bottom: 86px !important;
+    }
   }
   #accessease-icon.accessease-icon svg.accessease-icon-wrapper {
     width: 100% !important;
@@ -436,7 +446,10 @@
       transform: translateY(calc(-1 * var(--tl-tray-h, 0px)));
     }
     html.tl-mix-tray-up #accessease-icon.accessease-icon {
-      bottom: calc(var(--tl-tray-h, 0px) + 12px) !important;
+      bottom: calc(var(--tl-tray-h, 0px) + 86px) !important;
+    }
+    html.tl-mix-tray-up newsletter-reminder {
+      bottom: calc(var(--tl-tray-h, 0px) + 8px) !important;
     }
   }
   /* Cart line, 3 Nov 2026: "each" after the bottle price, and the discount
@@ -459,18 +472,3 @@
   }
 {% endstyle %}
 {%- endif -%}
-
-{%- comment -%}
-  CHRISTMAS MIX IN THE MENU, 3 Nov 2026, on his word. The top-row link
-  "Christmas Mix · Up To 10% Off" sits first and reads in the wine red, on
-  desktop and in the phone menu. Only that one link; its entry under Shop >
-  Shop by Occasion stays plain. Take the link out of the main menu after
-  Wednesday 16 December and this rule has nothing to match.
-{%- endcomment -%}
-{% style %}
-  a.site-nav__link[href*="/collections/the-christmas-mix"],
-  a.mobile-nav__link[href*="/collections/the-christmas-mix"] {
-    color: #A64029 !important;
-    font-weight: 700;
-  }
-{% endstyle %}

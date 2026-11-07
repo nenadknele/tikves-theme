@@ -3530,6 +3530,11 @@ theme.recentlyViewed = {
   ==============================================================================*/
   
   class NewsletterReminder extends HTMLElement {
+    // 7 Nov 2026, operator: the 10% badge works like Overtone's. It shows as
+    // soon as the popup is closed, then on every page and every visit until
+    // the visitor signs up. The theme's own version showed it once a session
+    // and never again after a refresh. The close X hides it for the rest of
+    // the visit only. Signing up, in the popup or the footer, hides it for good.
     constructor() {
       super();
       this.closeBtn = this.querySelector('[data-close-button]');
@@ -3537,19 +3542,34 @@ theme.recentlyViewed = {
   
       this.id = this.dataset.sectionId;
       this.newsletterId = `NewsletterPopup-${ this.id }`;
-      this.cookie = Cookies.get(`newsletter-${this.id}`);
       this.cookieName = `newsletter-${this.id}`;
-      this.secondsBeforeShow = this.dataset.delaySeconds;
-      this.expiry = parseInt(this.dataset.delayDays);
-      this.modal = new theme.Modals(`NewsletterPopup-${this.newsletterId}`, 'newsletter-popup-modal');
+      this.joinedCookie = 'tl-joined';
+      this.hiddenKey = 'tlBadgeHidden';
   
       this.init();
+    }
+  
+    joined() {
+      if (document.querySelector('.tl-joined, .note--success')) {
+        Cookies.set(this.joinedCookie, '1', { path: '/', expires: 365 });
+        return true;
+      }
+      return Cookies.get(this.joinedCookie) === '1';
+    }
+  
+    hiddenThisVisit() {
+      try { return sessionStorage.getItem(this.hiddenKey) === 'true'; } catch (e) { return false; }
+    }
+  
+    popupSeen() {
+      if (Cookies.get(this.cookieName)) return true;
+      try { return sessionStorage.getItem('newsletterAppeared') === 'true'; } catch (e) { return false; }
     }
   
     init() {
       document.addEventListener('shopify:block:select', (evt) => {
         if (evt.detail.sectionId === this.id) {
-          this.show(0, true)
+          this.show(true);
         }
       });
   
@@ -3561,11 +3581,12 @@ theme.recentlyViewed = {
   
       document.addEventListener(`modalOpen.${this.newsletterId}`, () => this.hide());
       document.addEventListener(`modalClose.${this.newsletterId}`, () => this.show());
-      document.addEventListener(`newsletter:openReminder`, () => this.show(0));
+      document.addEventListener(`newsletter:openReminder`, () => this.show());
   
-      this.closeBtn.addEventListener('click', () => {
+      this.closeBtn.addEventListener('click', (evt) => {
+        evt.stopPropagation();
         this.hide();
-        Cookies.set(this.cookieName, 'opened', { path: '/', expires: this.expiry });
+        try { sessionStorage.setItem(this.hiddenKey, 'true'); } catch (e) {}
       });
   
       this.popupTrigger.addEventListener('click', () => {
@@ -3574,17 +3595,16 @@ theme.recentlyViewed = {
   
         this.hide();
       });
+  
+      // A later page or a later visit: the popup has already been seen, so
+      // the badge is there from the start.
+      if (this.popupSeen()) this.show();
     }
   
-    show(time = this.secondsBeforeShow, forceOpen = false) {
-      const reminderAppeared = (sessionStorage.getItem('reminderAppeared') === 'true');
-  
-      if (!reminderAppeared) {
-        setTimeout(() => {
-          this.dataset.enabled = 'true';
-          sessionStorage.setItem('reminderAppeared', true);
-        }, time * 1000);
-      }
+    show(forceOpen = false) {
+      if (!forceOpen && (this.joined() || this.hiddenThisVisit())) return;
+      this.dataset.enabled = 'true';
+      try { sessionStorage.setItem('reminderAppeared', true); } catch (e) {}
     }
   
     hide() {
