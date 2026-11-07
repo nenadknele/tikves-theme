@@ -18,13 +18,14 @@
     on its top right edge. Tapping the circle reopens the popup.
   {% endcomment %}
   {% comment %}
-    7 Nov 2026, operator: "same like overtone". Read live on overtone.co the
-    same day: a 64px black circle, 20px in from the bottom left corner, the
-    label in plain white sans at 14px, no shadow, no close button. Their
-    accessibility icon sits above the badge, not beside it, so ours moves up
-    the same way, set in snippets/tikves-site-css.liquid. The badge sits in
-    the corner and the accessibility menu icon is centred above it. Tapping the badge reopens
-    the signup popup.
+    7 Nov 2026, operator: "same like overtone". Read the same day.
+    Desktop, live on overtone.co: a 64px black circle, 20px in from the
+    left and the bottom, the label in plain white sans at 14px, no shadow.
+    Phone, from his iPhone screenshot: about 60px, 8px in from the left,
+    down at the bottom edge, with a small round close X on its top right.
+    Their accessibility icon sits above the badge, not beside it, so ours
+    does the same, set in snippets/tikves-site-css.liquid. Tapping the badge
+    reopens the signup popup.
   {% endcomment %}
   {% style %}
     newsletter-reminder {
@@ -55,7 +56,7 @@
 
     newsletter-reminder .newsletter-reminder__message.h3 {
       margin: 0;
-      padding: 0 6px;
+      padding: 0 4px;
       font-family: var(--typeBasePrimary), sans-serif;
       font-size: 14px;
       font-weight: 500;
@@ -69,6 +70,51 @@
 
     newsletter-reminder.modal--square .modal__close {
       display: none;
+    }
+
+    @media only screen and (max-width: 768px) {
+      newsletter-reminder {
+        left: 8px;
+        bottom: 8px;
+        width: 60px;
+        height: 60px;
+      }
+
+      newsletter-reminder .newsletter-reminder__message.h3 {
+        font-size: 13px;
+      }
+
+      newsletter-reminder.modal--square .modal__close {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        bottom: auto;
+        left: auto;
+        width: 20px;
+        height: 20px;
+        min-width: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0;
+        line-height: 0;
+        overflow: hidden;
+        border-radius: 50%;
+        background-color: #000000;
+        color: #FFFFFF;
+        border: 1.5px solid #FFFFFF;
+      }
+
+      newsletter-reminder.modal--square .modal__close::after {
+        content: none;
+      }
+
+      newsletter-reminder.modal--square .modal__close .icon {
+        width: 9px;
+        height: 9px;
+        display: block;
+      }
     }
   {% endstyle %}
 
