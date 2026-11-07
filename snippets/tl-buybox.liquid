@@ -311,15 +311,27 @@
     }
 
     // The phone bar: shown only while the main add to cart is out of view.
+    // 7 Nov 2026: while it is up, the 10% badge, the access icon and the chat
+    // button lift above it, so none of them sits on the bar's name or its
+    // button. The lift rules live with the other stacking rules in
+    // snippets/tikves-site-css.liquid (class tl-bar-up, height --tl-tray-h).
     var bar = document.querySelector('[data-tl-bb-sticky]');
     var mainBtn = document.querySelector('.product-single__meta form[action*="/cart/add"] [type="submit"], .product-single__meta button[name="add"]');
+    function lift() {
+      var root = document.documentElement;
+      if (!bar || bar.hidden) { root.classList.remove('tl-bar-up'); return; }
+      root.style.setProperty('--tl-tray-h', bar.offsetHeight + 'px');
+      root.classList.add('tl-bar-up');
+    }
     if (bar && mainBtn && 'IntersectionObserver' in window) {
       new IntersectionObserver(function (es) {
         es.forEach(function (en) {
           var above = en.boundingClientRect.bottom < 0;
           bar.hidden = en.isIntersecting || !above;
+          lift();
         });
       }).observe(mainBtn);
+      window.addEventListener('resize', lift);
     }
 
     // One add handler for the cases row and the bar. Same events as tl-mix-pdp.
