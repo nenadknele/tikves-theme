@@ -151,6 +151,18 @@
           "settings": {
             "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'sticky' %}"
           }
+        },
+        "bb_find": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'find' %}"
+          }
+        },
+        "bb_faq": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'faq' %}"
+          }
         }
       },
       "block_order": [
@@ -163,6 +175,7 @@
         "buy_buttons",
         "inventory_status",
         "bb_stock",
+        "bb_find",
         "bb_delivery",
         "custom_gXHzAU",
         "back_in_stock",
@@ -176,6 +189,7 @@
         "tasting_notes_tab",
         "food_occasion",
         "awards",
+        "bb_faq",
         "separator-2",
         "bb_sticky"
       ],
