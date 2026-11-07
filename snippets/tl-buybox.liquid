@@ -146,9 +146,14 @@
     is the shipping policy's own, word for word. No carrier, no service, no
     time. The Christmas line is 18 v6 section 5's, approved word for word for
     any surface, with its countdown from snippets/tl-dates.
+    7 Nov 2026: shown only while the bottle can be bought. Under a SOLD OUT
+    button, a delivery line and a Christmas order-by date read as a promise
+    the page can't keep.
   {%- endcomment -%}
+  {%- if product.available -%}
   <p class="tl-bb-delivery">Delivery is free on orders of £100 or more delivered to England, Scotland or Wales. <a href="/pages/delivery">Delivery costs and timings</a></p>
   {%- render 'tl-urgency', mode: 'line' -%}
+  {%- endif -%}
 
 {%- when 'cases' -%}
   {%- comment -%}
