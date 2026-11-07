@@ -162,7 +162,9 @@
       countEl.textContent = bottles === 0 ? '' : (bottles === 1 ? '1 bottle' : bottles + ' bottles');
     }
 
-    var total = (cart && cart.total_price) || 0;
+    // Inside the offer windows the bar reads the full price, per
+    // TL.deliveryTotal in snippets/tl-dates. Outside them, the paid total.
+    var total = (window.TL && TL.deliveryTotal) ? TL.deliveryTotal(cart) : ((cart && cart.total_price) || 0);
     var remaining = threshold - total;
     // Free delivery from six units (the Christmas Six and then the Mix) was
     // dropped on his word of 4 Nov 2026. The £100 threshold is the only rule.
