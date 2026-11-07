@@ -472,18 +472,3 @@
   }
 {% endstyle %}
 {%- endif -%}
-
-{%- comment -%}
-  CHRISTMAS MIX IN THE MENU, 3 Nov 2026, on his word. The top-row link
-  "Christmas Mix · Up To 10% Off" sits first and reads in the wine red, on
-  desktop and in the phone menu. Only that one link; its entry under Shop >
-  Shop by Occasion stays plain. Take the link out of the main menu after
-  Wednesday 16 December and this rule has nothing to match.
-{%- endcomment -%}
-{% style %}
-  a.site-nav__link[href*="/collections/the-christmas-mix"],
-  a.mobile-nav__link[href*="/collections/the-christmas-mix"] {
-    color: #A64029 !important;
-    font-weight: 700;
-  }
-{% endstyle %}

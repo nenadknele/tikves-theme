@@ -28,7 +28,7 @@
         "tile_mobile": 22,
         "tile_desktop": 28,
         "btn_size": 13,
-        "keys_all": "hero,mix_image,ladder,best,education,region_image,singles,producer_text,mw_voices,trust,newsletter,tk_chips,tk_kumova,tile_precision,tile_checked,tile_start,video_band"
+        "keys_all": "hero,ladder,best,education,region_image,singles,producer_text,mw_voices,trust,newsletter,tk_chips,tk_kumova,tile_precision,tile_checked,tile_start,video_band"
       }
     },
     "hero": {
@@ -62,24 +62,6 @@
         "ratio_desktop": "fixed",
         "height_desktop": 640,
         "scrim": 50
-      }
-    },
-    "mix_image": {
-      "type": "tikves-split",
-      "disabled": true,
-      "settings": {
-        "image": "shopify://shop_images/IMG_3066.jpg",
-        "media_position": "right",
-        "title": "The Christmas Mix",
-        "text": "<p>Mix any of our wines. Buy 2 for 5% off. Buy 4 or more for 10% off. Order by Wednesday 16 December for Christmas delivery.</p>",
-        "link_label": "Build Your Mix",
-        "link_url": "shopify://collections/the-christmas-mix"
-      }
-    },
-    "tl_urgency": {
-      "type": "tl-urgency-band",
-      "settings": {
-        "hide_xmas": false
       }
     },
     "best": {
@@ -418,8 +400,6 @@
   "order": [
     "tk_design",
     "hero",
-    "mix_image",
-    "tl_urgency",
     "best",
     "ladder",
     "education",
