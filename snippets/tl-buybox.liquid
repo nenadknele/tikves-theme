@@ -28,15 +28,14 @@
   THE BLACK FRIDAY PRICE, part 'bf'.
   · Off unless the theme setting "Black Friday price in the wine page buy box"
     is on AND the depth setting holds a whole number from 1 to 99 AND the clock
-    is inside Fri 27 Nov 00:00 to Mon 30 Nov 23:59 UK. D1, the depth, is NOT
-    ruled (REF · BLACK FRIDAY 2026 v4). The depth setting has no default on
-    purpose. Nothing here names a depth.
+    is inside Fri 27 Nov 00:00 to Mon 30 Nov 23:59 UK. D1 is 15%, his ruling
+    of 7 Nov 2026 (REF · BLACK FRIDAY 2026 v7), and the depth setting defaults
+    to 15. The switch stays off until the Shopify discount is live at 15%.
   · TEST ONLY: a template named product.wine-bftestNN.json, which exists
     only on the unpublished test copy and is a plain copy of
     product.wine.json, shows the block at NN per cent, outside the window,
-    with a TEST label, so no screenshot can pass for a ruled depth. No such
-    template is in this repo and no number is written here. Take this hook
-    out before any pull request for every wine page.
+    with a TEST label, so no screenshot can pass for the live sale. No such
+    template is in this repo. Take this hook out before any pull request.
   · Green price only. No crossed-out price, no was or now: his ruling of
     4 Nov 2026, confirmed 6 Nov. While the block shows, the regular price
     block is hidden, so the shopper reads one price, and what comes off.
@@ -132,7 +131,7 @@
   -%}
   <div class="tl-bb-bf{% if tl_bf_test %} tl-bb-bf--test{% endif %}" data-tl-bb-bf data-price="{{ tl_p }}" data-depth="{{ tl_d }}"{% if tl_bf_test %} data-test{% endif %}{% if tl_pack %} data-pack{% endif %}>
     {%- if tl_bf_test -%}
-      <p class="tl-bb-bf__test">TEST · placeholder depth, not ruled · copy only</p>
+      <p class="tl-bb-bf__test">TEST · copy only · before the sale dates</p>
     {%- endif -%}
     {%- comment -%} Approved 7 Nov 2026, REF · WINE PAGE BUY BOX v1. The green is #1f7a3a, kept on his word the same day. {%- endcomment -%}
     <p class="tl-bb-bf__head">Black Friday · {{ tl_d }}% off</p>

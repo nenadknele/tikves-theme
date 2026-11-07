@@ -876,15 +876,16 @@
       {
         "type": "checkbox",
         "id": "tl_bf_price",
-        "label": "Black Friday price in the wine page buy box",
-        "info": "Test build of 7 Nov 2026, not ruled. Shows the green Black Friday price beside the button on wine pages, only Fri 27 Nov 00:00 to Mon 30 Nov 23:59 UK, and only once the depth below is set. Turn on only with the Shopify discount live at the same depth. Off during early access, 20 to 23 Nov.",
+        "label": "Black Friday price in the product page buy box",
+        "info": "Shows the green Black Friday price beside the button on every product page but the gift card, only Fri 27 Nov 00:00 to Mon 30 Nov 23:59 UK. Turn on only with the Shopify discount live at the same depth. Off during early access, 20 to 23 Nov.",
         "default": false
       },
       {
         "type": "number",
         "id": "tl_bf_depth",
         "label": "Black Friday depth, per cent off",
-        "info": "No default on purpose: D1, the depth, is not ruled (REF · BLACK FRIDAY 2026 v4). A whole number from 1 to 99, the same as the Shopify discount. Blank shows nothing."
+        "info": "15, his ruling of 7 Nov 2026 (REF · BLACK FRIDAY 2026 v7). A whole number from 1 to 99, the same as the Shopify discount. Blank shows nothing.",
+        "default": 15
       },
       {
         "type": "checkbox",
