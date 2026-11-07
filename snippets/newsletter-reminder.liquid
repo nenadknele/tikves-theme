@@ -12,35 +12,57 @@
     one line of small type, a pill to match the buttons, and a close button
     that fills the right end so the tap area stays a full height.
   {% endcomment %}
+  {% comment %}
+    7 Nov 2026, operator: the tab becomes Overtone's round badge. A dark
+    circle bottom left reading "10% Off", with a small round close button
+    on its top right edge. Tapping the circle reopens the popup.
+  {% endcomment %}
   {% style %}
     newsletter-reminder {
       --newsletterReminderPadding: 0;
       left: 16px;
       bottom: 16px;
-      max-width: calc(100% - 32px);
-      border-radius: var(--buttonRadius, 50px);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+      width: 84px;
+      height: 84px;
+      max-width: none;
+      padding: 0;
+      border-radius: 50%;
+      background-color: #1F2328;
+      color: #F5EFE7;
+      overflow: visible;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
     }
 
     newsletter-reminder .newsletter-reminder__content {
       padding: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
     }
 
     newsletter-reminder .newsletter-reminder__message.h3 {
       margin: 0;
-      padding: 11px 46px 11px 18px;
-      font-size: 14px;
-      line-height: 1.2;
+      padding: 0 8px;
+      font-size: 15px;
+      line-height: 1.15;
       letter-spacing: 0.01em;
-      white-space: nowrap;
+      text-align: center;
+      white-space: normal;
+      color: #F5EFE7;
     }
 
     newsletter-reminder.modal--square .modal__close {
       position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: 40px;
+      top: -6px;
+      right: -6px;
+      bottom: auto;
+      left: auto;
+      width: 26px;
+      height: 26px;
       min-width: 0;
       padding: 0;
       display: flex;
@@ -49,7 +71,10 @@
       font-size: 0;
       line-height: 0;
       overflow: hidden;
-      border-radius: 0 var(--buttonRadius, 50px) var(--buttonRadius, 50px) 0;
+      border-radius: 50%;
+      background-color: #1F2328;
+      color: #F5EFE7;
+      border: 2px solid #F5EFE7;
     }
 
     newsletter-reminder.modal--square .modal__close::after {
@@ -57,8 +82,8 @@
     }
 
     newsletter-reminder.modal--square .modal__close .icon {
-      width: 12px;
-      height: 12px;
+      width: 10px;
+      height: 10px;
       display: block;
     }
   {% endstyle %}
