@@ -16,7 +16,7 @@
   · 'band'       the homepage band
 
   Epoch seconds, UTC, matching tl-dates:
-  bfTeaser 1795478400 · bfStart 1795737600 · bfEnd 1796083199
+  bfTeaser 1795478400 · bfStart 1795737600 · bfEnd 1796342399 (Thu 3 Dec, moved 8 Nov 2026)
   xmasEnd 1797465599 · giftEnd 1798156799
 {% endcomment %}
 {%- liquid
@@ -26,7 +26,7 @@
   assign tl_show_xmas = false
   assign tl_show_gift = false
   assign tl_bf_from = 1795478400 | minus: tl_slack
-  assign tl_bf_to = 1796083199 | plus: tl_slack
+  assign tl_bf_to = 1796342399 | plus: tl_slack
   assign tl_xmas_to = 1797465599 | plus: tl_slack
   assign tl_gift_from = 1797465599 | minus: tl_slack
   assign tl_gift_to = 1798156799 | plus: tl_slack
@@ -101,7 +101,7 @@
   {%- when 'line' -%}
     {%- if tl_show_bf or tl_show_xmas or tl_show_gift -%}
       <div class="tl-urgency" data-tl-lines>
-        {%- if tl_show_bf -%}<p class="tl-urgency__line" data-tl-fill="bf">Black Friday: 15% off every bottle, case and set, Friday 27 to Monday 30 November.</p>{%- endif -%}
+        {%- if tl_show_bf -%}<p class="tl-urgency__line" data-tl-fill="bf">Black Friday: 15% off every bottle, case and set, Friday 27 November to Thursday 3 December.</p>{%- endif -%}
         {%- if tl_show_xmas -%}<p class="tl-urgency__line" data-tl-fill="xmasLine">Order by Wednesday 16 December for Christmas delivery.</p>{%- endif -%}
         {%- if tl_show_gift -%}<p class="tl-urgency__line" data-tl-fill="gift">Too late for Christmas delivery? <a href="/products/gift-card">A gift card</a> comes by email, straight away.</p>{%- endif -%}
       </div>
@@ -140,7 +140,7 @@
         {%- if tl_show_bf -%}
           <div class="tl-band__panel" data-tl-panel="bf">
             <h2 class="tl-band__title" data-tl-title-teaser="Black Friday Starts Friday" data-tl-title-live="Black Friday">Black Friday</h2>
-            <p class="tl-band__line" data-tl-fill="bf">15% off every bottle, case and set, Friday 27 to Monday 30 November.</p>
+            <p class="tl-band__line" data-tl-fill="bf">15% off every bottle, case and set, Friday 27 November to Thursday 3 December.</p>
             <a class="btn tl-band__btn" href="/collections/all">Shop Everything</a>
           </div>
         {%- endif -%}
@@ -194,7 +194,7 @@
             h.textContent = p.bfTeaser ? h.getAttribute('data-tl-title-teaser') : h.getAttribute('data-tl-title-live');
             var line = panel.querySelector('[data-tl-fill="bf"]');
             if (p.bfTeaser) {
-              line.textContent = '15% off every bottle, case and set, Friday 27 to Monday 30 November.';
+              line.textContent = '15% off every bottle, case and set, Friday 27 November to Thursday 3 December.';
             } else {
               line.textContent = TL.texts.bf(t).replace(/^Black Friday: |^Last day of Black Friday: /, function (m) { return m.indexOf('Last') === 0 ? 'Last day. ' : ''; });
             }
