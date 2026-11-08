@@ -1,0 +1,100 @@
+{% comment %}
+  TIKVES LONDON · THE WEEKEND GIFT IN THE CART · 8 Nov 2026
+  His word, 8 Nov 2026: "smederevka is fine", then tell and tap, weekend only.
+  The offer: one bottle of Smederevka free on a basket of £100 or more after
+  the 15%, Fri 27 Nov 00:00 to Thu 3 Dec 23:59:59 UK. Shopify does the giving:
+  DiscountAutomaticNode/2294435742041, "Black Friday · a bottle of Smederevka
+  free with £100 or more". Shopify measures £117.65 of other goods before the
+  cut, which is £100.01 after it. Smederevka and the gift card don't count.
+
+  The cart never adds the bottle by itself. It says how much more is needed,
+  or that the bottle is free, with a button that puts one in the basket.
+  The amount still needed is shown after the 15%, as the basket shows it,
+  rounded up to the penny so it is always enough.
+
+  Lines, exact words for his yes:
+    under the line:          "£X more and a bottle of Smederevka is free."
+    under, bottle in basket: "£X more and your Smederevka is free."
+    over, no bottle:         "A bottle of Smederevka is free with this order." [Add it]
+    over, bottle in basket:  nothing here. The basket line shows it struck through, "Free".
+  Hidden outside the weekend window. TL.offer is the clock (snippets/tl-dates).
+  A test template (suffix "bftest") shows it before the dates, on test copies.
+{% endcomment %}
+<div class="tl-gift" data-tl-gift hidden>
+  <p class="tl-gift__text" data-tl-gift-text></p>
+  <button type="button" class="tl-gift__add" data-tl-gift-add hidden>Add it</button>
+</div>
+<style>
+  .tl-gift{display:flex;align-items:center;gap:12px;margin:12px 0 0;padding:12px 14px;border:1px solid #B9AC9B}
+  .tl-gift[hidden]{display:none}
+  .tl-gift__text{flex:1 1 auto;margin:0;font-size:14px;line-height:1.4}
+  .tl-gift__add{flex:0 0 auto;border:0;border-radius:999px;background:#1F2328;color:#FFFFFF;font:inherit;font-size:13px;font-weight:500;padding:9px 20px;cursor:pointer;min-height:40px}
+  .tl-gift__add[hidden]{display:none}
+  .tl-gift__add[disabled]{opacity:.55;cursor:default}
+</style>
+<script>
+(function () {
+  if (window.tlCartGift) return;
+  window.tlCartGift = true;
+  var SMED_PRODUCT = 16464560718169, SMED_VARIANT = 58744734089561;
+  var NEED = 11765; // pence of other goods before the cut, set on the Shopify gift
+  var CUT = 0.85;   // the weekend 15%
+
+  function on() {
+    if (!window.TL) return false;
+    if (TL.bfTest) return true;
+    return TL.offer(Date.now()) === 'bf';
+  }
+  function money(c) {
+    try { if (window.theme && theme.Currency && theme.settings && theme.settings.moneyFormat) return theme.Currency.formatMoney(c, theme.settings.moneyFormat); } catch (e) {}
+    return '£' + (c / 100).toFixed(2);
+  }
+  function render(cart) {
+    var boxes = document.querySelectorAll('[data-tl-gift]');
+    if (!boxes.length) return;
+    var items = (cart && cart.items) || [];
+    var other = 0, smed = false, show = on() && items.length > 0;
+    items.forEach(function (i) {
+      if (i.product_id === SMED_PRODUCT) { smed = true; return; }
+      if (i.gift_card) return;
+      other += i.original_line_price || 0;
+    });
+    var text = '', add = false;
+    var shortPre = NEED - other;
+    if (shortPre > 0) {
+      var shortNow = Math.ceil(shortPre * CUT);
+      text = money(shortNow) + (smed ? ' more and your Smederevka is free.' : ' more and a bottle of Smederevka is free.');
+    } else if (!smed) {
+      text = 'A bottle of Smederevka is free with this order.';
+      add = true;
+    } else {
+      show = false;
+    }
+    boxes.forEach(function (box) {
+      box.hidden = !show;
+      box.querySelector('[data-tl-gift-text]').textContent = text;
+      var b = box.querySelector('[data-tl-gift-add]');
+      b.hidden = !add; b.disabled = false; b.textContent = 'Add it';
+    });
+  }
+  function refresh() {
+    fetch('/cart.js', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.json(); }).then(render).catch(function () {});
+  }
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest && e.target.closest('[data-tl-gift-add]');
+    if (!b) return;
+    b.disabled = true; b.textContent = 'Adding';
+    fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ id: SMED_VARIANT, quantity: 1 }] }) })
+      .then(function (r) { return r.json(); })
+      .then(function () { document.dispatchEvent(new CustomEvent('cart:build')); refresh(); })
+      .catch(function () { b.disabled = false; b.textContent = 'Add it'; });
+  });
+  document.addEventListener('cart:updated', function (evt) {
+    if (evt.detail && evt.detail.cart && evt.detail.cart.items) render(evt.detail.cart); else refresh();
+  });
+  document.addEventListener('ajaxProduct:added', refresh);
+  document.addEventListener('cart:build', refresh);
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', refresh); else refresh();
+})();
+</script>
