@@ -49,10 +49,42 @@
   COUNTING: days are calendar days in UK time, today included, so on Monday
   14 December it reads 3 days left (14, 15, 16). In the last 48 hours it
   counts hours, rounded up. On the deadline's own day it says Last day.
+
+  CROSSED-OUT PRICES, his word of 8 Nov 2026, "crossed out prices do like
+  ezra suggested". On the cards, the search results and the cart's
+  recommendations, the shop price is struck through beside the green price
+  after the cut, in the weekend window only, and only with the theme switch
+  "Black Friday price" on (settings.tl_bf_price, depth settings.tl_bf_depth).
+  The theme works it out from the live price. No compare-at price, so nothing
+  reaches the Google feed and nothing is left behind after Thu 3 Dec.
+  TL.bfDepth(t) is the depth in force at t, or 0. TL.bfPay(cents) is the price
+  after the cut, rounded the way the buy box rounds it. The html class
+  tl-bf-price is set while it is in force. A template whose suffix contains
+  "bftest" (test copies only) forces it on, to check the look before the dates.
+  Early access shows no crossed-out price outside the basket: only the code
+  holder gets the 15%, so the cut shows on the basket line once the code is in.
 {% endcomment %}
+{%- liquid
+  assign tl_bfp_on = false
+  assign tl_bfp_test = false
+  assign tl_bfp_d = 0
+  assign tl_bfp_sfx = template.suffix | default: ''
+  if tl_bfp_sfx contains 'bftest'
+    assign tl_bfp_d = tl_bfp_sfx | split: 'bftest' | last | plus: 0
+    assign tl_bfp_test = true
+  elsif settings.tl_bf_price and settings.tl_bf_depth != blank
+    assign tl_bfp_d = settings.tl_bf_depth | plus: 0
+    assign tl_bfp_on = true
+  endif
+  assign tl_bfp_int = tl_bfp_d | floor
+  if tl_bfp_int != tl_bfp_d or tl_bfp_d < 1 or tl_bfp_d > 99
+    assign tl_bfp_d = 0
+  endif
+-%}
 <script>
   (function () {
     if (window.TL) return;
+    var BFP = { on: {{ tl_bfp_on | json }}, test: {{ tl_bfp_test | json }}, depth: {{ tl_bfp_d | json }} };
     var D = {
       eaStart: Date.UTC(2026, 10, 20, 0, 0, 0),
       eaEnd: Date.UTC(2026, 10, 23, 23, 59, 59),
@@ -95,6 +127,15 @@
       var full = cart.original_total_price;
       return typeof full === 'number' ? full : paid;
     }
+    function bfDepth(t) {
+      if (!BFP.depth) return 0;
+      if (BFP.test) return BFP.depth;
+      return BFP.on && offer(t == null ? Date.now() : t) === 'bf' ? BFP.depth : 0;
+    }
+    function bfPay(cents, t) {
+      var d = bfDepth(t);
+      return d ? cents - Math.round(cents * d / 100) : cents;
+    }
     var BF = '15% off every bottle, case and set';
     var texts = {
       xmasCount: function (t) {
@@ -130,13 +171,20 @@
     if (p0.bfLive) root.classList.add('tl-bf-live');
     if (!p0.xmas) root.classList.add('tl-xmas-over');
     if (p0.gift) root.classList.add('tl-gift');
-    window.TL = { dates: D, phase: phase, offer: offer, deliveryTotal: deliveryTotal, left: left, texts: texts, now: function () { return Date.now(); } };
+    if (bfDepth(t0)) root.classList.add('tl-bf-price');
+    window.TL = { dates: D, phase: phase, offer: offer, deliveryTotal: deliveryTotal, left: left, texts: texts, bfDepth: bfDepth, bfPay: bfPay, now: function () { return Date.now(); } };
   })();
 </script>
 <style>
   html.tl-bf-live .tl-six-timed,
   html.tl-xmas-over .tl-six-timed { display: none !important; }
   [data-tl-fill]:empty { display: none; }
+  /* Crossed-out prices: the card's own price shows unless tl-bf-price is set. */
+  .tl-cw { display: none; }
+  html.tl-bf-price .tl-cw { display: inline; }
+  html.tl-bf-price [data-tl-cw-alt] { display: none !important; }
+  .tl-cw__now { color: #1f7a3a; font-weight: 700; margin-right: 6px; }
+  .tl-was { color: #5c5a57; font-weight: 400; text-decoration: line-through; text-decoration-thickness: 1px; }
   /* Belt and braces: a line outside its window stays hidden even where a
      re-rendered fragment did not run its script. */
   html:not(.tl-bf-live):not(.tl-bf-teaser) [data-tl-fill="bf"],

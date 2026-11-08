@@ -239,12 +239,39 @@ policy asks for ABV on the landing page. Operator approved in chat.
               <span class="grid-product__price--original">{{ product.compare_at_price | money }}</span>
               <span class="visually-hidden">{{ 'products.general.sale_price' | t }}</span>
             {%- endif -%}
+            {%- comment -%}
+              Crossed-out price, 8 Nov 2026: inside the weekend window the card
+              shows the price after the cut in green and the shop price struck
+              through. The cut is worked out here; snippets/tl-dates says when.
+              Not on the gift card, a sale price or a "from" price.
+            {%- endcomment -%}
+            {%- liquid
+              assign tl_cw = false
+              assign tl_cw_d = 0
+              assign tl_cw_sfx = template.suffix | default: ''
+              if tl_cw_sfx contains 'bftest'
+                assign tl_cw_d = tl_cw_sfx | split: 'bftest' | last | plus: 0
+              elsif settings.tl_bf_price and settings.tl_bf_depth != blank
+                assign tl_cw_d = settings.tl_bf_depth | plus: 0
+              endif
+              if tl_cw_d >= 1 and tl_cw_d <= 99
+                unless product.gift_card? or product.price_varies or on_sale
+                  assign tl_cw = true
+                  assign tl_cw_off = product.price | times: tl_cw_d | divided_by: 100.0 | round
+                endunless
+              endif
+            -%}
+            {%- if tl_cw -%}
+              <span class="tl-cw"><b class="tl-cw__now">{{ product.price | minus: tl_cw_off | money }}</b> <s class="tl-was"><span class="visually-hidden">Was </span>{{ product.price | money }}</s></span>
+            {%- endif -%}
+            <span{% if tl_cw %} data-tl-cw-alt{% endif %}>
             {%- if product.price_varies -%}
               {%- assign price = product.price_min | money -%}
               {{ 'products.general.from_text_html' | t: price: price }}
             {%- else -%}
               {{ product.price | money }}
             {%- endif -%}
+            </span>
             {%- if on_sale -%}
               {%- if settings.product_save_amount -%}
                 {%- if settings.product_save_type == 'dollar' -%}
