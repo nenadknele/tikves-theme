@@ -28,7 +28,8 @@
   THE BLACK FRIDAY PRICE, part 'bf'.
   · Off unless the theme setting "Black Friday price in the wine page buy box"
     is on AND the depth setting holds a whole number from 1 to 99 AND the clock
-    is inside Fri 27 Nov 00:00 to Mon 30 Nov 23:59 UK. D1 is 15%, his ruling
+    is inside Fri 27 Nov 00:00 to Thu 3 Dec 23:59 UK (moved from Mon 30 Nov
+    on his word of 8 Nov 2026, "main event until Thursday 3"). D1 is 15%, his ruling
     of 7 Nov 2026 (REF · BLACK FRIDAY 2026 v7), and the depth setting defaults
     to 15. The switch stays off until the Shopify discount is live at 15%.
   · TEST ONLY: a template named product.wine-bftestNN.json, which exists
@@ -86,10 +87,10 @@
       comment
         Server side, the window plus a day either side, because Shopify can
         serve a cached page. The script below is the final word on the minute.
-        Fri 27 Nov 2026 00:00 UTC = 1795737600 · Mon 30 Nov 2026 23:59:59 UTC = 1796083199.
+        Fri 27 Nov 2026 00:00 UTC = 1795737600 · Thu 3 Dec 2026 23:59:59 UTC = 1796342399.
       endcomment
       assign tl_now = 'now' | date: '%s' | plus: 0
-      if tl_now >= 1795651200 and tl_now <= 1796169599
+      if tl_now >= 1795651200 and tl_now <= 1796428799
         assign tl_bf_on = true
       endif
     endif
@@ -136,7 +137,7 @@
     {%- comment -%} Approved 7 Nov 2026, REF · WINE PAGE BUY BOX v1. The green is #1f7a3a, kept on his word the same day. {%- endcomment -%}
     <p class="tl-bb-bf__head">Black Friday · {{ tl_d }}% off</p>
     <p class="tl-bb-bf__price"><b data-tl-bb-pay>{{ bf_pay | money }}</b> <span data-tl-bb-off>{{ bf_off | money }} off{% unless tl_pack %} this bottle{% endunless %}</span></p>
-    <p class="tl-bb-bf__end">Ends Monday 30 November at 23:59. <span data-tl-bb-left></span></p>
+    <p class="tl-bb-bf__end">Ends Thursday 3 December at 23:59. <span data-tl-bb-left></span></p>
   </div>
   <style>
     html:not(.tl-bb-bf-off) .product-single__meta .product-block--price{display:none !important}
@@ -363,7 +364,10 @@
     }
     if (bf) {
       var test = bf.hasAttribute('data-test');
-      var start = Date.UTC(2026, 10, 27, 0, 0, 0), end = Date.UTC(2026, 10, 30, 23, 59, 59), now = Date.now();
+      // The window is read from snippets/tl-dates (TL.dates) when it is on the
+      // theme, so the end lives in one place; the same dates are the fallback.
+      var TD = (window.TL && window.TL.dates) || {};
+      var start = TD.bfStart || Date.UTC(2026, 10, 27, 0, 0, 0), end = TD.bfEnd || Date.UTC(2026, 11, 3, 23, 59, 59), now = Date.now();
       if (!test && (now < start || now > end)) {
         // Outside the real window: the block goes, the shelf price comes back.
         bf.remove(); bf = null;
