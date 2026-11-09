@@ -40,6 +40,10 @@
     .tl-eb-x .eb-btn--line { background: transparent; color: var(--eb-ink); border: 1px solid var(--eb-ink); }
     .tl-eb-x .eb-btn--line:hover { background: var(--eb-ink); color: var(--eb-paper); }
     .tl-eb-x .eb-btn:focus-visible { outline: 2px solid var(--eb-ink); outline-offset: 3px; }
+    /* Words that change from Fri 20 to Mon 23 Nov: html.tl-eb-open is set in the head by snippets/tl-dates. */
+    .tl-eb-x .eb-open { display: none; }
+    html.tl-eb-open .tl-eb-x .eb-open { display: inline; }
+    html.tl-eb-open .tl-eb-x .eb-pre { display: none; }
     .tl-eb-x .eb-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .tl-eb-x .eb-strip a, .tl-eb-x .eb-grid a { display: block; }
     .tl-eb-x .eb-sq { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--eb-paper-deep); }

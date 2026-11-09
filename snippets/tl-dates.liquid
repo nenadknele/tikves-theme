@@ -120,13 +120,30 @@
   cached page or a fragment that missed its script never shows it late.
   Kept as its own block so it reads beside the other dates without touching
   the lines above.
+
+  EARLY ACCESS OPEN, his word of 9 Nov 2026: from Fri 20 Nov 00:00 to Mon
+  23 Nov 23:59:59 UK the early bird page and its thank-you page change their
+  words, because late joiners get their code straight away. TL.earlyOpen(t)
+  is true inside that window and sets the html class tl-eb-open; the pages
+  show their "open" words under that class (snippets/tl-eb-style). It reads
+  TL.dates.eaStart and eaEnd, the early access window. Pull request 97 puts
+  those two dates in the D list above; until it merges, this block sets the
+  same two dates itself, and once it merges this block leaves them alone, so
+  there is still one place to change them.
 {%- endcomment -%}
 <script>
   (function () {
     if (!window.TL || window.TL.earlyBand) return;
     TL.dates.ebBandEnd = Date.UTC(2026, 10, 23, 23, 59, 59);
     TL.earlyBand = function (t) { return (t == null ? TL.now() : t) <= TL.dates.ebBandEnd; };
-    if (TL.earlyBand(TL.now())) document.documentElement.classList.add('tl-eb-band');
+    if (!TL.dates.eaStart) {
+      TL.dates.eaStart = Date.UTC(2026, 10, 20, 0, 0, 0);
+      TL.dates.eaEnd = Date.UTC(2026, 10, 23, 23, 59, 59);
+    }
+    TL.earlyOpen = function (t) { var n = t == null ? TL.now() : t; return n >= TL.dates.eaStart && n <= TL.dates.eaEnd; };
+    var root = document.documentElement;
+    if (TL.earlyBand(TL.now())) root.classList.add('tl-eb-band');
+    if (TL.earlyOpen(TL.now())) root.classList.add('tl-eb-open');
   })();
 </script>
 <style>

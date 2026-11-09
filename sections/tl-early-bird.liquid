@@ -9,79 +9,130 @@
   · Hero: four product photos in a 2 by 2 grid on the Wine band, a Paper
     note card on top: "Black Friday / comes early".
   · Heading, line.
-  · The form: the Klaviyo form named in form_id (UHxh6W), embedded. The
-    email field, its label, the 18 or over tick, the consent box and the
-    button are the form's own and are written in Klaviyo, not here. The line
-    under the button is page copy and sits here.
-    ⚠ Klaviyo's script loads only after a yes to Analytics and Marketing
-    (snippets/klaviyo-consent-loader). Before that yes, this slot is empty.
-    His ruling is owed on that before the page publishes.
+  · The form (below), the consent line under the button, then the line
+    about what happens next.
   · How early access works: three numbered cards.
   · A strip of three product photos. Then the theme's own footer.
 
-  WORDS, from the design, his word owed before publish. Never on it: a
-  depth, an end date, a gift, a delivery line, £85, "VIP", "sale", "deal",
-  "save", a countdown or a stock count. It names Friday 20 November because
-  that date is ruled and true.
+  THE FORM, his word of 9 Nov 2026: our own form, no Klaviyo form and no
+  klaviyo.js, so it works for someone who said no to cookies. On submit it
+  posts to Klaviyo's client subscription endpoint, POST
+  https://a.klaviyo.com/client/subscriptions?company_id=<public key>,
+  revision 2026-10-15 (read in Klaviyo's reference that day). It sends the
+  email, email marketing consent SUBSCRIBED, the list (list_id, SSmpAc,
+  single opt-in, read live 9 Nov) and custom_source, which Klaviyo stores on
+  the consent record. Only the public key (site ID) is in the theme, the
+  same one snippets/klaviyo-consent-loader uses; never a private key.
+  Klaviyo answers 202 on success: the visitor goes to the thank-you page.
+  Anything else: the error line shows and the button comes back.
+  The 18 or over tick is required by the browser and by the script. The
+  consent line sits in plain sight under the button: joining means the early
+  access email and our other emails, his ruling of 9 Nov. The Klaviyo form
+  UHxh6W stays as it is, a draft, unused.
+
+  WORDS FROM FRI 20 TO MON 23 NOV: each changing line carries its "open"
+  words beside it (snippets/tl-eb-words), shown under html.tl-eb-open,
+  which snippets/tl-dates sets inside the early access window. Late joiners
+  get their code straight away from Klaviyo. After Mon 23 Nov 23:59 the page
+  has no closed state: he takes it down.
+
+  WORDS, from the design and his drafts, his word owed before publish. Never
+  on it: a depth, an end date, a gift, a delivery line, £85, "VIP", "sale",
+  "deal", "save", a countdown or a stock count. It names Friday 20 November
+  because that date is ruled and true.
 
   PHOTOS: the products' own Shopify images, picked by product. If a picked
   product is gone, its square is left out rather than filled with another.
 
   SEARCH: noindex, nofollow, set in layout/theme.liquid for this template
-  and the thank-you template. Kept out of every menu.
+  and the thank-you template. Kept out of every menu. The newsletter popup
+  is off on both templates (sections/newsletter-popup.liquid).
 
-  TESTING ON A COPY: any page shows this template with ?view=early-bird.
+  TESTING ON A COPY: any page shows this template with ?view=early-bird, and
+  a sign-up there goes to the same page with ?view=early-bird-thanks.
 {%- endcomment -%}
 
 {%- render 'tl-eb-style' -%}
+{%- liquid
+  assign s = section.settings
+  assign eb_on_page = false
+  if request.page_type == 'page' and page.handle == 'early-bird'
+    assign eb_on_page = true
+  endif
+-%}
 
 <div class="tl-eb-x eb">
   <div class="eb__hero">
     <div class="eb-grid eb__grid">
       {%- for key in (1..4) -%}
         {%- assign pk = 'hero_' | append: key -%}
-        {%- assign p = section.settings[pk] -%}
+        {%- assign p = s[pk] -%}
         {%- if p != blank and p.featured_media -%}
           {{- p.featured_media | image_url: width: 900 | image_tag: class: 'eb-sq', loading: 'eager', widths: '300, 450, 600, 900', sizes: '(min-width: 769px) 360px, 50vw', alt: p.title -}}
         {%- endif -%}
       {%- endfor -%}
     </div>
-    {%- if section.settings.card_line_1 != blank or section.settings.card_line_2 != blank -%}
+    {%- if s.card_line_1 != blank or s.card_line_2 != blank -%}
       <div class="eb__card">
-        <p class="eb__card-text">{{ section.settings.card_line_1 }}<br><span class="eb-em">{{ section.settings.card_line_2 }}</span></p>
+        <p class="eb__card-text">{{ s.card_line_1 }}<br><span class="eb-em">{{ s.card_line_2 }}</span></p>
       </div>
     {%- endif -%}
   </div>
 
   <div class="eb__intro">
-    <h1 class="eb-h eb__head">{{ section.settings.heading }}{% if section.settings.heading_em != blank %} <span class="eb-em">{{ section.settings.heading_em }}</span>{% endif %}</h1>
-    {%- if section.settings.text != blank -%}
-      <p class="eb__text">{{ section.settings.text }}</p>
+    <h1 class="eb-h eb__head">
+      {%- if s.heading_open != blank -%}
+        <span class="eb-pre">{{ s.heading }} <span class="eb-em">{{ s.heading_em }}</span></span><span class="eb-open">{{ s.heading_open }} <span class="eb-em">{{ s.heading_open_em }}</span></span>
+      {%- else -%}
+        {{ s.heading }} <span class="eb-em">{{ s.heading_em }}</span>
+      {%- endif -%}
+    </h1>
+    {%- if s.text != blank -%}
+      <p class="eb__text">{% render 'tl-eb-words', pre: s.text, open: s.text_open %}</p>
     {%- endif -%}
   </div>
 
-  <div class="eb__form" id="EarlyBirdForm">
-    {%- if section.settings.form_id != blank -%}
-      <div class="klaviyo-form-{{ section.settings.form_id | escape }}"></div>
-    {%- endif -%}
-    {%- if section.settings.under_button != blank -%}
-      <p class="eb__under">{{ section.settings.under_button }}</p>
+  <div class="eb__form-wrap" id="EarlyBirdForm">
+    <form class="eb__form" data-eb-form novalidate
+      data-key="{{ s.public_key | escape }}"
+      data-list="{{ s.list_id | escape }}"
+      data-source="{{ s.custom_source | escape }}"
+      data-thanks="{{ s.thanks_path | escape }}"
+      data-on-page="{{ eb_on_page }}">
+      <label class="eb__label" for="EbEmail-{{ section.id }}">{{ s.email_label }}</label>
+      <input class="eb__input" type="email" id="EbEmail-{{ section.id }}" name="email" required
+        autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="email"
+        placeholder="{{ s.email_placeholder | escape }}">
+      <label class="eb__tick">
+        <input type="checkbox" name="age" required>
+        <span>{{ s.age_label }}</span>
+      </label>
+      <button type="submit" class="eb-btn eb-btn--solid eb__btn" data-eb-submit>{{ s.button_label }}</button>
+      <p class="eb__error" data-eb-error role="alert" hidden>{{ s.error_text }}</p>
+      {%- if s.consent_line != blank -%}
+        <p class="eb__consent">{{ s.consent_line }}</p>
+      {%- endif -%}
+    </form>
+    {%- if s.under_button != blank -%}
+      <p class="eb__under">{% render 'tl-eb-words', pre: s.under_button, open: s.under_button_open %}</p>
     {%- endif -%}
   </div>
 
   <div class="eb__how">
-    {%- if section.settings.how_heading != blank -%}
-      <h2 class="eb-h eb__how-head">{{ section.settings.how_heading }}</h2>
+    {%- if s.how_heading != blank -%}
+      <h2 class="eb-h eb__how-head">{{ s.how_heading }}</h2>
     {%- endif -%}
     <ol class="eb__steps">
       {%- for key in (1..3) -%}
         {%- assign tk = 'step_' | append: key | append: '_title' -%}
         {%- assign bk = 'step_' | append: key | append: '_text' -%}
-        {%- if section.settings[tk] != blank -%}
+        {%- assign tko = tk | append: '_open' -%}
+        {%- assign bko = bk | append: '_open' -%}
+        {%- if s[tk] != blank -%}
           <li class="eb__step eb__step--{{ key }}">
             <span class="eb__num" aria-hidden="true">{{ key }}</span>
-            <h3 class="eb__step-title">{{ section.settings[tk] }}</h3>
-            <p class="eb__step-text">{{ section.settings[bk] }}</p>
+            <h3 class="eb__step-title">{% render 'tl-eb-words', pre: s[tk], open: s[tko] %}</h3>
+            <p class="eb__step-text">{% render 'tl-eb-words', pre: s[bk], open: s[bko] %}</p>
           </li>
         {%- endif -%}
       {%- endfor -%}
@@ -91,7 +142,7 @@
   <div class="eb-strip">
     {%- for key in (1..3) -%}
       {%- assign pk = 'strip_' | append: key -%}
-      {%- assign p = section.settings[pk] -%}
+      {%- assign p = s[pk] -%}
       {%- if p != blank and p.featured_media -%}
         <a href="{{ p.url }}">
           {{- p.featured_media | image_url: width: 900 | image_tag: class: 'eb-sq', loading: 'lazy', widths: '300, 450, 600, 900', sizes: '(min-width: 1200px) 400px, 33vw', alt: p.title -}}
@@ -100,6 +151,53 @@
     {%- endfor -%}
   </div>
 </div>
+
+<script>
+  (function () {
+    var form = document.querySelector('[data-eb-form]:not([data-eb-ready])');
+    if (!form) return;
+    form.setAttribute('data-eb-ready', '');
+    var email = form.querySelector('input[name="email"]');
+    var age = form.querySelector('input[name="age"]');
+    var btn = form.querySelector('[data-eb-submit]');
+    var err = form.querySelector('[data-eb-error]');
+    function thanksUrl() {
+      if (form.getAttribute('data-on-page') === 'true') return form.getAttribute('data-thanks');
+      var u = new URL(window.location.href);
+      u.searchParams.set('view', 'early-bird-thanks');
+      return u.pathname + u.search;
+    }
+    function fail() { err.hidden = false; btn.disabled = false; btn.removeAttribute('aria-busy'); }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      err.hidden = true;
+      if (!form.reportValidity()) return;
+      if (!age.checked) { age.focus(); return; }
+      btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
+      var body = {
+        data: {
+          type: 'subscription',
+          attributes: {
+            custom_source: form.getAttribute('data-source'),
+            profile: { data: { type: 'profile', attributes: {
+              email: email.value.trim(),
+              subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } }
+            } } }
+          },
+          relationships: { list: { data: { type: 'list', id: form.getAttribute('data-list') } } }
+        }
+      };
+      fetch('https://a.klaviyo.com/client/subscriptions?company_id=' + encodeURIComponent(form.getAttribute('data-key')), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json', 'revision': '2026-10-15' },
+        body: JSON.stringify(body)
+      }).then(function (r) {
+        if (r.ok) { window.location.href = thanksUrl(); } else { fail(); }
+      }).catch(fail);
+    });
+  })();
+</script>
 
 {%- style -%}
   .eb { background: var(--eb-paper); }
@@ -110,8 +208,18 @@
   .eb__intro { padding: 40px 24px 16px; text-align: center; display: flex; flex-direction: column; gap: 16px; max-width: 640px; margin: 0 auto; }
   .eb__head { font-size: 36px; line-height: 1.1; }
   .eb__text { margin: 0; font-size: 18px; line-height: 1.6; }
-  .eb__form { padding: 16px 24px 32px; max-width: 520px; margin: 0 auto; box-sizing: border-box; }
-  .eb__under { margin: 12px 0 0; text-align: center; font-size: 16px; line-height: 1.6; }
+  .eb__form-wrap { padding: 16px 24px 32px; max-width: 520px; margin: 0 auto; box-sizing: border-box; }
+  .eb__form { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+  .tl-eb-x .eb__label { display: block; margin: 0; font-family: var(--eb-body); font-size: 16px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--eb-ink); }
+  .tl-eb-x .eb__input { width: 100%; box-sizing: border-box; min-height: 52px; margin: 0; padding: 14px; font: inherit; font-size: 16px; color: var(--eb-ink); background: #FFFFFF; border: 1px solid var(--eb-stone); border-radius: 0; }
+  .tl-eb-x .eb__input:focus { outline: 2px solid var(--eb-ink); outline-offset: 1px; border-color: var(--eb-ink); }
+  .tl-eb-x .eb__tick { display: flex; gap: 12px; align-items: center; min-height: 44px; margin: 0; font-family: var(--eb-body); font-size: 16px; line-height: 1.5; font-weight: 400; letter-spacing: 0; text-transform: none; cursor: pointer; color: var(--eb-ink); }
+  .tl-eb-x .eb__tick input { flex: 0 0 auto; width: 22px; height: 22px; margin: 0; accent-color: var(--eb-wine); }
+  .eb__btn { margin-top: 4px; cursor: pointer; }
+  .eb__btn[disabled] { opacity: 0.7; cursor: progress; }
+  .eb__error { margin: 0; font-size: 16px; line-height: 1.5; color: var(--eb-wine); font-weight: 500; }
+  .eb__consent { margin: 0; font-size: 14px; line-height: 1.5; text-align: center; color: var(--eb-ink); }
+  .eb__under { margin: 16px 0 0; text-align: center; font-size: 16px; line-height: 1.6; }
   .eb__how { background: var(--eb-paper-deep); padding: 40px 24px; }
   .tl-eb-x .eb__how-head { font-size: 28px; line-height: 1.2; text-align: center; margin: 0 0 40px; }
   .eb__steps { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-direction: column; gap: 36px; max-width: 520px; }
@@ -127,7 +235,8 @@
     .eb__card-text { font-size: 32px; }
     .eb__intro { padding-top: 64px; }
     .eb__head { font-size: 52px; }
-    .eb__form { padding-bottom: 56px; }
+    .eb__form-wrap { padding-bottom: 56px; }
+    .tl-eb-x .eb__btn { width: 100%; }
     .eb__how { padding: 64px 24px 72px; }
     .eb__steps { flex-direction: row; max-width: 1080px; gap: 24px; }
     .eb__step { flex: 1 1 0; }
@@ -147,20 +256,40 @@
     { "type": "text", "id": "card_line_1", "label": "Note card, first line", "default": "Black Friday" },
     { "type": "text", "id": "card_line_2", "label": "Note card, italic line", "default": "comes early" },
     { "type": "header", "content": "Words" },
+    { "type": "paragraph", "content": "Each \"20 to 23 Nov\" field shows from Fri 20 Nov 00:00 to Mon 23 Nov 23:59 UK, set in snippets/tl-dates. Left blank, the field above it stays." },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Shop Black Friday" },
     { "type": "text", "id": "heading_em", "label": "Heading, italic end", "default": "first." },
+    { "type": "text", "id": "heading_open", "label": "Heading, 20 to 23 Nov", "default": "Early access is" },
+    { "type": "text", "id": "heading_open_em", "label": "Heading, italic end, 20 to 23 Nov", "default": "open." },
     { "type": "textarea", "id": "text", "label": "Line", "default": "Join the early list and you can shop it from Friday 20 November, a week before everyone else." },
+    { "type": "textarea", "id": "text_open", "label": "Line, 20 to 23 Nov", "default": "Join the early list and we'll email you a code of your own straight away. Shop before everyone else." },
     { "type": "header", "content": "The form" },
-    { "type": "text", "id": "form_id", "label": "Klaviyo form ID", "default": "UHxh6W" },
-    { "type": "textarea", "id": "under_button", "label": "Line under the button", "default": "Nothing to buy today. We'll email you on the 20th, and the button does the rest." },
+    { "type": "text", "id": "email_label", "label": "Email label", "default": "Your email" },
+    { "type": "text", "id": "email_placeholder", "label": "Email placeholder", "default": "you@example.com" },
+    { "type": "text", "id": "age_label", "label": "Age tick", "default": "I'm 18 or over." },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Yes, let me in first" },
+    { "type": "textarea", "id": "consent_line", "label": "Consent line, under the button", "default": "You'll get the early access email and our other emails. Unsubscribe any time." },
+    { "type": "text", "id": "error_text", "label": "If it doesn't go through", "default": "That didn't go through. Please try again." },
+    { "type": "textarea", "id": "under_button", "label": "Line under the form", "default": "Nothing to buy today. We'll email you on the 20th, and the button does the rest." },
+    { "type": "textarea", "id": "under_button_open", "label": "Line under the form, 20 to 23 Nov", "default": "Your code comes by email in a minute or two. The button in it does the rest." },
+    { "type": "text", "id": "public_key", "label": "Klaviyo public key (site ID)", "default": "XP7Hid", "info": "The public key only. Never a private key." },
+    { "type": "text", "id": "list_id", "label": "Klaviyo list ID", "default": "SSmpAc" },
+    { "type": "text", "id": "custom_source", "label": "Consent source, stored by Klaviyo", "default": "Black Friday early bird page" },
+    { "type": "text", "id": "thanks_path", "label": "Thank-you page", "default": "/pages/early-bird-thanks" },
     { "type": "header", "content": "How early access works" },
     { "type": "text", "id": "how_heading", "label": "Heading", "default": "How early access works" },
     { "type": "text", "id": "step_1_title", "label": "1, title", "default": "Join the list" },
+    { "type": "text", "id": "step_1_title_open", "label": "1, title, 20 to 23 Nov" },
     { "type": "textarea", "id": "step_1_text", "label": "1, text", "default": "Put your email in above. That's all for now." },
+    { "type": "textarea", "id": "step_1_text_open", "label": "1, text, 20 to 23 Nov", "default": "Put your email in above." },
     { "type": "text", "id": "step_2_title", "label": "2, title", "default": "Watch your inbox" },
+    { "type": "text", "id": "step_2_title_open", "label": "2, title, 20 to 23 Nov", "default": "Check your inbox" },
     { "type": "textarea", "id": "step_2_text", "label": "2, text", "default": "On Friday 20 November you get an email with a code of your own." },
+    { "type": "textarea", "id": "step_2_text_open", "label": "2, text, 20 to 23 Nov", "default": "Your code arrives in a minute or two." },
     { "type": "text", "id": "step_3_title", "label": "3, title", "default": "Shop first" },
+    { "type": "text", "id": "step_3_title_open", "label": "3, title, 20 to 23 Nov" },
     { "type": "textarea", "id": "step_3_text", "label": "3, text", "default": "Tap the button and the code goes in your basket. Shop a week before everyone else." },
+    { "type": "textarea", "id": "step_3_text_open", "label": "3, text, 20 to 23 Nov", "default": "Tap the button and the code goes in your basket." },
     { "type": "header", "content": "Photo strip" },
     { "type": "product", "id": "strip_1", "label": "Photo 1, product" },
     { "type": "product", "id": "strip_2", "label": "Photo 2, product" },

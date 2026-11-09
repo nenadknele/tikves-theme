@@ -13,7 +13,11 @@
         "wait_heading": "While you wait",
         "wait_text": "Read about the wines, the valley they come from and what to cook with them.",
         "button_label": "Read the journal",
-        "blog_handle": "journal"
+        "blog_handle": "journal",
+        "heading_open": "You're",
+        "heading_open_em": "in.",
+        "text_1_open": "Your code is on its way to your inbox. One tap and it's in your basket.",
+        "text_2_open": "Early access runs until the end of Monday 23 November."
       }
     }
   },

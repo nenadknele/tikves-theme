@@ -4,6 +4,11 @@
   bird" (claude.ai artifact K5q1nLPkuQgpwScpqs4j23, project/Thanks.dc.html).
   Replaces the 6 Nov build of pull request 86. Where the sign-up form lands.
 
+  FROM FRI 20 TO MON 23 NOV the heading and both lines change, under
+  html.tl-eb-open (snippets/tl-dates, tl-eb-words), his word of 9 Nov. No
+  closed state after Mon 23 Nov: he takes the page down.
+  The newsletter popup is off here (sections/newsletter-popup.liquid).
+
   WHAT IS ON IT: the heading and two lines on the Wine band, Cream text;
   three product photos; "While you wait" with an outlined button to the
   journal. Then the theme's own footer.
@@ -22,9 +27,16 @@
 
 <div class="tl-eb-x ebt">
   <div class="ebt__band">
-    <h1 class="eb-h ebt__head">{{ section.settings.heading }}{% if section.settings.heading_em != blank %} <span class="eb-em">{{ section.settings.heading_em }}</span>{% endif %}</h1>
-    {%- if section.settings.text_1 != blank -%}<p class="ebt__text">{{ section.settings.text_1 }}</p>{%- endif -%}
-    {%- if section.settings.text_2 != blank -%}<p class="ebt__text">{{ section.settings.text_2 }}</p>{%- endif -%}
+    {%- assign s = section.settings -%}
+    <h1 class="eb-h ebt__head">
+      {%- if s.heading_open != blank -%}
+        <span class="eb-pre">{{ s.heading }} <span class="eb-em">{{ s.heading_em }}</span></span><span class="eb-open">{{ s.heading_open }} <span class="eb-em">{{ s.heading_open_em }}</span></span>
+      {%- else -%}
+        {{ s.heading }} <span class="eb-em">{{ s.heading_em }}</span>
+      {%- endif -%}
+    </h1>
+    {%- if s.text_1 != blank -%}<p class="ebt__text">{% render 'tl-eb-words', pre: s.text_1, open: s.text_1_open %}</p>{%- endif -%}
+    {%- if s.text_2 != blank -%}<p class="ebt__text">{% render 'tl-eb-words', pre: s.text_2, open: s.text_2_open %}</p>{%- endif -%}
   </div>
 
   <div class="eb-strip">
@@ -74,6 +86,11 @@
     { "type": "text", "id": "heading_em", "label": "Heading, italic end", "default": "the list." },
     { "type": "textarea", "id": "text_1", "label": "First line", "default": "On Friday 20 November we'll email you a code of your own. One tap and it's in your basket." },
     { "type": "textarea", "id": "text_2", "label": "Second line", "default": "You get a week before everyone else. Nothing else to do for now." },
+    { "type": "paragraph", "content": "Each \"20 to 23 Nov\" field shows from Fri 20 Nov 00:00 to Mon 23 Nov 23:59 UK, set in snippets/tl-dates." },
+    { "type": "text", "id": "heading_open", "label": "Heading, 20 to 23 Nov", "default": "You're" },
+    { "type": "text", "id": "heading_open_em", "label": "Heading, italic end, 20 to 23 Nov", "default": "in." },
+    { "type": "textarea", "id": "text_1_open", "label": "First line, 20 to 23 Nov", "default": "Your code is on its way to your inbox. One tap and it's in your basket." },
+    { "type": "textarea", "id": "text_2_open", "label": "Second line, 20 to 23 Nov", "default": "Early access runs until the end of Monday 23 November." },
     { "type": "product", "id": "product_1", "label": "Photo 1, product" },
     { "type": "product", "id": "product_2", "label": "Photo 2, product" },
     { "type": "product", "id": "product_3", "label": "Photo 3, product" },
