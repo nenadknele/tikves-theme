@@ -99,11 +99,11 @@
       data-source="{{ s.custom_source | escape }}"
       data-thanks="{{ s.thanks_path | escape }}"
       data-on-page="{{ eb_on_page }}">
-      <label class="eb__label" for="EbEmail-{{ section.id }}">{{ s.email_label }}</label>
+      <label class="eb__label text-label" for="EbEmail-{{ section.id }}">{{ s.email_label }}</label>
       <input class="eb__input" type="email" id="EbEmail-{{ section.id }}" name="email" required
         autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="email"
         placeholder="{{ s.email_placeholder | escape }}">
-      <label class="eb__tick">
+      <label class="eb__tick text-label">
         <input type="checkbox" name="age" required>
         <span>{{ s.age_label }}</span>
       </label>
