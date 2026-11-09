@@ -1,0 +1,37 @@
+{%- comment -%}
+  Early bird pages · polaroid collage, 9 Nov 2026. Boom's holiday list page
+  sets its products as tilted polaroids on a coloured ground; this is ours,
+  with the bf26- graphics on Paper Deep. Up to five, each with a caption
+  and a link. Parameters: s, the section settings (pol_1_image ...
+  pol_5_link); heading, an optional line over the collage. A polaroid with
+  no graphic picked is left out.
+{%- endcomment -%}
+{%- liquid
+  assign pol_count = 0
+  for key in (1..5)
+    assign ik = 'pol_' | append: key | append: '_image'
+    if s[ik] != blank
+      assign pol_count = pol_count | plus: 1
+    endif
+  endfor
+-%}
+{%- if pol_count > 0 -%}
+  <div class="eb-pol">
+    {%- if heading != blank -%}<h2 class="eb-h eb-pol__head">{{ heading }}</h2>{%- endif -%}
+    <ul class="eb-pol__grid">
+      {%- for key in (1..5) -%}
+        {%- assign ik = 'pol_' | append: key | append: '_image' -%}
+        {%- assign ck = 'pol_' | append: key | append: '_caption' -%}
+        {%- assign lk = 'pol_' | append: key | append: '_link' -%}
+        {%- if s[ik] != blank -%}
+          <li class="eb-pol__item eb-pol__item--{{ key }}">
+            {%- if s[lk] != blank -%}<a class="eb-pol__card" href="{{ s[lk] }}">{%- else -%}<span class="eb-pol__card">{%- endif -%}
+              {{- s[ik] | image_url: width: 700 | image_tag: class: 'eb-pol__img', loading: 'lazy', widths: '300, 450, 700', sizes: '(min-width: 769px) 240px, 45vw', alt: s[ck] -}}
+              <span class="eb-pol__cap">{%- if s[ck] != blank -%}{{ s[ck] }}{%- else -%}&nbsp;{%- endif -%}</span>
+            {%- if s[lk] != blank -%}</a>{%- else -%}</span>{%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- endif -%}

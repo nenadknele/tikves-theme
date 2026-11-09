@@ -9,9 +9,11 @@
   closed state after Mon 23 Nov: he takes the page down.
   The newsletter popup is off here (sections/newsletter-popup.liquid).
 
-  WHAT IS ON IT: the heading and two lines on the Wine band, Cream text;
-  three product photos; "While you wait" with an outlined button to the
-  journal. Then the theme's own footer.
+  WHAT IS ON IT, redone 9 Nov 2026 in the cream look, from Overtone's "You're
+  all set" and Boom's "Consider your place saved": kicker, heading, two
+  lines on Paper; the polaroid collage of graphics (snippets/
+  tl-eb-polaroids); "While you wait" with an outlined button to the
+  journal. No Wine band. Then the theme's own footer.
 
   WORDS, from the design, his word owed before publish. Never on it: a
   depth, an end date, a gift, a delivery line, £85, "VIP", "sale", "deal",
@@ -26,8 +28,9 @@
 {%- assign ebt_link = section.settings.button_link | default: ebt_blog.url | default: '/blogs/journal' -%}
 
 <div class="tl-eb-x ebt">
+  {%- assign s = section.settings -%}
   <div class="ebt__band">
-    {%- assign s = section.settings -%}
+    {%- if s.kicker != blank -%}<p class="ebt__kicker">{{ s.kicker }}</p>{%- endif -%}
     <h1 class="eb-h ebt__head">
       {%- if s.heading_open != blank -%}
         <span class="eb-pre">{{ s.heading }} <span class="eb-em">{{ s.heading_em }}</span></span><span class="eb-open">{{ s.heading_open }} <span class="eb-em">{{ s.heading_open_em }}</span></span>
@@ -35,45 +38,38 @@
         {{ s.heading }} <span class="eb-em">{{ s.heading_em }}</span>
       {%- endif -%}
     </h1>
+    <span class="ebt__rule" aria-hidden="true"></span>
     {%- if s.text_1 != blank -%}<p class="ebt__text">{% render 'tl-eb-words', pre: s.text_1, open: s.text_1_open %}</p>{%- endif -%}
     {%- if s.text_2 != blank -%}<p class="ebt__text">{% render 'tl-eb-words', pre: s.text_2, open: s.text_2_open %}</p>{%- endif -%}
   </div>
 
-  <div class="eb-strip">
-    {%- for key in (1..3) -%}
-      {%- assign pk = 'product_' | append: key -%}
-      {%- assign p = section.settings[pk] -%}
-      {%- if p != blank and p.featured_media -%}
-        <a href="{{ p.url }}">
-          {{- p.featured_media | image_url: width: 900 | image_tag: class: 'eb-sq', loading: 'eager', widths: '300, 450, 600, 900', sizes: '(min-width: 1200px) 400px, 33vw', alt: p.title -}}
-        </a>
-      {%- endif -%}
-    {%- endfor -%}
-  </div>
+  {%- render 'tl-eb-polaroids', s: s, heading: s.collage_heading -%}
 
   <div class="ebt__wait">
-    {%- if section.settings.wait_heading != blank -%}<h2 class="ebt__wait-head">{{ section.settings.wait_heading }}</h2>{%- endif -%}
-    {%- if section.settings.wait_text != blank -%}<p class="ebt__wait-text">{{ section.settings.wait_text }}</p>{%- endif -%}
-    {%- if section.settings.button_label != blank -%}
-      <a class="eb-btn eb-btn--line ebt__btn" href="{{ ebt_link }}">{{ section.settings.button_label }}</a>
+    {%- if s.wait_heading != blank -%}<h2 class="ebt__wait-head">{{ s.wait_heading }}</h2>{%- endif -%}
+    {%- if s.wait_text != blank -%}<p class="ebt__wait-text">{{ s.wait_text }}</p>{%- endif -%}
+    {%- if s.button_label != blank -%}
+      <a class="eb-btn eb-btn--line ebt__btn" href="{{ ebt_link }}">{{ s.button_label }}</a>
     {%- endif -%}
   </div>
 </div>
 
 {%- style -%}
   .ebt { background: var(--eb-paper); }
-  .ebt__band { background: var(--eb-wine); color: var(--eb-paper); padding: 56px 28px 48px; display: flex; flex-direction: column; gap: 22px; }
-  .ebt__head { color: var(--eb-paper); font-weight: 400; font-size: 44px; line-height: 1.08; }
-  .ebt__text { margin: 0; font-size: 18px; line-height: 1.6; color: var(--eb-paper); }
-  .ebt__wait { padding: 48px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 560px; margin: 0 auto; box-sizing: border-box; }
-  .ebt__wait-head { margin: 0; font-family: var(--eb-body); font-size: 14px; font-weight: 500; line-height: 1.4; letter-spacing: 0.16em !important; text-transform: uppercase !important; }
+  .ebt__band { padding: 56px 28px 52px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 18px; }
+  .ebt__kicker { margin: 0; font-size: 12px; line-height: 1.4; font-weight: 500; letter-spacing: 0.2em !important; text-transform: uppercase !important; }
+  .ebt__head { font-weight: 400; font-size: 46px; line-height: 1.06; }
+  .ebt__rule { display: block; width: 56px; border-top: 1px solid var(--eb-stone); margin: 4px 0; }
+  .ebt__text { margin: 0; font-size: 18px; line-height: 1.6; max-width: 480px; }
+  .ebt__wait { padding: 56px 28px 64px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; max-width: 560px; margin: 0 auto; box-sizing: border-box; }
+  .ebt__wait-head { margin: 0; font-family: var(--eb-body); font-size: 14px; font-weight: 600; line-height: 1.4; letter-spacing: 0.16em !important; text-transform: uppercase !important; }
   .ebt__wait-text { margin: 0; font-size: 17px; line-height: 1.6; }
   .ebt__btn { margin-top: 6px; }
   @media (min-width: 769px) {
-    .ebt__band { padding: 88px 24px 80px; align-items: center; text-align: center; }
-    .ebt__band > * { max-width: 640px; }
-    .ebt__head { font-size: 60px; }
-    .ebt__wait { padding: 72px 24px; }
+    .ebt__band { padding: 96px 24px 80px; }
+    .ebt__head { font-size: 68px; }
+    .ebt__text { max-width: 560px; }
+    .ebt__wait { padding: 80px 24px 96px; }
   }
 {%- endstyle -%}
 
@@ -82,6 +78,7 @@
   "name": "Early bird thank-you",
   "tag": "section",
   "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Black Friday" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "You're on" },
     { "type": "text", "id": "heading_em", "label": "Heading, italic end", "default": "the list." },
     { "type": "textarea", "id": "text_1", "label": "First line", "default": "On Friday 20 November we'll email you a code of your own. One tap and it's in your basket." },
@@ -91,14 +88,28 @@
     { "type": "text", "id": "heading_open_em", "label": "Heading, italic end, 20 to 23 Nov", "default": "in." },
     { "type": "textarea", "id": "text_1_open", "label": "First line, 20 to 23 Nov", "default": "Your code is on its way to your inbox. One tap and it's in your basket." },
     { "type": "textarea", "id": "text_2_open", "label": "Second line, 20 to 23 Nov", "default": "Early access runs until the end of Monday 23 November." },
-    { "type": "product", "id": "product_1", "label": "Photo 1, product" },
-    { "type": "product", "id": "product_2", "label": "Photo 2, product" },
-    { "type": "product", "id": "product_3", "label": "Photo 3, product" },
     { "type": "text", "id": "wait_heading", "label": "While you wait, heading", "default": "While you wait" },
     { "type": "textarea", "id": "wait_text", "label": "While you wait, line", "default": "Read about the wines, the valley they come from and what to cook with them." },
     { "type": "text", "id": "button_label", "label": "Button", "default": "Read the journal" },
     { "type": "text", "id": "blog_handle", "label": "Journal blog handle", "default": "journal" },
-    { "type": "url", "id": "button_link", "label": "Button link, if not the journal" }
+    { "type": "url", "id": "button_link", "label": "Button link, if not the journal" },
+    { "type": "header", "content": "Polaroids" },
+    { "type": "text", "id": "collage_heading", "label": "Heading over the polaroids" },
+    { "type": "image_picker", "id": "pol_1_image", "label": "1, graphic" },
+    { "type": "text", "id": "pol_1_caption", "label": "1, caption" },
+    { "type": "url", "id": "pol_1_link", "label": "1, link" },
+    { "type": "image_picker", "id": "pol_2_image", "label": "2, graphic" },
+    { "type": "text", "id": "pol_2_caption", "label": "2, caption" },
+    { "type": "url", "id": "pol_2_link", "label": "2, link" },
+    { "type": "image_picker", "id": "pol_3_image", "label": "3, graphic" },
+    { "type": "text", "id": "pol_3_caption", "label": "3, caption" },
+    { "type": "url", "id": "pol_3_link", "label": "3, link" },
+    { "type": "image_picker", "id": "pol_4_image", "label": "4, graphic" },
+    { "type": "text", "id": "pol_4_caption", "label": "4, caption" },
+    { "type": "url", "id": "pol_4_link", "label": "4, link" },
+    { "type": "image_picker", "id": "pol_5_image", "label": "5, graphic" },
+    { "type": "text", "id": "pol_5_caption", "label": "5, caption" },
+    { "type": "url", "id": "pol_5_link", "label": "5, link" }
   ]
 }
 {% endschema %}
