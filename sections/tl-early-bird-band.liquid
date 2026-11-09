@@ -19,8 +19,10 @@
   depth, an end date, a gift, a delivery line, £85, "VIP", "sale", "deal",
   "save", a countdown or a stock count.
 
-  PHOTOS: the products' own Shopify images, picked by product. If a picked
-  product is gone, its square is left out rather than filled with another.
+  GRAPHIC: one bf26- graphic, picked in the template as
+  shopify://shop_images/<name>, the same as the early bird page's, 9 Nov
+  2026 on his yes. Phone: words, then the graphic. Desktop: graphic left,
+  words right. Left empty, or not yet uploaded, the band is words only.
 {%- endcomment -%}
 
 {%- liquid
@@ -38,7 +40,7 @@
 
 {%- if eb_show -%}
   {%- render 'tl-eb-style' -%}
-  <div class="tl-ebb tl-eb-x" data-tl-eb-band>
+  <div class="tl-ebb tl-eb-x{% if section.settings.band_image != blank %} ebb--pic{% endif %}" data-tl-eb-band>
     <div class="ebb__panel">
       {%- if section.settings.kicker != blank -%}
         <p class="ebb__kicker">{{ section.settings.kicker }}</p>
@@ -51,17 +53,11 @@
         <a class="eb-btn eb-btn--solid ebb__btn" href="{{ eb_link }}">{{ section.settings.button_label }}</a>
       {%- endif -%}
     </div>
-    <div class="eb-strip ebb__strip">
-      {%- for key in (1..3) -%}
-        {%- assign pk = 'product_' | append: key -%}
-        {%- assign p = section.settings[pk] -%}
-        {%- if p != blank and p.featured_media -%}
-          <a href="{{ p.url }}">
-            {{- p.featured_media | image_url: width: 900 | image_tag: class: 'eb-sq', loading: 'lazy', widths: '300, 450, 600, 900', sizes: '(min-width: 1200px) 400px, 33vw', alt: p.title -}}
-          </a>
-        {%- endif -%}
-      {%- endfor -%}
-    </div>
+    {%- if section.settings.band_image != blank -%}
+      <a class="ebb__pic" href="{{ eb_link }}" tabindex="-1" aria-hidden="true">
+        {{- section.settings.band_image | image_url: width: 1400 | image_tag: class: 'ebb__img', loading: 'lazy', widths: '400, 600, 800, 1000, 1400', sizes: '(min-width: 769px) 50vw, 100vw', alt: '' -}}
+      </a>
+    {%- endif -%}
   </div>
   {%- style -%}
     .ebb__panel { background: var(--eb-paper-deep); padding: 48px 24px 40px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
@@ -69,7 +65,14 @@
     .ebb__head { font-size: 40px; line-height: 1.1; color: var(--eb-ink); }
     .ebb__text { margin: 0; font-size: 17px; line-height: 1.6; max-width: 320px; }
     .ebb__btn { margin-top: 8px; }
+    .ebb__pic { display: block; background: var(--eb-paper-deep); padding: 0 16px 16px; }
+    .ebb__img { display: block; width: 100%; height: auto; max-height: 420px; object-fit: cover; }
     @media (min-width: 769px) {
+      .ebb--pic { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--eb-paper-deep); }
+      html.tl-eb-band .ebb--pic { display: grid; }
+      .ebb--pic .ebb__panel { order: 2; justify-content: center; }
+      .ebb--pic .ebb__pic { order: 1; padding: 32px 0 32px 32px; }
+      .ebb--pic .ebb__img { max-height: 560px; height: 100%; }
       .ebb__panel { padding: 72px 24px 64px; }
       .ebb__head { font-size: 56px; }
       .ebb__text { max-width: 520px; font-size: 18px; }
@@ -90,9 +93,7 @@
     { "type": "text", "id": "button_label", "label": "Button", "default": "Get early access" },
     { "type": "url", "id": "button_link", "label": "Button link" },
     { "type": "text", "id": "page_handle", "label": "Page it waits for", "default": "early-bird" },
-    { "type": "product", "id": "product_1", "label": "Photo 1, product" },
-    { "type": "product", "id": "product_2", "label": "Photo 2, product" },
-    { "type": "product", "id": "product_3", "label": "Photo 3, product" }
+    { "type": "image_picker", "id": "band_image", "label": "Graphic" }
   ],
   "presets": [{ "name": "Early bird band" }]
 }
