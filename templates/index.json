@@ -12,6 +12,7 @@
     "early_bird_band": {
       "type": "tl-early-bird-band",
       "settings": {
+        "heading_tag": "h1",
         "kicker": "Black Friday",
         "heading": "Shop it",
         "heading_em": "first.",
@@ -45,6 +46,7 @@
     },
     "hero": {
       "type": "tikves-hero",
+      "disabled": true,
       "settings": {
         "image": "shopify://shop_images/barovo-hero-desktop-169.jpg",
         "image_mobile": "shopify://shop_images/barovo-hero-phone-tight.jpg",
