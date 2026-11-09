@@ -3,12 +3,12 @@
     "main": {
       "type": "tl-early-bird-thanks",
       "settings": {
-        "heading": "You're on",
-        "heading_em": "the list.",
-        "text_1": "On Friday 20 November we'll email you a code of your own. One tap and it's in your basket.",
-        "text_2": "You get a week before everyone else. Nothing else to do for now.",
-        "wait_heading": "While you wait",
-        "wait_text": "Read about the wines, the valley they come from and what to cook with them.",
+        "heading": "You're all",
+        "heading_em": "set.",
+        "text_1": "We'll email you on Friday 20 November, the moment early access opens. You get first pick, a week before everyone else.",
+        "text_2": "For now, there's nothing else to do. We'll be in touch soon.",
+        "wait_heading": "While you're here",
+        "wait_text": "Have a read of the journal. The wines, the valley they come from, and what to cook with them.",
         "button_label": "Read the journal",
         "blog_handle": "journal",
         "heading_open": "You're",
