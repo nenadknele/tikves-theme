@@ -139,9 +139,9 @@
       "close_cart": "Close cart",
       "reduce_quantity": "Reduce item quantity by one",
       "increase_quantity": "Increase item quantity by one",
-      "terms": "I agree with the terms and conditions",
-      "terms_html": "I agree with the <a href='{{ url }}' target='_blank'>terms and conditions</a>",
-      "terms_confirm": "You must agree with the terms and conditions of sales to check out",
+      "terms": "I confirm I am 18 or over",
+      "terms_html": "I confirm I am 18 or over",
+      "terms_confirm": "Please confirm you are 18 or over to check out",
       "max_quantity": "You can only have {{ quantity }} of {{ title }} in your cart."
     },
     "label": {
