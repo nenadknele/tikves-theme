@@ -38,23 +38,57 @@
         "stamp_bottom": "Nov",
         "hero_image": "shopify://shop_images/bf26-watercolour-flowers.jpg",
         "hero_alt": "Red watercolour flowers rising from a bottle of Tikveš wine",
-        "collage_heading": "A few we'd pick first",
-        "pol_1_image": "shopify://shop_images/bf26-luda-mara-vranec.jpg",
-        "pol_1_caption": "Vranec Luda Mara",
-        "pol_1_link": "/products/vranec-luda-mara",
-        "pol_2_image": "shopify://shop_images/bf26-barovo-snacks.jpg",
-        "pol_2_caption": "Barovo Red",
-        "pol_2_link": "/products/barovo-red",
-        "pol_3_image": "shopify://shop_images/bf26-luda-mara-temjanika.jpg",
-        "pol_3_caption": "Temjanika Luda Mara",
-        "pol_3_link": "/products/temjanika-luda-mara",
-        "pol_4_image": "shopify://shop_images/bf26-tga-za-jug-poster.jpg",
-        "pol_4_caption": "T'ga za Jug",
-        "pol_4_link": "/products/tga-za-jug",
-        "pol_5_image": "shopify://shop_images/bf26-endlessly-yours.jpg",
-        "pol_5_caption": "The sets",
-        "pol_5_link": "/collections/sets"
-      }
+        "collage_heading": "A few we'd pick first"
+      },
+      "blocks": {
+        "polaroid_1": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-luda-mara-vranec.jpg",
+            "caption": "Vranec Luda Mara",
+            "link": "/products/vranec-luda-mara"
+          }
+        },
+        "polaroid_2": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-barovo-snacks.jpg",
+            "caption": "Barovo Red",
+            "link": "/products/barovo-red"
+          }
+        },
+        "polaroid_3": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-luda-mara-temjanika.jpg",
+            "caption": "Temjanika Luda Mara",
+            "link": "/products/temjanika-luda-mara"
+          }
+        },
+        "polaroid_4": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-tga-za-jug-poster.jpg",
+            "caption": "T'ga za Jug",
+            "link": "/products/tga-za-jug"
+          }
+        },
+        "polaroid_5": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-endlessly-yours.jpg",
+            "caption": "The sets",
+            "link": "/collections/sets"
+          }
+        }
+      },
+      "block_order": [
+        "polaroid_1",
+        "polaroid_2",
+        "polaroid_3",
+        "polaroid_4",
+        "polaroid_5"
+      ]
     }
   },
   "order": [

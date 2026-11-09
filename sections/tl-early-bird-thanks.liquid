@@ -43,7 +43,7 @@
     {%- if s.text_2 != blank -%}<p class="ebt__text">{% render 'tl-eb-words', pre: s.text_2, open: s.text_2_open %}</p>{%- endif -%}
   </div>
 
-  {%- render 'tl-eb-polaroids', s: s, heading: s.collage_heading -%}
+  {%- render 'tl-eb-polaroids', blocks: section.blocks, heading: s.collage_heading -%}
 
   <div class="ebt__wait">
     {%- if s.wait_heading != blank -%}<h2 class="ebt__wait-head">{{ s.wait_heading }}</h2>{%- endif -%}
@@ -77,6 +77,18 @@
 {
   "name": "Early bird thank-you",
   "tag": "section",
+  "blocks": [
+    {
+      "type": "polaroid",
+      "name": "Polaroid",
+      "limit": 5,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Graphic" },
+        { "type": "text", "id": "caption", "label": "Caption" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
   "settings": [
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "Black Friday" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "You're on" },
@@ -94,22 +106,7 @@
     { "type": "text", "id": "blog_handle", "label": "Journal blog handle", "default": "journal" },
     { "type": "url", "id": "button_link", "label": "Button link, if not the journal" },
     { "type": "header", "content": "Polaroids" },
-    { "type": "text", "id": "collage_heading", "label": "Heading over the polaroids" },
-    { "type": "image_picker", "id": "pol_1_image", "label": "1, graphic" },
-    { "type": "text", "id": "pol_1_caption", "label": "1, caption" },
-    { "type": "url", "id": "pol_1_link", "label": "1, link" },
-    { "type": "image_picker", "id": "pol_2_image", "label": "2, graphic" },
-    { "type": "text", "id": "pol_2_caption", "label": "2, caption" },
-    { "type": "url", "id": "pol_2_link", "label": "2, link" },
-    { "type": "image_picker", "id": "pol_3_image", "label": "3, graphic" },
-    { "type": "text", "id": "pol_3_caption", "label": "3, caption" },
-    { "type": "url", "id": "pol_3_link", "label": "3, link" },
-    { "type": "image_picker", "id": "pol_4_image", "label": "4, graphic" },
-    { "type": "text", "id": "pol_4_caption", "label": "4, caption" },
-    { "type": "url", "id": "pol_4_link", "label": "4, link" },
-    { "type": "image_picker", "id": "pol_5_image", "label": "5, graphic" },
-    { "type": "text", "id": "pol_5_caption", "label": "5, caption" },
-    { "type": "url", "id": "pol_5_link", "label": "5, link" }
+    { "type": "text", "id": "collage_heading", "label": "Heading over the polaroids" }
   ]
 }
 {% endschema %}
