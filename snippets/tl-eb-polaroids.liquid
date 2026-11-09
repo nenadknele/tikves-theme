@@ -1,0 +1,36 @@
+{%- comment -%}
+  Early bird pages · polaroid collage, 9 Nov 2026. Boom's holiday list page
+  sets its products as tilted polaroids on a coloured ground; this is ours,
+  with the bf26- graphics on Paper Deep. Each polaroid is a block of type
+  "polaroid" (image, caption, link) on the section; up to five look right.
+  Parameters: blocks, the section's blocks; heading, an optional line over
+  the collage. A polaroid with no graphic is left out.
+{%- endcomment -%}
+{%- liquid
+  assign pol_count = 0
+  for b in blocks
+    if b.type == 'polaroid' and b.settings.image != blank
+      assign pol_count = pol_count | plus: 1
+    endif
+  endfor
+-%}
+{%- if pol_count > 0 -%}
+  <div class="eb-pol">
+    {%- if heading != blank -%}<h2 class="eb-h eb-pol__head">{{ heading }}</h2>{%- endif -%}
+    <ul class="eb-pol__grid">
+      {%- assign n = 0 -%}
+      {%- for b in blocks -%}
+        {%- if b.type == 'polaroid' and b.settings.image != blank -%}
+          {%- assign n = n | plus: 1 -%}
+          {%- assign tilt = n | modulo: 5 | plus: 1 -%}
+          <li class="eb-pol__item eb-pol__item--{{ tilt }}" {{ b.shopify_attributes }}>
+            {%- if b.settings.link != blank -%}<a class="eb-pol__card" href="{{ b.settings.link }}">{%- else -%}<span class="eb-pol__card">{%- endif -%}
+              {{- b.settings.image | image_url: width: 700 | image_tag: class: 'eb-pol__img', loading: 'lazy', widths: '300, 450, 700', sizes: '(min-width: 769px) 240px, 45vw', alt: b.settings.caption -}}
+              <span class="eb-pol__cap">{%- if b.settings.caption != blank -%}{{ b.settings.caption }}{%- else -%}&nbsp;{%- endif -%}</span>
+            {%- if b.settings.link != blank -%}</a>{%- else -%}</span>{%- endif -%}
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- endif -%}

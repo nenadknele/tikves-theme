@@ -1,0 +1,8 @@
+{%- comment -%}
+  Early bird words that change from Fri 20 to Mon 23 Nov, 9 Nov 2026.
+  Parameters: pre, the words before early access opens; open, the words
+  while it is open. Both are rendered; snippets/tl-eb-style shows one by the
+  html class tl-eb-open, set in the head by snippets/tl-dates. A blank
+  "open" keeps the "pre" words throughout.
+{%- endcomment -%}
+{%- if open != blank and open != pre -%}<span class="eb-pre">{{ pre }}</span><span class="eb-open">{{ open }}</span>{%- else -%}{{ pre }}{%- endif -%}

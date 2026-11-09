@@ -94,6 +94,10 @@
 {%- if template.suffix == 'christmas-six' -%}
   {%- assign tl_hide_popup = true -%}
 {%- endif -%}
+{%- comment -%} The early bird page and its thank-you page, 9 Nov 2026, his word: they are a sign-up of their own, so no popup on top. Templates page.early-bird and page.early-bird-thanks only. {%- endcomment -%}
+{%- if template.name == 'page' and template.suffix == 'early-bird' or template.name == 'page' and template.suffix == 'early-bird-thanks' -%}
+  {%- assign tl_hide_popup = true -%}
+{%- endif -%}
 
 {% unless tl_hide_popup %}
 

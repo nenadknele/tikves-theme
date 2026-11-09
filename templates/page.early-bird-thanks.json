@@ -1,0 +1,75 @@
+{
+  "sections": {
+    "main": {
+      "type": "tl-early-bird-thanks",
+      "settings": {
+        "heading": "You're all",
+        "heading_em": "set.",
+        "text_1": "We'll email you on Friday 20 November, the moment early access opens. You get first pick, a week before everyone else.",
+        "text_2": "For now, there's nothing else to do. We'll be in touch soon.",
+        "wait_heading": "While you're here",
+        "wait_text": "Have a read of the journal. The wines, the valley they come from, and what to cook with them.",
+        "button_label": "Read the journal",
+        "blog_handle": "journal",
+        "heading_open": "You're",
+        "heading_open_em": "in.",
+        "text_1_open": "Your code is on its way to your inbox. One tap and it's in your basket.",
+        "text_2_open": "Early access runs until the end of Monday 23 November.",
+        "kicker": "Black Friday",
+        "collage_heading": ""
+      },
+      "blocks": {
+        "polaroid_1": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-cork-peace.jpg",
+            "caption": "",
+            "link": "/collections/all"
+          }
+        },
+        "polaroid_2": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-tga-za-jug-poster.jpg",
+            "caption": "T'ga za Jug",
+            "link": "/products/tga-za-jug"
+          }
+        },
+        "polaroid_3": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-long-day.jpg",
+            "caption": "",
+            "link": "/collections/all"
+          }
+        },
+        "polaroid_4": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-luda-mara-waves.jpg",
+            "caption": "",
+            "link": "/collections/all"
+          }
+        },
+        "polaroid_5": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-nevinophobia.jpg",
+            "caption": "",
+            "link": "/collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "polaroid_1",
+        "polaroid_2",
+        "polaroid_3",
+        "polaroid_4",
+        "polaroid_5"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

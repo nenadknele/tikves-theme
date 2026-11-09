@@ -1,0 +1,316 @@
+{%- comment -%}
+  Black Friday early bird · the sign-up page, /pages/early-bird · 9 Nov 2026.
+  From the design of 9 November, board 2, "Black Friday early bird" (claude.ai
+  artifact K5q1nLPkuQgpwScpqs4j23, project/Page.dc.html). Replaces the 6 Nov
+  build of pull request 86. Built in the theme's own code; the design file is
+  the layout and the words, not pasted in.
+
+  WHAT IS ON IT, top to bottom. Redone 9 Nov 2026 in the cream look of the
+  Black Friday emails, on his "use cream use images graphics", from a live
+  look at Overtone's early access page and Boom's holiday list page.
+  · Kicker, heading, the "From 20 Nov" date stamp (hidden from Fri 20).
+  · One big graphic (Overtone: picture, then the form straight under it).
+    On a desktop the graphic sits left and the words and form right.
+  · The line, the form, the consent line under the button, then the line
+    about what happens next.
+  · How early access works: three numbered cards, each set at a slight
+    angle like Overtone's hand-drawn boxes.
+  · A polaroid collage of five graphics on Paper Deep, like Boom's, each
+    linking to its wine. Then the theme's own footer.
+  · No Wine bands. Wine, Vine and Terra Rossa only as the small number
+    circles and the one button.
+
+  THE FORM, his word of 9 Nov 2026: our own form, no Klaviyo form and no
+  klaviyo.js, so it works for someone who said no to cookies. On submit it
+  posts to Klaviyo's client subscription endpoint, POST
+  https://a.klaviyo.com/client/subscriptions?company_id=<public key>,
+  revision 2026-10-15 (read in Klaviyo's reference that day). It sends the
+  email, email marketing consent SUBSCRIBED, the list (list_id, SSmpAc,
+  single opt-in, read live 9 Nov) and custom_source, which Klaviyo stores on
+  the consent record. Only the public key (site ID) is in the theme, the
+  same one snippets/klaviyo-consent-loader uses; never a private key.
+  Klaviyo answers 202 on success: the visitor goes to the thank-you page.
+  Anything else: the error line shows and the button comes back.
+  The 18 or over tick is required by the browser and by the script. The
+  consent line sits in plain sight under the button: joining means the early
+  access email and our other emails, his ruling of 9 Nov. The Klaviyo form
+  UHxh6W stays as it is, a draft, unused.
+
+  WORDS FROM FRI 20 TO MON 23 NOV: each changing line carries its "open"
+  words beside it (snippets/tl-eb-words), shown under html.tl-eb-open,
+  which snippets/tl-dates sets inside the early access window. Late joiners
+  get their code straight away from Klaviyo. After Mon 23 Nov 23:59 the page
+  has no closed state: he takes it down.
+
+  WORDS, from the design and his drafts, his word owed before publish. Never
+  on it: a depth, an end date, a gift, a delivery line, £85, "VIP", "sale",
+  "deal", "save", a countdown or a stock count. It names Friday 20 November
+  because that date is ruled and true.
+
+  GRAPHICS: the bf26- graphics from the Drive folder "insta", cleaned on
+  9 Nov 2026, picked in the template as shopify://shop_images/<name>. They
+  show once he has uploaded them to Shopify Files under those exact names.
+  A picker left empty, or a file not yet uploaded, leaves its place out
+  rather than showing a broken picture.
+
+  SEARCH: noindex, nofollow, set in layout/theme.liquid for this template
+  and the thank-you template. Kept out of every menu. The newsletter popup
+  is off on both templates (sections/newsletter-popup.liquid).
+
+  TESTING ON A COPY: any page shows this template with ?view=early-bird, and
+  a sign-up there goes to the same page with ?view=early-bird-thanks.
+{%- endcomment -%}
+
+{%- render 'tl-eb-style' -%}
+{%- liquid
+  assign s = section.settings
+  assign eb_on_page = false
+  if request.page_type == 'page' and page.handle == 'early-bird'
+    assign eb_on_page = true
+  endif
+-%}
+
+<div class="tl-eb-x eb">
+  <div class="eb__top">
+    <div class="eb__words">
+      {%- if s.kicker != blank -%}<p class="eb__kicker">{{ s.kicker }}</p>{%- endif -%}
+      <h1 class="eb-h eb__head">
+        {%- if s.heading_open != blank -%}
+          <span class="eb-pre">{{ s.heading }} <span class="eb-em">{{ s.heading_em }}</span></span><span class="eb-open">{{ s.heading_open }} <span class="eb-em">{{ s.heading_open_em }}</span></span>
+        {%- else -%}
+          {{ s.heading }} <span class="eb-em">{{ s.heading_em }}</span>
+        {%- endif -%}
+      </h1>
+      {%- if s.stamp_day != blank -%}
+        <p class="eb__stamp eb-pre" aria-label="{{ s.stamp_top }} {{ s.stamp_day }} {{ s.stamp_bottom }}">
+          <span class="eb__stamp-small">{{ s.stamp_top }}</span>
+          <span class="eb__stamp-big">{{ s.stamp_day }}</span>
+          <span class="eb__stamp-small">{{ s.stamp_bottom }}</span>
+        </p>
+      {%- endif -%}
+    </div>
+
+    {%- if s.hero_image != blank -%}
+      <div class="eb__pic">
+        {{- s.hero_image | image_url: width: 1400 | image_tag: class: 'eb__pic-img', loading: 'eager', fetchpriority: 'high', widths: '400, 600, 800, 1000, 1400', sizes: '(min-width: 769px) 50vw, 100vw', alt: s.hero_alt -}}
+      </div>
+    {%- endif -%}
+
+    <div class="eb__join">
+      {%- if s.text != blank -%}
+        <p class="eb__text">{% render 'tl-eb-words', pre: s.text, open: s.text_open %}</p>
+      {%- endif -%}
+      <div class="eb__form-wrap" id="EarlyBirdForm">
+        <form class="eb__form" data-eb-form novalidate
+          data-key="{{ s.public_key | escape }}"
+          data-list="{{ s.list_id | escape }}"
+          data-source="{{ s.custom_source | escape }}"
+          data-thanks="{{ s.thanks_path | escape }}"
+          data-on-page="{{ eb_on_page }}">
+          <label class="eb__label text-label" for="EbEmail-{{ section.id }}">{{ s.email_label }}</label>
+          <input class="eb__input" type="email" id="EbEmail-{{ section.id }}" name="email" required
+            autocomplete="email" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="email"
+            placeholder="{{ s.email_placeholder | escape }}">
+          <label class="eb__tick text-label">
+            <input type="checkbox" name="age" required>
+            <span>{{ s.age_label }}</span>
+          </label>
+          <button type="submit" class="eb-btn eb-btn--solid eb__btn" data-eb-submit>{{ s.button_label }}</button>
+          <p class="eb__error" data-eb-error role="alert" hidden>{{ s.error_text }}</p>
+          {%- if s.consent_line != blank -%}
+            <p class="eb__consent">{{ s.consent_line }}</p>
+          {%- endif -%}
+        </form>
+        {%- if s.under_button != blank -%}
+          <p class="eb__under">{% render 'tl-eb-words', pre: s.under_button, open: s.under_button_open %}</p>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <div class="eb__how">
+    {%- if s.how_heading != blank -%}
+      <h2 class="eb-h eb__how-head">{{ s.how_heading }}</h2>
+    {%- endif -%}
+    <ol class="eb__steps">
+      {%- for key in (1..3) -%}
+        {%- assign tk = 'step_' | append: key | append: '_title' -%}
+        {%- assign bk = 'step_' | append: key | append: '_text' -%}
+        {%- assign tko = tk | append: '_open' -%}
+        {%- assign bko = bk | append: '_open' -%}
+        {%- if s[tk] != blank -%}
+          <li class="eb__step eb__step--{{ key }}">
+            <span class="eb__num" aria-hidden="true">{{ key }}</span>
+            <h3 class="eb__step-title">{% render 'tl-eb-words', pre: s[tk], open: s[tko] %}</h3>
+            <p class="eb__step-text">{% render 'tl-eb-words', pre: s[bk], open: s[bko] %}</p>
+          </li>
+        {%- endif -%}
+      {%- endfor -%}
+    </ol>
+  </div>
+
+  {%- render 'tl-eb-polaroids', blocks: section.blocks, heading: s.collage_heading -%}
+</div>
+
+<script>
+  (function () {
+    var form = document.querySelector('[data-eb-form]:not([data-eb-ready])');
+    if (!form) return;
+    form.setAttribute('data-eb-ready', '');
+    var email = form.querySelector('input[name="email"]');
+    var age = form.querySelector('input[name="age"]');
+    var btn = form.querySelector('[data-eb-submit]');
+    var err = form.querySelector('[data-eb-error]');
+    function thanksUrl() {
+      if (form.getAttribute('data-on-page') === 'true') return form.getAttribute('data-thanks');
+      var u = new URL(window.location.href);
+      u.searchParams.set('view', 'early-bird-thanks');
+      return u.pathname + u.search;
+    }
+    function fail() { err.hidden = false; btn.disabled = false; btn.removeAttribute('aria-busy'); }
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      err.hidden = true;
+      if (!form.reportValidity()) return;
+      if (!age.checked) { age.focus(); return; }
+      btn.disabled = true;
+      btn.setAttribute('aria-busy', 'true');
+      var body = {
+        data: {
+          type: 'subscription',
+          attributes: {
+            custom_source: form.getAttribute('data-source'),
+            profile: { data: { type: 'profile', attributes: {
+              email: email.value.trim(),
+              subscriptions: { email: { marketing: { consent: 'SUBSCRIBED' } } }
+            } } }
+          },
+          relationships: { list: { data: { type: 'list', id: form.getAttribute('data-list') } } }
+        }
+      };
+      fetch('https://a.klaviyo.com/client/subscriptions?company_id=' + encodeURIComponent(form.getAttribute('data-key')), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json', 'revision': '2026-10-15' },
+        body: JSON.stringify(body)
+      }).then(function (r) {
+        if (r.ok) { window.location.href = thanksUrl(); } else { fail(); }
+      }).catch(fail);
+    });
+  })();
+</script>
+
+{%- style -%}
+  .eb { background: var(--eb-paper); }
+  .eb__top { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "words" "pic" "join"; }
+  .eb__words { grid-area: words; padding: 36px 24px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+  .eb__pic { grid-area: pic; padding: 0 16px; }
+  .eb__pic-img { display: block; width: 100%; height: auto; }
+  .eb__join { grid-area: join; padding: 28px 24px 40px; max-width: 520px; margin: 0 auto; box-sizing: border-box; width: 100%; }
+  .eb__kicker { margin: 0; font-size: 12px; line-height: 1.4; font-weight: 500; letter-spacing: 0.2em !important; text-transform: uppercase !important; }
+  .eb__head { font-size: 40px; line-height: 1.08; font-weight: 400; }
+  .eb__stamp { margin: 0; width: 88px; height: 88px; border: 1px solid var(--eb-ink); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+  html.tl-eb-open .tl-eb-x .eb__stamp { display: none; }
+  .eb__stamp-small { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; }
+  .eb__stamp-big { font-family: var(--eb-head); font-size: 30px; margin: 3px 0; }
+  .eb__text { margin: 0 0 22px; font-size: 18px; line-height: 1.6; text-align: center; }
+  .eb__form-wrap { margin: 0; }
+  .eb__form { display: flex; flex-direction: column; gap: 12px; margin: 0; }
+  .tl-eb-x .eb__label { display: block; margin: 0; font-family: var(--eb-body); font-size: 16px; font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--eb-ink); }
+  .tl-eb-x .eb__input { width: 100%; box-sizing: border-box; min-height: 52px; margin: 0; padding: 14px; font: inherit; font-size: 16px; color: var(--eb-ink); background: #FFFFFF; border: 1px solid var(--eb-stone); border-radius: 0; }
+  .tl-eb-x .eb__input:focus { outline: 2px solid var(--eb-ink); outline-offset: 1px; border-color: var(--eb-ink); }
+  .tl-eb-x .eb__tick { display: flex; gap: 12px; align-items: center; min-height: 44px; margin: 0; font-family: var(--eb-body); font-size: 16px; line-height: 1.5; font-weight: 400; letter-spacing: 0; text-transform: none; cursor: pointer; color: var(--eb-ink); }
+  .tl-eb-x .eb__tick input { flex: 0 0 auto; width: 22px; height: 22px; margin: 0; accent-color: var(--eb-ink); }
+  .eb__btn { margin-top: 4px; cursor: pointer; }
+  .eb__btn[disabled] { opacity: 0.7; cursor: progress; }
+  .eb__error { margin: 0; font-size: 16px; line-height: 1.5; color: var(--eb-terra); font-weight: 500; }
+  .eb__consent { margin: 0; font-size: 14px; line-height: 1.5; text-align: center; color: var(--eb-ink); }
+  .eb__under { margin: 16px 0 0; text-align: center; font-size: 16px; line-height: 1.6; }
+  .eb__how { background: var(--eb-paper-deep); padding: 48px 24px 56px; }
+  .tl-eb-x .eb__how-head { font-size: 32px; line-height: 1.15; font-weight: 400; text-align: center; margin: 0 0 44px; }
+  .eb__steps { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-direction: column; gap: 40px; max-width: 520px; }
+  .eb__step { position: relative; margin: 0; border: 1.5px solid var(--eb-ink); background: var(--eb-paper); padding: 34px 22px 24px; transform: rotate(-0.6deg); }
+  .eb__step--2 { transform: rotate(0.7deg); }
+  .eb__step--3 { transform: rotate(-0.4deg); }
+  .eb__num { position: absolute; top: -22px; left: 18px; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--eb-ink); display: flex; align-items: center; justify-content: center; font-family: var(--eb-head); font-size: 20px; color: #FFFFFF; background: var(--eb-wine); }
+  .eb__step--2 .eb__num { background: var(--eb-vine); }
+  .eb__step--3 .eb__num { background: var(--eb-terra); }
+  .eb__step-title { margin: 0 0 8px; font-family: var(--eb-body); font-size: 15px; font-weight: 600; line-height: 1.4; letter-spacing: 0.14em !important; text-transform: uppercase !important; }
+  .eb__step-text { margin: 0; font-size: 16px; line-height: 1.6; }
+  @media (min-width: 769px) {
+    .eb__top { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "pic words" "pic join"; grid-template-rows: auto 1fr; max-width: 1240px; margin: 0 auto; padding: 56px 32px 72px; column-gap: 56px; }
+    .eb__pic { padding: 0; align-self: start; }
+    .eb__words { padding: 24px 0 0; }
+    .eb__join { padding: 24px 0 0; }
+    .eb__head { font-size: 60px; }
+    .tl-eb-x .eb__btn { width: 100%; }
+    .eb__how { padding: 80px 32px 88px; }
+    .tl-eb-x .eb__how-head { font-size: 44px; margin-bottom: 56px; }
+    .eb__steps { flex-direction: row; max-width: 1120px; gap: 28px; }
+    .eb__step { flex: 1 1 0; }
+  }
+{%- endstyle -%}
+
+{% schema %}
+{
+  "name": "Early bird sign-up",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "polaroid",
+      "name": "Polaroid",
+      "limit": 5,
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Graphic" },
+        { "type": "text", "id": "caption", "label": "Caption" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "settings": [
+    { "type": "header", "content": "Top" },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Black Friday" },
+    { "type": "text", "id": "stamp_top", "label": "Date stamp, top", "default": "From" },
+    { "type": "text", "id": "stamp_day", "label": "Date stamp, day", "default": "20", "info": "Hidden from Fri 20 Nov. Left blank, no stamp." },
+    { "type": "text", "id": "stamp_bottom", "label": "Date stamp, bottom", "default": "Nov" },
+    { "type": "image_picker", "id": "hero_image", "label": "Big graphic" },
+    { "type": "text", "id": "hero_alt", "label": "Big graphic, description", "default": "Red watercolour flowers rising from a bottle of Tikveš wine" },
+    { "type": "header", "content": "Words" },
+    { "type": "paragraph", "content": "Each \"20 to 23 Nov\" field shows from Fri 20 Nov 00:00 to Mon 23 Nov 23:59 UK, set in snippets/tl-dates. Left blank, the field above it stays." },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Shop Black Friday" },
+    { "type": "text", "id": "heading_em", "label": "Heading, italic end", "default": "first." },
+    { "type": "text", "id": "heading_open", "label": "Heading, 20 to 23 Nov", "default": "Early access is" },
+    { "type": "text", "id": "heading_open_em", "label": "Heading, italic end, 20 to 23 Nov", "default": "open." },
+    { "type": "textarea", "id": "text", "label": "Line", "default": "Join the early list and you can shop it from Friday 20 November, a week before everyone else." },
+    { "type": "textarea", "id": "text_open", "label": "Line, 20 to 23 Nov", "default": "Join the early list and we'll email you a code of your own straight away. Shop before everyone else." },
+    { "type": "header", "content": "The form" },
+    { "type": "text", "id": "email_label", "label": "Email label", "default": "Your email" },
+    { "type": "text", "id": "email_placeholder", "label": "Email placeholder", "default": "you@example.com" },
+    { "type": "text", "id": "age_label", "label": "Age tick", "default": "I'm 18 or over." },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Yes, let me in first" },
+    { "type": "textarea", "id": "consent_line", "label": "Consent line, under the button", "default": "You'll get the early access email and our other emails. Unsubscribe any time." },
+    { "type": "text", "id": "error_text", "label": "If it doesn't go through", "default": "That didn't go through. Please try again." },
+    { "type": "textarea", "id": "under_button", "label": "Line under the form", "default": "Nothing to buy today. We'll email you on the 20th, and the button does the rest." },
+    { "type": "textarea", "id": "under_button_open", "label": "Line under the form, 20 to 23 Nov", "default": "Your code comes by email in a minute or two. The button in it does the rest." },
+    { "type": "text", "id": "public_key", "label": "Klaviyo public key (site ID)", "default": "XP7Hid", "info": "The public key only. Never a private key." },
+    { "type": "text", "id": "list_id", "label": "Klaviyo list ID", "default": "SSmpAc" },
+    { "type": "text", "id": "custom_source", "label": "Consent source, stored by Klaviyo", "default": "Black Friday early bird page" },
+    { "type": "text", "id": "thanks_path", "label": "Thank-you page", "default": "/pages/early-bird-thanks" },
+    { "type": "header", "content": "How early access works" },
+    { "type": "text", "id": "how_heading", "label": "Heading", "default": "How early access works" },
+    { "type": "text", "id": "step_1_title", "label": "1, title", "default": "Join the list" },
+    { "type": "text", "id": "step_1_title_open", "label": "1, title, 20 to 23 Nov" },
+    { "type": "textarea", "id": "step_1_text", "label": "1, text", "default": "Put your email in above. That's all for now." },
+    { "type": "textarea", "id": "step_1_text_open", "label": "1, text, 20 to 23 Nov", "default": "Put your email in above." },
+    { "type": "text", "id": "step_2_title", "label": "2, title", "default": "Watch your inbox" },
+    { "type": "text", "id": "step_2_title_open", "label": "2, title, 20 to 23 Nov", "default": "Check your inbox" },
+    { "type": "textarea", "id": "step_2_text", "label": "2, text", "default": "On Friday 20 November you get an email with a code of your own." },
+    { "type": "textarea", "id": "step_2_text_open", "label": "2, text, 20 to 23 Nov", "default": "Your code arrives in a minute or two." },
+    { "type": "text", "id": "step_3_title", "label": "3, title", "default": "Shop first" },
+    { "type": "text", "id": "step_3_title_open", "label": "3, title, 20 to 23 Nov" },
+    { "type": "textarea", "id": "step_3_text", "label": "3, text", "default": "Tap the button and the code goes in your basket. Shop a week before everyone else." },
+    { "type": "textarea", "id": "step_3_text_open", "label": "3, text, 20 to 23 Nov", "default": "Tap the button and the code goes in your basket." },
+    { "type": "header", "content": "Polaroids" },
+    { "type": "text", "id": "collage_heading", "label": "Heading over the polaroids", "default": "From the cellar" }
+  ]
+}
+{% endschema %}

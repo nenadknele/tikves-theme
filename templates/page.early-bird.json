@@ -1,0 +1,97 @@
+{
+  "sections": {
+    "main": {
+      "type": "tl-early-bird",
+      "settings": {
+        "heading": "Get first",
+        "heading_em": "pick.",
+        "text": "Join our Black Friday list and you can shop it from Friday 20 November, a week before everyone else. First pick of the wines we only have a few of.",
+        "under_button": "No shopping today. No code to type in. We'll email you on the 20th when it's time.",
+        "how_heading": "How early access works",
+        "step_1_title": "Join the list",
+        "step_1_text": "Put your email in above. That's it for today.",
+        "step_2_title": "Watch your inbox",
+        "step_2_text": "On Friday 20 November your early access email arrives, with a code of your own.",
+        "step_3_title": "Shop first",
+        "step_3_text": "Tap the button in the email and the code goes in your basket. Pick your bottles before we open to everyone.",
+        "heading_open": "Early access is",
+        "heading_open_em": "open.",
+        "text_open": "Join the list and we'll email you a code of your own straight away. Shop before everyone else.",
+        "email_label": "Your email",
+        "email_placeholder": "you@example.com",
+        "age_label": "I'm 18 or over.",
+        "button_label": "Yes, I want first pick",
+        "consent_line": "You'll get the early access email and our other emails. Unsubscribe any time.",
+        "error_text": "That didn't go through. Please try again.",
+        "under_button_open": "Your email comes in a minute or two. One tap and the code's in your basket.",
+        "public_key": "XP7Hid",
+        "list_id": "SSmpAc",
+        "custom_source": "Black Friday early bird page",
+        "thanks_path": "/pages/early-bird-thanks",
+        "step_1_text_open": "Put your email in above.",
+        "step_2_title_open": "Check your inbox",
+        "step_2_text_open": "Your code arrives in a minute or two.",
+        "step_3_text_open": "Tap the button in the email and the code goes in your basket.",
+        "kicker": "Black Friday",
+        "stamp_top": "From",
+        "stamp_day": "20",
+        "stamp_bottom": "Nov",
+        "hero_image": "shopify://shop_images/bf26-watercolour-flowers.jpg",
+        "hero_alt": "Red watercolour flowers rising from a bottle of Tikveš wine",
+        "collage_heading": "A few we'd pick first"
+      },
+      "blocks": {
+        "polaroid_1": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-luda-mara-vranec.jpg",
+            "caption": "Vranec Luda Mara",
+            "link": "/products/vranec-luda-mara"
+          }
+        },
+        "polaroid_2": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-barovo-snacks.jpg",
+            "caption": "Barovo Red",
+            "link": "/products/barovo-red"
+          }
+        },
+        "polaroid_3": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-luda-mara-temjanika.jpg",
+            "caption": "Temjanika Luda Mara",
+            "link": "/products/temjanika-luda-mara"
+          }
+        },
+        "polaroid_4": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-tga-za-jug-poster.jpg",
+            "caption": "T'ga za Jug",
+            "link": "/products/tga-za-jug"
+          }
+        },
+        "polaroid_5": {
+          "type": "polaroid",
+          "settings": {
+            "image": "shopify://shop_images/bf26-endlessly-yours.jpg",
+            "caption": "The sets",
+            "link": "/collections/sets"
+          }
+        }
+      },
+      "block_order": [
+        "polaroid_1",
+        "polaroid_2",
+        "polaroid_3",
+        "polaroid_4",
+        "polaroid_5"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
