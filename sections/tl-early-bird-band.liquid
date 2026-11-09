@@ -45,7 +45,10 @@
       {%- if section.settings.kicker != blank -%}
         <p class="ebb__kicker">{{ section.settings.kicker }}</p>
       {%- endif -%}
-      <h2 class="eb-h ebb__head">{{ section.settings.heading }}{% if section.settings.heading_em != blank %} <span class="eb-em">{{ section.settings.heading_em }}</span>{% endif %}</h2>
+      {%- liquid
+        assign htag = section.settings.heading_tag | default: 'h2'
+      -%}
+      <{{ htag }} class="eb-h ebb__head">{{ section.settings.heading }}{% if section.settings.heading_em != blank %} <span class="eb-em">{{ section.settings.heading_em }}</span>{% endif %}</{{ htag }}>
       {%- if section.settings.text != blank -%}
         <p class="ebb__text">{{ section.settings.text }}</p>
       {%- endif -%}
@@ -85,6 +88,7 @@
   "name": "Early bird band",
   "tag": "section",
   "settings": [
+    { "type": "select", "id": "heading_tag", "label": "Heading level (h1 when this is the first section on the page)", "options": [{ "value": "h1", "label": "h1" }, { "value": "h2", "label": "h2" }], "default": "h2" },
     { "type": "paragraph", "content": "Shows only while the early bird page is published, and only until the end of Monday 23 November (snippets/tl-dates)." },
     { "type": "text", "id": "kicker", "label": "Kicker", "default": "Black Friday" },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Shop it" },
