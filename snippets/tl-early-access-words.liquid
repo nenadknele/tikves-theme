@@ -1,0 +1,27 @@
+{%- comment -%}
+  Early access words for the early bird pages, 7 Nov 2026. Operator: anyone
+  who signs up from Fri 20 to Mon 23 Nov gets their code straight away, so
+  the pages must not tell them to wait for Friday 20 November.
+  Every element marked data-tl-eb-text holds the before-window words, and
+  its data-open attribute the in-window words. From Fri 20 Nov 00:00 to
+  Mon 23 Nov 23:59:59 UK the script swaps them in.
+  The window comes from TL.offer in snippets/tl-dates.liquid when that
+  helper is on the theme (pull request 97). Until then it falls back to
+  the same two dates here. When 97 is merged, the fallback can go.
+  November is GMT, so UK time equals UTC.
+{%- endcomment -%}
+<script>
+  (function () {
+    var now = Date.now();
+    var open = (window.TL && TL.offer)
+      ? TL.offer(now) === 'early'
+      : (now >= Date.UTC(2026, 10, 20, 0, 0, 0) && now <= Date.UTC(2026, 10, 23, 23, 59, 59));
+    if (!open) return;
+    var els = document.querySelectorAll('[data-tl-eb-text]');
+    for (var i = 0; i < els.length; i++) {
+      var w = els[i].getAttribute('data-open');
+      if (!w) continue;
+      if (/^\s*</.test(w)) els[i].innerHTML = w; else els[i].textContent = w;
+    }
+  })();
+</script>

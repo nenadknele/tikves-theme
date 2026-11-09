@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "tl-early-bird-thanks",
+      "settings": {
+        "heading": "You're in.",
+        "text": "<p>On Friday 20 November we'll email you your own code, a week before everyone else. Until then, a few short notes from us about the wines.<\/p>",
+        "text_open": "<p>Your own code is on its way by email now. It works until the end of Monday 23 November.<\/p>",
+        "button_label": "Look at the wines",
+        "button_link": "shopify:\/\/collections\/all-wines"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
