@@ -1,0 +1,23 @@
+{
+  "sections": {
+    "main": {
+      "type": "tl-early-bird-thanks",
+      "settings": {
+        "heading": "You're on",
+        "heading_em": "the list.",
+        "text_1": "On Friday 20 November we'll email you a code of your own. One tap and it's in your basket.",
+        "text_2": "You get a week before everyone else. Nothing else to do for now.",
+        "product_1": "babuna-red",
+        "product_2": "the-table",
+        "product_3": "temjanika-luda-mara",
+        "wait_heading": "While you wait",
+        "wait_text": "Read about the wines, the valley they come from and what to cook with them.",
+        "button_label": "Read the journal",
+        "blog_handle": "journal"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

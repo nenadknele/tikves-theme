@@ -9,6 +9,20 @@
  */
 {
   "sections": {
+    "early_bird_band": {
+      "type": "tl-early-bird-band",
+      "settings": {
+        "kicker": "Black Friday",
+        "heading": "Shop it",
+        "heading_em": "first.",
+        "text": "Join the early list and shop Black Friday a week before everyone else.",
+        "button_label": "Get early access",
+        "page_handle": "early-bird",
+        "product_1": "barovo-red",
+        "product_2": "the-table",
+        "product_3": "bela-voda-white"
+      }
+    },
     "tk_design": {
       "type": "tikves-home-design",
       "settings": {
@@ -399,6 +413,7 @@
   },
   "order": [
     "tk_design",
+    "early_bird_band",
     "hero",
     "best",
     "ladder",

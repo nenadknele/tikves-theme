@@ -106,3 +106,30 @@
   html.tl-xmas-over [data-tl-fill="xmasCount"],
   html:not(.tl-gift) [data-tl-fill="gift"] { display: none !important; }
 </style>
+{%- comment -%}
+  EARLY BIRD BAND, 9 Nov 2026, from the design of 9 November, board 1.
+  The homepage band "Shop it first." shows from the day the early bird page
+  goes live until the end of Monday 23 November UK, then hides.
+  · The start is the page itself: sections/tl-early-bird-band.liquid renders
+    only while /pages/early-bird is published, so the band never links to a
+    page nobody can open. No start date to keep in step.
+  · The end is ebBandEnd below, the one date for the band. Change it here
+    only on his word.
+  TL.earlyBand(t) is true while t is inside the window. The html class
+  tl-eb-band is set while it is, and the band is hidden without it, so a
+  cached page or a fragment that missed its script never shows it late.
+  Kept as its own block so it reads beside the other dates without touching
+  the lines above.
+{%- endcomment -%}
+<script>
+  (function () {
+    if (!window.TL || window.TL.earlyBand) return;
+    TL.dates.ebBandEnd = Date.UTC(2026, 10, 23, 23, 59, 59);
+    TL.earlyBand = function (t) { return (t == null ? TL.now() : t) <= TL.dates.ebBandEnd; };
+    if (TL.earlyBand(TL.now())) document.documentElement.classList.add('tl-eb-band');
+  })();
+</script>
+<style>
+  .tl-ebb { display: none; }
+  html.tl-eb-band .tl-ebb { display: block; }
+</style>

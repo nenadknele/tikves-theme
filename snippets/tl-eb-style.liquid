@@ -1,0 +1,51 @@
+{%- comment -%}
+  Early bird pages and homepage band, 9 Nov 2026. The shared look, from the
+  design of 9 November and 08 · DESIGN v4: Paper, Paper Deep, Ink, Wine
+  (chrome and accent, Cream text on it), Vine, Terra Rossa (the one button
+  on a screen, never on a dark ground), Stone (borders only). Headings in
+  the theme's heading font (Fraunces), body in the theme's body font
+  (Inter). The italic heading words use Fraunces Regular Italic, loaded here
+  once a page. Rendered by sections/tl-early-bird-band, tl-early-bird and
+  tl-early-bird-thanks.
+{%- endcomment -%}
+{%- unless tl_eb_style_done -%}
+  {%- assign tl_eb_style_done = true -%}
+  {%- assign tl_eb_italic = settings.type_header_font_family | font_modify: 'weight', '400' | font_modify: 'style', 'italic' -%}
+  {%- style -%}
+    {%- if tl_eb_italic -%}{{ tl_eb_italic | font_face: font_display: 'swap' }}{%- endif -%}
+    .tl-eb-x {
+      --eb-paper: #F5EFE7;
+      --eb-paper-deep: #EAE3D9;
+      --eb-ink: #1F2328;
+      --eb-wine: #4A0D18;
+      --eb-vine: #3A4A38;
+      --eb-terra: #A64029;
+      --eb-stone: #B9AC9B;
+      --eb-head: {{ settings.type_header_font_family.family }}, {{ settings.type_header_font_family.fallback_families }};
+      --eb-body: {{ settings.type_base_font_family.family }}, {{ settings.type_base_font_family.fallback_families }};
+      color: var(--eb-ink);
+      font-family: var(--eb-body);
+    }
+    .tl-eb-x h1, .tl-eb-x h2, .tl-eb-x h3, .tl-eb-x p { text-transform: none; letter-spacing: 0; }
+    .tl-eb-x .eb-h { font-family: var(--eb-head); font-weight: 600; margin: 0; }
+    .tl-eb-x .eb-em { font-style: italic; font-weight: 400; }
+    .tl-eb-x .eb-btn {
+      display: block; width: 100%; box-sizing: border-box; min-height: 52px;
+      padding: 16px 20px; text-align: center; text-decoration: none;
+      font-family: var(--eb-body); font-size: 16px; font-weight: 500; line-height: 1.25;
+      letter-spacing: 0; text-transform: none; border-radius: 0;
+    }
+    .tl-eb-x .eb-btn--solid { background: var(--eb-terra); color: #FFFFFF; border: 1px solid var(--eb-terra); }
+    .tl-eb-x .eb-btn--solid:hover { background: #7f2f1e; border-color: #7f2f1e; color: #FFFFFF; }
+    .tl-eb-x .eb-btn--line { background: transparent; color: var(--eb-ink); border: 1px solid var(--eb-ink); }
+    .tl-eb-x .eb-btn--line:hover { background: var(--eb-ink); color: var(--eb-paper); }
+    .tl-eb-x .eb-btn:focus-visible { outline: 2px solid var(--eb-ink); outline-offset: 3px; }
+    .tl-eb-x .eb-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .tl-eb-x .eb-strip a, .tl-eb-x .eb-grid a { display: block; }
+    .tl-eb-x .eb-sq { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; background: var(--eb-paper-deep); }
+    @media (min-width: 769px) {
+      .tl-eb-x .eb-btn { display: inline-block; width: auto; min-width: 300px; }
+      .tl-eb-x .eb-strip { max-width: 1200px; margin: 0 auto; }
+    }
+  {%- endstyle -%}
+{%- endunless -%}

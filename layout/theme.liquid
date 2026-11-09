@@ -15,6 +15,10 @@
   {%- endif -%}
 
   {%- render 'seo-title' -%}
+  {%- comment -%} 9 Nov 2026: the early bird page and its thank-you page stay out of search. {%- endcomment -%}
+  {%- if template.name == 'page' and template.suffix contains 'early-bird' -%}
+  <meta name="robots" content="noindex, nofollow">
+  {%- endif -%}
 
   {%- if page_description -%}
   <meta name="description" content="{{ page_description | escape }}">
