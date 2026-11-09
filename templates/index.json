@@ -411,8 +411,8 @@
   },
   "order": [
     "tk_design",
-    "early_bird_band",
     "hero",
+    "early_bird_band",
     "best",
     "ladder",
     "education",
