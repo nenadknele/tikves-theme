@@ -147,7 +147,9 @@
       picks.push({ id: p.id, vid: p.vid, title: p.title, price: p.price, url: p.url, img: p.img, note: note || '' });
     }
 
-    var remaining = threshold() - (cart.total_price || 0);
+    // Same basket figure as the delivery bar, from TL.deliveryTotal.
+    var basket = (window.TL && TL.deliveryTotal) ? TL.deliveryTotal(cart) : (cart.total_price || 0);
+    var remaining = threshold() - basket;
     if (remaining > 0) {
       var pool = readJson('[data-tl-pool]').filter(function (p) { return !inCart[p.id]; });
       var cases = readJson('[data-tl-cases]').filter(function (p) { return !inCart[p.id]; });
