@@ -1,8 +1,9 @@
 {%- comment -%}
-  TIKVES LONDON · THE WINE PAGE BUY BOX · TEST · 7 Nov 2026
-  Built on the unpublished copy "TEST · buy box · 7 Nov (do not publish)" for
-  his review. Not merged, not live. Reference: the product pages of overtone.co
-  and boombeauty.com, read 7 Nov 2026, taken only as far as our rules allow.
+  TIKVES LONDON · THE WINE PAGE BUY BOX · 7 Nov 2026 · into the pull request of 9 Nov 2026
+  Built 7 Nov on the unpublished copy "TEST · buy box · 7 Nov (do not publish)"
+  for his review, then carried into the Black Friday weekend pull request on
+  9 Nov. Reference: the product pages of overtone.co and boombeauty.com, read
+  7 Nov 2026, taken only as far as our rules allow.
 
   Rendered in parts from custom blocks in templates/product.wine.json, so each
   piece keeps its own place in the block order and can be moved in the editor:
@@ -32,14 +33,22 @@
     on his word of 8 Nov 2026, "main event until Thursday 3"). D1 is 15%, his ruling
     of 7 Nov 2026 (REF · BLACK FRIDAY 2026 v7), and the depth setting defaults
     to 15. The switch stays off until the Shopify discount is live at 15%.
-  · TEST ONLY: a template named product.wine-bftestNN.json, which exists
-    only on the unpublished test copy and is a plain copy of
-    product.wine.json, shows the block at NN per cent, outside the window,
-    with a TEST label, so no screenshot can pass for the live sale. No such
-    template is in this repo. Take this hook out before any pull request.
-  · Green price only. No crossed-out price, no was or now: his ruling of
-    4 Nov 2026, confirmed 6 Nov. While the block shows, the regular price
-    block is hidden, so the shopper reads one price, and what comes off.
+  · PREVIEW ON A COPY ONLY. The 7 Nov test hook (a product.wine-bftestNN.json
+    template) is gone, as the handoff of 7 Nov asked before any pull request.
+    In its place: on a theme that is not the published one (theme.role is
+    not 'main'), the block is rendered whatever the switch says, and the
+    script decides by TL.now(), which snippets/tl-dates pins to ?tl_now= on
+    such a theme. So ?tl_now=2026-11-28T10:00:00Z on a copy's preview address
+    shows the weekend state on any date, with a Preview label and a dashed
+    border, so no screenshot can pass for the live sale. On the published
+    theme none of this exists: the switch, the depth and the real clock
+    decide, and nothing on the address changes them.
+  · The green price with the shop price crossed out, his word of 8 Nov 2026
+    ("crossed out prices do like ezra suggested"), which replaced the green
+    only ruling of 4 Nov 2026 and 6 Nov. The crossed-out figure is the live
+    shop price, worked out here, never a compare-at price. While the block
+    shows, the regular price block is hidden, so the shopper reads one
+    price, what comes off, and what it was.
   · PRICE MATHS, as pull request 85: nothing here sets a price, the Shopify
     discount does. For a line of q bottles at price p and depth d per cent,
     off = round(p x q x d / 100) in pence, pay = p x q minus off. Shopify
@@ -67,13 +76,8 @@
   endif
 
   assign tl_bf_on = false
-  assign tl_bf_test = false
   assign tl_d = 0
-  assign tl_sfx = template.suffix | default: ''
-  if tl_sfx contains 'bftest'
-    assign tl_d = tl_sfx | split: 'bftest' | last | plus: 0
-    assign tl_bf_test = true
-  elsif settings.tl_bf_price and settings.tl_bf_depth != blank
+  if settings.tl_bf_depth != blank
     assign tl_d = settings.tl_bf_depth | plus: 0
   endif
   assign tl_d_int = tl_d | floor
@@ -81,12 +85,17 @@
     assign tl_d = 0
   endif
   if tl_d > 0
-    if tl_bf_test
-      assign tl_bf_on = true
-    else
+    if theme.role != 'main'
       comment
-        Server side, the window plus a day either side, because Shopify can
-        serve a cached page. The script below is the final word on the minute.
+        A copy, for preview: rendered whatever the switch says, and the
+        script below decides by TL.now(), so ?tl_now= shows any date.
+      endcomment
+      assign tl_bf_on = true
+    elsif settings.tl_bf_price
+      comment
+        The published theme. Server side, the window plus a day either side,
+        because Shopify can serve a cached page. The script below is the
+        final word on the minute.
         Fri 27 Nov 2026 00:00 UTC = 1795737600 · Thu 3 Dec 2026 23:59:59 UTC = 1796342399.
       endcomment
       assign tl_now = 'now' | date: '%s' | plus: 0
@@ -130,10 +139,7 @@
     assign bf_off = tl_p | times: tl_d | divided_by: 100.0 | round
     assign bf_pay = tl_p | minus: bf_off
   -%}
-  <div class="tl-bb-bf{% if tl_bf_test %} tl-bb-bf--test{% endif %}" data-tl-bb-bf data-price="{{ tl_p }}" data-depth="{{ tl_d }}"{% if tl_bf_test %} data-test{% endif %}{% if tl_pack %} data-pack{% endif %}>
-    {%- if tl_bf_test -%}
-      <p class="tl-bb-bf__test">TEST · copy only · before the sale dates</p>
-    {%- endif -%}
+  <div class="tl-bb-bf" data-tl-bb-bf data-price="{{ tl_p }}" data-depth="{{ tl_d }}"{% if tl_pack %} data-pack{% endif %}>
     {%- comment -%} Approved 7 Nov 2026, REF · WINE PAGE BUY BOX v1. The green is #1f7a3a, kept on his word the same day. {%- endcomment -%}
     <p class="tl-bb-bf__head">Black Friday · {{ tl_d }}% off</p>
     {%- comment -%} 8 Nov 2026, his word "crossed out prices do like ezra suggested": the shop price struck through beside the green price, inside the window only, worked out here from the live price. No compare-at price. The "£X off this bottle" line stays under it. {%- endcomment -%}
@@ -292,8 +298,8 @@
     .tl-bb-glance li{margin:0;padding:4px 10px;border:1px solid #B9AC9B;border-radius:999px;font-size:13px;line-height:1.4;color:#1F2328}
     .tl-bb-bf{margin:12px 0 4px;padding:12px 14px;border:1px solid #B9AC9B;border-radius:8px;background:#EAE3D9}
     .tl-bb-bf p{margin:0}
-    .tl-bb-bf--test{border:2px dashed #A64029}
-    .tl-bb-bf__test{display:inline-block;margin:0 0 8px !important;padding:2px 8px;background:#1F2328;color:#F5EFE7;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:3px}
+    .tl-bb-bf--preview{border:2px dashed #A64029}
+    .tl-bb-bf__preview{display:inline-block;margin:0 0 8px !important;padding:2px 8px;background:#1F2328;color:#F5EFE7;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:3px}
     .tl-bb-bf__head{font-weight:600;font-size:15px}
     .tl-bb-bf__price{margin-top:4px !important;font-size:15px}
     .tl-bb-bf__price b,.tl-bb-green{color:#1f7a3a;font-weight:700}
@@ -368,28 +374,45 @@
       if (was) was.innerHTML = '<span class="visually-hidden">Was </span>' + money(line);
       if (o) o.textContent = money(off) + ' off' + (bf.hasAttribute('data-pack') ? '' : ' ' + bottles(q));
     }
+    // The window and the minute come from snippets/tl-dates (TL.dates and
+    // TL.now), so the end lives in one place; the same dates are the
+    // fallback. TL.now is the real clock on the published theme. On a copy
+    // it can be pinned with ?tl_now=, and the block then says so. The check
+    // runs even with no block on the page (a sold out bottle), because the
+    // cases row and the phone bar carry Black Friday prices of their own.
+    var TD = (window.TL && window.TL.dates) || {};
+    var start = TD.bfStart || Date.UTC(2026, 10, 27, 0, 0, 0), end = TD.bfEnd || Date.UTC(2026, 11, 3, 23, 59, 59);
+    var now = (window.TL && window.TL.now) ? window.TL.now() : Date.now();
+    if (now < start || now > end) {
+      // Outside the real window: the block goes, the shelf price comes back.
+      if (bf) { bf.remove(); bf = null; }
+      document.documentElement.classList.add('tl-bb-bf-off');
+    }
     if (bf) {
-      var test = bf.hasAttribute('data-test');
-      // The window is read from snippets/tl-dates (TL.dates) when it is on the
-      // theme, so the end lives in one place; the same dates are the fallback.
-      var TD = (window.TL && window.TL.dates) || {};
-      var start = TD.bfStart || Date.UTC(2026, 10, 27, 0, 0, 0), end = TD.bfEnd || Date.UTC(2026, 11, 3, 23, 59, 59), now = Date.now();
-      if (!test && (now < start || now > end)) {
-        // Outside the real window: the block goes, the shelf price comes back.
-        bf.remove(); bf = null;
-        document.documentElement.classList.add('tl-bb-bf-off');
-      } else {
-        var left = bf.querySelector('[data-tl-bb-left]');
-        if (left && window.TL && window.TL.left) {
-          var l = window.TL.left(end, now);
-          var pl = function (n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); };
-          if (l) left.textContent = l.kind === 'lastday' ? 'Last day, ' + pl(l.n, 'hour') + ' left.' : pl(l.n, l.kind === 'hours' ? 'hour' : 'day') + ' left.';
-        }
-        bfUpdate();
-        document.addEventListener('input', function (e) { if (e.target === qtyInput()) bfUpdate(); });
-        document.addEventListener('change', function (e) { if (e.target === qtyInput()) bfUpdate(); });
-        document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.js-qty__adjust')) setTimeout(bfUpdate, 0); });
+      if (window.TL && window.TL.pinned) {
+        bf.classList.add('tl-bb-bf--preview');
+        var tag = document.createElement('p');
+        tag.className = 'tl-bb-bf__preview';
+        tag.textContent = 'Preview · clock set to ' + new Date(now).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+        bf.insertBefore(tag, bf.firstChild);
       }
+      // The buy box carries the depth, the end and the count here, so the
+      // Black Friday line under the delivery sentence would say it twice.
+      document.querySelectorAll('.product-single__meta [data-tl-lines] [data-tl-fill="bf"]').forEach(function (el) {
+        var box = el.parentNode;
+        box.removeChild(el);
+        if (!box.querySelector('[data-tl-fill]')) box.parentNode.removeChild(box);
+      });
+      var left = bf.querySelector('[data-tl-bb-left]');
+      if (left && window.TL && window.TL.left) {
+        var l = window.TL.left(end, now);
+        var pl = function (n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); };
+        if (l) left.textContent = l.kind === 'lastday' ? 'Last day, ' + pl(l.n, 'hour') + ' left.' : pl(l.n, l.kind === 'hours' ? 'hour' : 'day') + ' left.';
+      }
+      bfUpdate();
+      document.addEventListener('input', function (e) { if (e.target === qtyInput()) bfUpdate(); });
+      document.addEventListener('change', function (e) { if (e.target === qtyInput()) bfUpdate(); });
+      document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.js-qty__adjust')) setTimeout(bfUpdate, 0); });
     }
 
     // The phone bar: shown only while the main add to cart is out of view.

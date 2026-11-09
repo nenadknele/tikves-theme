@@ -876,8 +876,8 @@
       {
         "type": "checkbox",
         "id": "tl_bf_price",
-        "label": "Black Friday price on the shop",
-        "info": "Shows the green Black Friday price with the shop price crossed out: the product page buy box, the cards and search results, and the basket's recommendations. Never the gift card. Only Fri 27 Nov 00:00 to Thu 3 Dec 23:59 UK, whatever this switch says. Turn on only with the Shopify discount live at the same depth. Early access, 20 to 23 Nov, shows it on basket lines only, once the code is in.",
+        "label": "Black Friday price in the product page buy box",
+        "info": "Shows the green Black Friday price with the shop price crossed out, in the product page buy box, the cases row under it and the phone bar. Never the gift card. Only Fri 27 Nov 00:00 to Thu 3 Dec 23:59 UK, whatever this switch says. Turn on only with the Shopify discount live at the same depth. The announcement bar and the lines under the price run from the clock alone and do not need this switch.",
         "default": false
       },
       {

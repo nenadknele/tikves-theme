@@ -16,9 +16,10 @@
     Thu 3 Dec 23:59 UK. Discount: DiscountAutomaticNode/2293044805977.
     Free delivery from the cut: DiscountAutomaticNode/2294250439001.
     The end moved from Mon 30 Nov to Thu 3 Dec on his word of 8 Nov 2026,
-    "main event until Thursday 3"; both Shopify discounts were moved the same
-    day. bfEnd below is the one date on the theme; the cart delivery bar, the
-    clock lines and the buy box read it.
+    "main event until Thursday 3", ruled again on 9 Nov (REF · BLACK FRIDAY
+    2026 v13); both Shopify discounts end then, read live 9 Nov. bfEnd below
+    is the one date on the theme; the cart delivery bar, the clock lines and
+    the buy box read it.
   · Christmas: the last order day, Wed 16 Dec 23:59 UK, per 18 · CARRIER AND
     DELIVERY v6 section 5. The Christmas Six ends at the same moment.
   · Gift card line, Thu 17 Dec 00:00 to Thu 24 Dec 23:59 UK.
@@ -26,12 +27,24 @@
   date. If a date is ever moved into British Summer Time, this needs an
   offset.
 
-  HTML CLASSES IT SETS, for CSS hides: tl-bf-teaser, tl-bf-live, tl-xmas-over,
-  tl-gift. The Christmas Six lines carry the class tl-six-timed and step aside
-  during the Black Friday weekend and after the Christmas cut-off, even if the
-  theme switch is still on.
+  THE THREE BLACK FRIDAY STRETCHES, back on 9 Nov 2026 (pull request 88 had
+  switched them off on 6 Nov when the offer was withdrawn; D1 is ruled at 15%
+  since 7 Nov). Words in snippets/tl-urgency for the static lines and here
+  for the live ones. His yes on every line before they ship.
+  · Early access, Fri 20 to Mon 23 Nov: phase ea. A line that says early
+    access is open and points to the sign-up page. No depth, Ezra's rule:
+    the discount is not revealed before the weekend.
+  · The pause, Tue 24 to Thu 26 Nov: phase bfTeaser. "Black Friday starts
+    Friday." No depth, the same rule.
+  · The weekend, Fri 27 Nov to Thu 3 Dec: phase bfLive. The depth, the scope
+    and a countdown to the real end.
 
-  OFFER WINDOWS AND THE CART DELIVERY BAR, 7 Nov 2026, Part 2a. Weekend window Fri 27 Nov to Thu 3 Dec since 8 Nov.
+  HTML CLASSES IT SETS, for CSS hides: tl-ea, tl-bf-teaser, tl-bf-live,
+  tl-xmas-over, tl-gift. The Christmas Six lines carry the class tl-six-timed
+  and step aside during the Black Friday weekend and after the Christmas
+  cut-off, even if the theme switch is still on.
+
+  OFFER WINDOWS AND THE CART DELIVERY BAR, 7 Nov 2026, Part 2a.
   TL.offer(t) says which offer window t is in: 'early', 'bf' or ''.
   TL.deliveryTotal(cart) is the basket figure the cart's free-delivery bar and
   its "Delivery is free with this" row compare with £100. Outside the windows
@@ -43,12 +56,21 @@
   early access a basket of £85 to £99.99 with no code ships free at checkout
   while the bar says it is short. That errs in the customer's favour.
   Both snippets ask this one helper: snippets/tl-delivery-summary.liquid and
-  snippets/tl-cart-recommend.liquid. TL.offer does not switch on any line
-  or class. The Black Friday lines stay off until the site clock is rebuilt.
+  snippets/tl-cart-recommend.liquid.
 
   COUNTING: days are calendar days in UK time, today included, so on Monday
   14 December it reads 3 days left (14, 15, 16). In the last 48 hours it
   counts hours, rounded up. On the deadline's own day it says Last day.
+
+  CHECKING A DATE ON A COPY, 9 Nov 2026. On any theme that is not the live
+  one, ?tl_now=2026-11-28T10:00:00Z on the address sets the clock for that
+  page, so every timed line, countdown and price can be looked at for any
+  moment before it comes. TL.now() returns the set time, and every snippet
+  asks TL.now(). The live theme never carries the hook: theme.role is
+  'main' there, so the lines below are not rendered at all. The server-side
+  gates in tl-urgency and tl-buybox open fully on a copy for the same reason,
+  so the script here is the only judge of what shows. A copy is for looking,
+  never for buying.
 {% endcomment %}
 <script>
   (function () {
@@ -63,14 +85,22 @@
       giftEnd: Date.UTC(2026, 11, 24, 23, 59, 59)
     };
     var DAY = 86400000, HOUR = 3600000;
+    var fixed = null;
+    {%- if theme.role != 'main' %}
+    try {
+      var q = new URLSearchParams(window.location.search).get('tl_now');
+      if (q) { var f = Date.parse(q); if (!isNaN(f)) fixed = f; }
+    } catch (e) {}
+    {%- endif %}
+    function now() { return fixed == null ? Date.now() : fixed; }
     function ukDate(t) { return new Date(t).toISOString().slice(0, 10); }
     function dayNumber(t) { return Math.floor(Date.parse(ukDate(t) + 'T00:00:00Z') / DAY); }
     function plural(n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); }
     function phase(t) {
       return {
-        // Black Friday withdrawn 6 Nov 2026 on his word, to be rebuilt from scratch.
-        bfTeaser: false,
-        bfLive: false,
+        ea: t >= D.eaStart && t <= D.eaEnd,
+        bfTeaser: t >= D.bfTeaser && t < D.bfStart,
+        bfLive: t >= D.bfStart && t <= D.bfEnd,
         xmas: t <= D.xmasEnd,
         gift: t > D.xmasEnd && t <= D.giftEnd
       };
@@ -91,7 +121,7 @@
     function deliveryTotal(cart, t) {
       if (!cart) return 0;
       var paid = cart.total_price || 0;
-      if (!offer(t == null ? Date.now() : t)) return paid;
+      if (!offer(t == null ? now() : t)) return paid;
       var full = cart.original_total_price;
       return typeof full === 'number' ? full : paid;
     }
@@ -109,10 +139,12 @@
         var tail = l.kind === 'lastday' ? 'Last day, ' + plural(l.n, 'hour') + ' left.' : plural(l.n, l.kind === 'hours' ? 'hour' : 'day') + ' left.';
         return 'Order by Wednesday 16 December for Christmas delivery. ' + tail;
       },
+      ea: function (t) {
+        return phase(t).ea ? 'Early access is open. Join the list and we email you a code straight away.' : '';
+      },
       bf: function (t) {
-        return ''; // Black Friday withdrawn 6 Nov 2026.
         var p = phase(t);
-        if (p.bfTeaser) return 'Black Friday starts Friday: ' + BF + '.';
+        if (p.bfTeaser) return 'Black Friday starts Friday. Every bottle, case and set.';
         if (!p.bfLive) return '';
         var l = left(D.bfEnd, t);
         if (!l) return '';
@@ -123,14 +155,15 @@
         return phase(t).gift ? 'Too late for Christmas delivery? A gift card comes by email, straight away.' : '';
       }
     };
-    var t0 = Date.now();
+    var t0 = now();
     var p0 = phase(t0);
     var root = document.documentElement;
+    if (p0.ea) root.classList.add('tl-ea');
     if (p0.bfTeaser) root.classList.add('tl-bf-teaser');
     if (p0.bfLive) root.classList.add('tl-bf-live');
     if (!p0.xmas) root.classList.add('tl-xmas-over');
     if (p0.gift) root.classList.add('tl-gift');
-    window.TL = { dates: D, phase: phase, offer: offer, deliveryTotal: deliveryTotal, left: left, texts: texts, now: function () { return Date.now(); } };
+    window.TL = { dates: D, phase: phase, offer: offer, deliveryTotal: deliveryTotal, left: left, texts: texts, now: now, pinned: fixed != null };
   })();
 </script>
 <style>
@@ -139,6 +172,7 @@
   [data-tl-fill]:empty { display: none; }
   /* Belt and braces: a line outside its window stays hidden even where a
      re-rendered fragment did not run its script. */
+  html:not(.tl-ea) [data-tl-fill="ea"],
   html:not(.tl-bf-live):not(.tl-bf-teaser) [data-tl-fill="bf"],
   html.tl-xmas-over [data-tl-fill="xmasLine"],
   html.tl-xmas-over [data-tl-fill="xmasCount"],
@@ -164,10 +198,9 @@
   words, because late joiners get their code straight away. TL.earlyOpen(t)
   is true inside that window and sets the html class tl-eb-open; the pages
   show their "open" words under that class (snippets/tl-eb-style). It reads
-  TL.dates.eaStart and eaEnd, the early access window. Pull request 97 puts
-  those two dates in the D list above; until it merges, this block sets the
-  same two dates itself, and once it merges this block leaves them alone, so
-  there is still one place to change them.
+  TL.dates.eaStart and eaEnd, the early access window, which the D list
+  above holds since the cart fix merged; the fallback below only runs if
+  they are ever missing, so there is still one place to change them.
 {%- endcomment -%}
 <script>
   (function () {

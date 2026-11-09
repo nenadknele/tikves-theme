@@ -16,23 +16,41 @@
   · 'band'       the homepage band
 
   Epoch seconds, UTC, matching tl-dates:
+  eaStart 1795132800 · eaEnd 1795478399 (Fri 20 to Mon 23 Nov, early access)
   bfTeaser 1795478400 · bfStart 1795737600 · bfEnd 1796342399 (Thu 3 Dec, moved 8 Nov 2026)
   xmasEnd 1797465599 · giftEnd 1798156799
+
+  9 Nov 2026: Black Friday back on, in three stretches, per tl-dates. Early
+  access (ea) gets a line of its own, with no depth, pointing at the sign-up
+  page. The pause runs the teaser, no depth. The weekend runs the countdown.
+  Pull request 88 had switched these off on 6 Nov; D1 is ruled at 15% since
+  7 Nov. On a copy (theme.role not 'main') every line is rendered and the
+  script decides, so ?tl_now= on the address shows any date.
 {% endcomment %}
 {%- liquid
   assign tl_now = 'now' | date: '%s' | plus: 0
   assign tl_slack = 86400
+  assign tl_show_ea = false
   assign tl_show_bf = false
   assign tl_show_xmas = false
   assign tl_show_gift = false
+  assign tl_ea_from = 1795132800 | minus: tl_slack
+  assign tl_ea_to = 1795478399 | plus: tl_slack
   assign tl_bf_from = 1795478400 | minus: tl_slack
   assign tl_bf_to = 1796342399 | plus: tl_slack
   assign tl_xmas_to = 1797465599 | plus: tl_slack
   assign tl_gift_from = 1797465599 | minus: tl_slack
   assign tl_gift_to = 1798156799 | plus: tl_slack
-  comment
-    Black Friday withdrawn 6 Nov 2026 on his word, to be rebuilt from scratch. tl_show_bf stays false.
-  endcomment
+  if tl_now >= tl_ea_from and tl_now <= tl_ea_to
+    assign tl_show_ea = true
+  endif
+  if tl_now >= tl_bf_from and tl_now <= tl_bf_to
+    assign tl_show_bf = true
+  endif
+  if theme.role != 'main'
+    assign tl_show_ea = true
+    assign tl_show_bf = true
+  endif
   if tl_now <= tl_xmas_to
     assign tl_show_xmas = true
   endif
@@ -54,11 +72,19 @@
 {%- case mode -%}
 
   {%- when 'bar' -%}
+    {%- if tl_show_ea -%}
+      <div class="announcement-slider__slide" data-tl-slide="ea">
+        <a class="announcement-link" href="/pages/early-bird">
+          <span class="announcement-text" data-tl-fill="ea">Early access is open. Join the list and we email you a code straight away</span>
+          <span class="announcement-link-text">Get first pick</span>
+        </a>
+      </div>
+    {%- endif -%}
     {%- if tl_show_bf -%}
       <div class="announcement-slider__slide" data-tl-slide="bf">
         <a class="announcement-link" href="/collections/all">
           <span class="announcement-text" data-tl-fill="bf">Black Friday: 15% off every bottle, case and set</span>
-          <span class="announcement-link-text">Friday to Monday</span>
+          <span class="announcement-link-text" data-tl-link-teaser="See the range" data-tl-link-live="Ends Thursday 3 December">Ends Thursday 3 December</span>
         </a>
       </div>
     {%- endif -%}
@@ -86,11 +112,14 @@
         var bar = document.getElementById('AnnouncementSlider');
         if (!bar) return;
         var t = TL.now();
+        var p = TL.phase(t);
         bar.querySelectorAll('[data-tl-slide]').forEach(function (slide) {
           var el = slide.querySelector('[data-tl-fill]');
           var text = el ? TL.texts[el.getAttribute('data-tl-fill')](t) : '';
           if (!text) { slide.parentNode.removeChild(slide); return; }
           el.textContent = text.replace(/\.$/, '');
+          var link = slide.querySelector('[data-tl-link-teaser]');
+          if (link) link.textContent = p.bfTeaser ? link.getAttribute('data-tl-link-teaser') : link.getAttribute('data-tl-link-live');
         });
         var slides = bar.querySelectorAll('.announcement-slider__slide');
         slides.forEach(function (s, i) { s.setAttribute('data-index', i); });
@@ -99,8 +128,9 @@
     </script>
 
   {%- when 'line' -%}
-    {%- if tl_show_bf or tl_show_xmas or tl_show_gift -%}
+    {%- if tl_show_ea or tl_show_bf or tl_show_xmas or tl_show_gift -%}
       <div class="tl-urgency" data-tl-lines>
+        {%- if tl_show_ea -%}<p class="tl-urgency__line" data-tl-fill="ea">Early access is open. <a href="/pages/early-bird">Join the list</a> and we email you a code straight away.</p>{%- endif -%}
         {%- if tl_show_bf -%}<p class="tl-urgency__line" data-tl-fill="bf">Black Friday: 15% off every bottle, case and set, Friday 27 November to Thursday 3 December.</p>{%- endif -%}
         {%- if tl_show_xmas -%}<p class="tl-urgency__line" data-tl-fill="xmasLine">Order by Wednesday 16 December for Christmas delivery.</p>{%- endif -%}
         {%- if tl_show_gift -%}<p class="tl-urgency__line" data-tl-fill="gift">Too late for Christmas delivery? <a href="/products/gift-card">A gift card</a> comes by email, straight away.</p>{%- endif -%}
@@ -125,6 +155,8 @@
             if (!text) { el.parentNode.removeChild(el); return; }
             if (key === 'gift') {
               el.innerHTML = 'Too late for Christmas delivery? <a href="/products/gift-card">A gift card<\/a> comes by email, straight away.';
+            } else if (key === 'ea') {
+              el.innerHTML = 'Early access is open. <a href="/pages/early-bird">Join the list<\/a> and we email you a code straight away.';
             } else {
               el.textContent = text;
             }
@@ -194,7 +226,7 @@
             h.textContent = p.bfTeaser ? h.getAttribute('data-tl-title-teaser') : h.getAttribute('data-tl-title-live');
             var line = panel.querySelector('[data-tl-fill="bf"]');
             if (p.bfTeaser) {
-              line.textContent = '15% off every bottle, case and set, Friday 27 November to Thursday 3 December.';
+              line.textContent = 'Every bottle, case and set. Friday 27 November to Thursday 3 December.';
             } else {
               line.textContent = TL.texts.bf(t).replace(/^Black Friday: |^Last day of Black Friday: /, function (m) { return m.indexOf('Last') === 0 ? 'Last day. ' : ''; });
             }
