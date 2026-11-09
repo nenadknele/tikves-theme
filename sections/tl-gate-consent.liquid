@@ -11,9 +11,9 @@
     Shopify's own preferences panel.
   - The choice is saved through Shopify's own consent API
     (setTrackingConsent), so every pixel gets the official signal.
-  - Shopify's own banner is hidden only while this one is on screen. If this
-    script fails or the consent API never loads, Shopify's banner stays the
-    fallback. Nothing is set without a choice.
+  - Shopify's own banner is hidden from page load (9 Nov 2026), so a visitor
+    sees one banner, never two. If the consent API never loads, Shopify's
+    banner comes back as the fallback. Nothing is set without a choice.
   - The section keeps its old file name and type so popup-group.json needs
     no change.
 {%- endcomment -%}
@@ -177,7 +177,6 @@
     function show() {
       if (shown || gateOpen() || !needsChoice()) return;
       shown = true;
-      document.documentElement.classList.add('tl-cc-on');
       bar.hidden = false;
     }
 
@@ -207,13 +206,29 @@
       }
     });
 
-    // Try for a few seconds: the consent API loads after the page, and the
-    // age gate may still be open. Once it closes, the next check shows the bar.
-    var tries = 0;
+    // 9 Nov 2026: the operator saw the cookie banner twice. Shopify's own
+    // banner showed first (it was hidden only once ours appeared, so it sat
+    // there while the age gate was open), then ours replaced it. Now Shopify's
+    // is hidden from the start, so only one banner is ever seen. If the
+    // consent API never loads, Shopify's comes back as the fallback.
+    var root = document.documentElement;
+    root.classList.add('tl-cc-on');
+    var waited = 0;
     var timer = setInterval(function () {
-      tries += 1;
+      waited += 250;
+      var p = privacy();
+      if (!p || !p.setTrackingConsent) {
+        if (waited >= 10000) {
+          clearInterval(timer);
+          root.classList.remove('tl-cc-on');
+        }
+        return;
+      }
       show();
-      if (shown || tries > 40) clearInterval(timer);
+      // Stop once the bar is up, once a choice exists, or once the gate is
+      // closed and there is nothing to ask. While the gate is open, keep
+      // waiting: the Yes button listener below also checks straight away.
+      if (shown || (!gateOpen() && !needsChoice())) clearInterval(timer);
     }, 250);
 
     // After the age gate's Yes, check again straight away.
