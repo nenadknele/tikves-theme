@@ -112,7 +112,8 @@
   words, same three buttons; Accept all and Reject all now sit side by
   side at equal size (44px tall), Choose cookies below them. About 240px
   tall on an iPhone 13. Desktop unchanged. To undo, delete the style
-  block below.
+  block below. 10 Nov 2026: Accept all moved to the right of Reject all,
+  operator's word, to match the theme's own cookie bar.
 {%- endcomment -%}
 {% style %}
   @media only screen and (max-width: 768px) {
@@ -123,9 +124,13 @@
     #shopify-pc__banner .shopify-pc__banner__btns { flex-direction: row !important; flex-wrap: wrap !important; gap: 8px !important; margin: 0 !important; }
     #shopify-pc__banner #shopify-pc__banner__btn-accept,
     #shopify-pc__banner #shopify-pc__banner__btn-decline { flex: 1 1 0 !important; width: auto !important; min-width: 0 !important; min-height: 44px !important; margin: 0 !important; padding: 8px 10px !important; }
-    #shopify-pc__banner #shopify-pc__banner__btn-accept { order: 1 !important; }
-    #shopify-pc__banner #shopify-pc__banner__btn-decline { order: 2 !important; }
+    #shopify-pc__banner #shopify-pc__banner__btn-decline { order: 1 !important; }
+    #shopify-pc__banner #shopify-pc__banner__btn-accept { order: 2 !important; }
     #shopify-pc__banner #shopify-pc__banner__btn-manage-prefs { order: 3 !important; flex: 1 1 100% !important; width: 100% !important; min-height: 36px !important; margin: 0 !important; padding: 6px !important; }
+  }
+  @media only screen and (min-width: 769px) {
+    #shopify-pc__banner #shopify-pc__banner__btn-decline { order: 1 !important; }
+    #shopify-pc__banner #shopify-pc__banner__btn-accept { order: 2 !important; }
   }
 {% endstyle %}
 
