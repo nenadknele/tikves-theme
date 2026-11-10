@@ -16,15 +16,18 @@
     banner comes back as the fallback. Nothing is set without a choice.
   - The section keeps its old file name and type so popup-group.json needs
     no change.
+  - 10 Nov 2026, operator's word: new body wording (his pick, option A), and
+    Accept all sits on the right, Reject all on its left. Both stay the same
+    size, colour and weight, so the choice stays equal.
 {%- endcomment -%}
 
 <div class="tl-cc" data-tl-cc role="region" aria-labelledby="tl-cc-title" hidden>
   <p class="tl-cc__title" id="tl-cc-title">Cookies</p>
-  <p class="tl-cc__body">We use cookies to run the shop. With your OK, we and our partners, Shopify included, also use them for analytics and ads. Nothing optional is set unless you accept. More in our <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>.</p>
+  <p class="tl-cc__body">Cookies keep the shop running. With your OK, we also use them, with Shopify and Google, to see which of our ads actually work. It helps a small importer spend less on ads and more on wine. Your choice, either way. More in our <a href="{{ shop.privacy_policy.url }}">Privacy Policy</a>.</p>
   <div class="tl-cc__btns">
     <button type="button" class="tl-cc__choose" data-tl-cc-choose>Choose cookies</button>
-    <button type="button" class="tl-cc__btn" data-tl-cc-accept>Accept all</button>
     <button type="button" class="tl-cc__btn" data-tl-cc-reject>Reject all</button>
+    <button type="button" class="tl-cc__btn" data-tl-cc-accept>Accept all</button>
   </div>
 </div>
 
