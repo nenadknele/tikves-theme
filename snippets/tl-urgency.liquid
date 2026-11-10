@@ -75,15 +75,15 @@
     {%- if tl_show_ea -%}
       <div class="announcement-slider__slide" data-tl-slide="ea">
         <a class="announcement-link" href="/pages/early-bird">
-          <span class="announcement-text" data-tl-fill="ea">Early access is open. Join the list and we email you a code straight away</span>
-          <span class="announcement-link-text">Get first pick</span>
+          <span class="announcement-text" data-tl-fill="ea" data-tl-bar="Early access is open">Early access is open</span>
+          <span class="announcement-link-text">Get your code</span>
         </a>
       </div>
     {%- endif -%}
     {%- if tl_show_bf -%}
       <div class="announcement-slider__slide" data-tl-slide="bf">
         <a class="announcement-link" href="/collections/all">
-          <span class="announcement-text" data-tl-fill="bf">Black Friday: 15% off every bottle, case and set</span>
+          <span class="announcement-text" data-tl-fill="bf" data-tl-bar-teaser="Black Friday starts Friday" data-tl-bar="Black Friday · 15% off">Black Friday · 15% off</span>
           <span class="announcement-link-text" data-tl-link-teaser="See the range" data-tl-link-live="Ends Thursday 3 December">Ends Thursday 3 December</span>
         </a>
       </div>
@@ -117,9 +117,22 @@
           var el = slide.querySelector('[data-tl-fill]');
           var text = el ? TL.texts[el.getAttribute('data-tl-fill')](t) : '';
           if (!text) { slide.parentNode.removeChild(slide); return; }
-          el.textContent = text.replace(/\.$/, '');
+          // 10 Nov 2026, his "Site polish": the bar carries short lines so
+          // each fits one line on a phone. The full sentences stay under the
+          // price and in the cart. The count moves into the link text.
+          var short = el.getAttribute('data-tl-bar');
+          if (p.bfTeaser && el.hasAttribute('data-tl-bar-teaser')) short = el.getAttribute('data-tl-bar-teaser');
+          el.textContent = short || text.replace(/\.$/, '');
           var link = slide.querySelector('[data-tl-link-teaser]');
-          if (link) link.textContent = p.bfTeaser ? link.getAttribute('data-tl-link-teaser') : link.getAttribute('data-tl-link-live');
+          if (link) {
+            if (p.bfTeaser) {
+              link.textContent = link.getAttribute('data-tl-link-teaser');
+            } else {
+              var l = TL.left(TL.dates.bfEnd, t);
+              var pl = function (n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); };
+              link.textContent = !l ? link.getAttribute('data-tl-link-live') : (l.kind === 'lastday' ? 'Last day, ' + pl(l.n, 'hour') + ' left' : pl(l.n, l.kind === 'hours' ? 'hour' : 'day') + ' left');
+            }
+          }
         });
         var slides = bar.querySelectorAll('.announcement-slider__slide');
         slides.forEach(function (s, i) { s.setAttribute('data-index', i); });

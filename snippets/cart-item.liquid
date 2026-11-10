@@ -99,12 +99,45 @@
           the bottle price when there is more than one, and only the last part
           of the title (the Mix titles end "· 10% off") with the amount kept on
           one line. Titles with no "·" show in full.
+
+          10 Nov 2026, his pick "Basket matches", after his word of 8 Nov
+          "crossed out prices do like ezra suggested". The one exception to
+          the 22 Oct rule: a line cut by the Black Friday 15% (the automatic
+          discount titled "Black Friday · 15% off") or by an early access code
+          (codes start EARLY-) shows the price paid for the line in green, the
+          line's shop price struck through, and "Black Friday · 15% off" (or
+          "Early access · 15% off") under it. It reads what Shopify itself
+          took off the line, so it shows only while the real discount applies
+          and always matches checkout. Every other code, the welcome code
+          among them, keeps the 22 Oct look.
         {%- endcomment -%}
+        {%- liquid
+          assign tl_bf_amt = 0
+          assign tl_bf_word = 'Black Friday · 15% off'
+          for da in product.discount_allocations
+            assign tl_da_t = da.discount_application.title | default: ''
+            assign tl_da_code = tl_da_t | slice: 0, 6 | upcase
+            if tl_da_t == 'Black Friday · 15% off' or tl_da_code == 'EARLY-'
+              assign tl_bf_amt = tl_bf_amt | plus: da.amount
+              if tl_da_code == 'EARLY-'
+                assign tl_bf_word = 'Early access · 15% off'
+              endif
+            endif
+          endfor
+          assign tl_bf_pay = product.original_line_price | minus: tl_bf_amt
+        -%}
+        {%- if tl_bf_amt > 0 -%}
+        <span class="cart__price tl-cart-bf">
+          <b class="tl-cw__now">{{ tl_bf_pay | money }}</b> <s class="tl-was"><span class="visually-hidden">Was </span>{{ product.original_line_price | money }}</s>
+        </span>
+        <small class="cart__discount tl-cart-off">{{ tl_bf_word }}</small>
+        {%- else -%}
         <span class="cart__price">
           {{ product.original_price | money }}{% if product.quantity > 1 %}<span class="tl-cart-each"> each</span>{% endif %}
         </span>
+        {%- endif -%}
 
-        {%- if product.line_level_discount_allocations != blank -%}
+        {%- if tl_bf_amt == 0 and product.line_level_discount_allocations != blank -%}
           {%- for discount_allocation in product.line_level_discount_allocations -%}
             {%- assign tl_off_title = discount_allocation.discount_application.title | split: ' · ' | last -%}
             <small class="cart__discount tl-cart-off">{{ tl_off_title }} <span class="tl-nowrap">(-{{ discount_allocation.amount | money }})</span></small>
