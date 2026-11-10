@@ -408,6 +408,10 @@
   lift above the basket bar. On the Christmas Mix page
   both lift above the basket bar while it is up (tl-six-builder sets
   --tl-tray-h and the class tl-mix-tray-up).
+  7 Nov 2026, buy box test: the wine page phone bar does the same. While it
+  is up, snippets/tl-buybox.liquid sets --tl-tray-h to the bar's height and
+  the class tl-bar-up, and the chat button, the icon and the 10% badge sit
+  above the bar instead of on it.
 {%- endcomment -%}
 {% style %}
   shopify-chat::part(activator) {
@@ -442,13 +446,16 @@
     height: 18px !important;
   }
   @media only screen and (max-width: 768px) {
-    html.tl-mix-tray-up shopify-chat::part(activator) {
+    html.tl-mix-tray-up shopify-chat::part(activator),
+    html.tl-bar-up shopify-chat::part(activator) {
       transform: translateY(calc(-1 * var(--tl-tray-h, 0px)));
     }
-    html.tl-mix-tray-up #accessease-icon.accessease-icon {
+    html.tl-mix-tray-up #accessease-icon.accessease-icon,
+    html.tl-bar-up #accessease-icon.accessease-icon {
       bottom: calc(var(--tl-tray-h, 0px) + 86px) !important;
     }
-    html.tl-mix-tray-up newsletter-reminder {
+    html.tl-mix-tray-up newsletter-reminder,
+    html.tl-bar-up newsletter-reminder {
       bottom: calc(var(--tl-tray-h, 0px) + 8px) !important;
     }
   }

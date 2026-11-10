@@ -1,0 +1,488 @@
+{%- comment -%}
+  TIKVES LONDON · THE WINE PAGE BUY BOX · 7 Nov 2026 · into the pull request of 9 Nov 2026
+  Built 7 Nov on the unpublished copy "TEST · buy box · 7 Nov (do not publish)"
+  for his review, then carried into the Black Friday weekend pull request on
+  9 Nov. Reference: the product pages of overtone.co and boombeauty.com, read
+  7 Nov 2026, taken only as far as our rules allow.
+
+  Rendered in parts from custom blocks in templates/product.wine.json, so each
+  piece keeps its own place in the block order and can be moved in the editor:
+    part: 'glance'    the at-a-glance strip under the price (tikves-pdp-copy)
+    part: 'bf'        the Black Friday price, beside the button
+    part: 'stock'     "Only N left." from the live count, at 60 or fewer
+    part: 'delivery'  the free delivery sentence and the Christmas line
+    part: 'cases'     "Also in these cases", one tap each
+    part: 'find'      "Find your wine" by the button, like their quiz prompt
+    part: 'faq'       FAQs under the body, word for word from /pages/faqs
+    part: 'sticky'    the phone bar that shows once the button scrolls away,
+                      and the phone first-screen spacing
+
+  7 Nov 2026, afternoon: the same parts on cases, sets and spirits, from
+  templates/product.json, so every product in the Black Friday offer
+  (REF · BLACK FRIDAY 2026 v5, D4 and D17) carries the same buy box. The
+  gift card is out of the offer and carries none of it.
+
+  WORDS. Every line here is read from a live page, a metafield or a REF, and
+  says where. The new ones were approved word for word on 7 Nov 2026:
+  REF · WINE PAGE BUY BOX · NEW WORDING APPROVED · v1 · 7 Nov 2026.
+
+  THE BLACK FRIDAY PRICE, part 'bf'.
+  · Off unless the theme setting "Black Friday price on the shop"
+    is on AND the depth setting holds a whole number from 1 to 99 AND the clock
+    is inside Fri 27 Nov 00:00 to Thu 3 Dec 23:59 UK (moved from Mon 30 Nov
+    on his word of 8 Nov 2026, "main event until Thursday 3"). D1 is 15%, his ruling
+    of 7 Nov 2026 (REF · BLACK FRIDAY 2026 v7), and the depth setting defaults
+    to 15. The switch is on by default since 10 Nov 2026, his word, with
+    the Shopify discount scheduled for the same window. Turn it off if that
+    discount is ever switched off.
+  · PREVIEW ON A COPY ONLY. The 7 Nov test hook (a product.wine-bftestNN.json
+    template) is gone, as the handoff of 7 Nov asked before any pull request.
+    In its place: on a theme that is not the published one (theme.role is
+    not 'main'), the block is rendered whatever the switch says, and the
+    script decides by TL.now(), which snippets/tl-dates pins to ?tl_now= on
+    such a theme. So ?tl_now=2026-11-28T10:00:00Z on a copy's preview address
+    shows the weekend state on any date, with a Preview label and a dashed
+    border, so no screenshot can pass for the live sale. On the published
+    theme none of this exists: the switch, the depth and the real clock
+    decide, and nothing on the address changes them.
+  · The green price with the shop price crossed out, his word of 8 Nov 2026
+    ("crossed out prices do like ezra suggested"), which replaced the green
+    only ruling of 4 Nov 2026 and 6 Nov. The crossed-out figure is the live
+    shop price, worked out here, never a compare-at price. While the block
+    shows, the regular price block is hidden, so the shopper reads one
+    price, what comes off, and what it was.
+  · PRICE MATHS, as pull request 85: nothing here sets a price, the Shopify
+    discount does. For a line of q bottles at price p and depth d per cent,
+    off = p x q x d / 100 in pence, rounded DOWN, pay = p x q minus off.
+    Shopify rounds per line, and it rounds the half penny in the shopper's
+    disfavour: read on 10 Nov 2026 from a Shopify draft order calculation,
+    one bottle at a half-pound price and three of them, both a penny above
+    what rounding to the nearest gave. Some prices end in 50p, so the half
+    penny is real. Every figure the theme prints follows this rule: the
+    buy box, the cases row, the phone bar, the cards and the basket's
+    recommendations (TL.bfPay in snippets/tl-dates).
+  · The basket shows the full price until the real discount exists. This
+    block never creates or implies a discount on its own.
+
+  ADDING: posts to /cart/add.js, then refreshes and opens the cart drawer with
+  the same events as tl-mix-pdp (pull request 85) and tikves-gatc-handler. If
+  the script fails, the form posts normally.
+{%- endcomment -%}
+{%- liquid
+  assign tl_v = product.selected_or_first_available_variant
+  assign tl_p = tl_v.price
+
+  comment
+    Cases and sets are sold as one item, so their Black Friday line says
+    "£X off", the words approved for the cases row. A bottle says
+    "£X off this bottle". Read from the product type.
+  endcomment
+  assign tl_pack = false
+  if product.type contains 'Case' or product.type contains 'Set'
+    assign tl_pack = true
+  endif
+
+  assign tl_bf_on = false
+  assign tl_d = 0
+  if settings.tl_bf_depth != blank
+    assign tl_d = settings.tl_bf_depth | plus: 0
+  endif
+  assign tl_d_int = tl_d | floor
+  if tl_d_int != tl_d or tl_d < 1 or tl_d > 99
+    assign tl_d = 0
+  endif
+  if tl_d > 0
+    if theme.role != 'main'
+      comment
+        A copy, for preview: rendered whatever the switch says, and the
+        script below decides by TL.now(), so ?tl_now= shows any date.
+      endcomment
+      assign tl_bf_on = true
+    elsif settings.tl_bf_price
+      comment
+        The published theme. Server side, the window plus a day either side,
+        because Shopify can serve a cached page. The script below is the
+        final word on the minute.
+        Fri 27 Nov 2026 00:00 UTC = 1795737600 · Thu 3 Dec 2026 23:59:59 UTC = 1796342399.
+      endcomment
+      assign tl_now = 'now' | date: '%s' | plus: 0
+      if tl_now >= 1795651200 and tl_now <= 1796428799
+        assign tl_bf_on = true
+      endif
+    endif
+  endif
+  if product.gift_card?
+    assign tl_bf_on = false
+  endif
+-%}
+
+{%- case part -%}
+
+{%- when 'glance' -%}
+  {%- comment -%}
+    AT A GLANCE. tikves-pdp-copy: dry or sweet, the grape, serving temperature
+    and one food, near the price, each read from the same metafield the facts
+    grid and the body use. Never an award, a price or a delivery line.
+    Overtone runs the same strip ("At a glance") under its price.
+  {%- endcomment -%}
+  {%- liquid
+    assign g_sw = product.metafields.wine.sweetness.value
+    assign g_gr = product.metafields.wine.grape_blend.value
+    assign g_st = product.metafields.wine.serving_temperature.value
+    assign g_fd = product.metafields.custom.food_pairing.value | first
+  -%}
+  {%- if g_sw != blank or g_gr != blank or g_st != blank or g_fd != blank -%}
+  <ul class="tl-bb-glance">
+    {%- if g_sw != blank -%}<li>{{ g_sw }}</li>{%- endif -%}
+    {%- if g_gr != blank -%}<li>{{ g_gr }}</li>{%- endif -%}
+    {%- if g_st != blank -%}<li>Serve {{ g_st }}</li>{%- endif -%}
+    {%- if g_fd != blank -%}<li>{{ g_fd }}</li>{%- endif -%}
+  </ul>
+  {%- endif -%}
+
+{%- when 'bf' -%}
+  {%- if tl_bf_on and product.available -%}
+  {%- liquid
+    assign bf_off = tl_p | times: tl_d | divided_by: 100.0 | floor
+    assign bf_pay = tl_p | minus: bf_off
+  -%}
+  <div class="tl-bb-bf" data-tl-bb-bf data-price="{{ tl_p }}" data-depth="{{ tl_d }}"{% if tl_pack %} data-pack{% endif %}>
+    {%- comment -%} Approved 7 Nov 2026, REF · WINE PAGE BUY BOX v1. The green is #1f7a3a, kept on his word the same day. {%- endcomment -%}
+    <p class="tl-bb-bf__head">Black Friday · {{ tl_d }}% off</p>
+    {%- comment -%} 8 Nov 2026, his word "crossed out prices do like ezra suggested": the shop price struck through beside the green price, inside the window only, worked out here from the live price. No compare-at price. The "£X off this bottle" line stays under it. {%- endcomment -%}
+    <p class="tl-bb-bf__price"><b data-tl-bb-pay>{{ bf_pay | money }}</b> <s class="tl-was" data-tl-bb-was><span class="visually-hidden">Was </span>{{ tl_p | money }}</s></p>
+    <p class="tl-bb-bf__off" data-tl-bb-off>{{ bf_off | money }} off{% unless tl_pack %} this bottle{% endunless %}</p>
+    <p class="tl-bb-bf__end">Ends Thursday 3 December at 23:59. <span data-tl-bb-left></span></p>
+  </div>
+  <style>
+    html:not(.tl-bb-bf-off) .product-single__meta .product-block--price{display:none !important}
+  </style>
+  {%- endif -%}
+
+{%- when 'stock' -%}
+  {%- comment -%}
+    LIVE COUNT ONLY, REF · HORMOZI OFFER IN FULL v4 item L: "Only N left." at
+    60 or fewer, the store's own number when the page is built. Same words and
+    threshold as the product cards and the cart. Never typed, never faked.
+  {%- endcomment -%}
+  {%- if product.available and tl_v.inventory_management == 'shopify' and tl_v.inventory_quantity > 0 and tl_v.inventory_quantity <= 60 -%}
+    <p class="tl-bb-stock">Only {{ tl_v.inventory_quantity }} left.</p>
+  {%- endif -%}
+
+{%- when 'delivery' -%}
+  {%- comment -%}
+    DELIVERY, read 7 Nov 2026 in all four places tikves-delivery asks for:
+    18 · CARRIER AND DELIVERY v6 section 4, the live shipping policy, the
+    Delivery page and the delivery profile. All four agree: free at £100 or
+    more to England, Scotland and Wales, never to the Isle of Man. The sentence
+    is the shipping policy's own, word for word. No carrier, no service, no
+    time. The Christmas line is 18 v6 section 5's, approved word for word for
+    any surface, with its countdown from snippets/tl-dates.
+    7 Nov 2026: shown only while the bottle can be bought. Under a SOLD OUT
+    button, a delivery line and a Christmas order-by date read as a promise
+    the page can't keep.
+  {%- endcomment -%}
+  {%- if product.available -%}
+  <p class="tl-bb-delivery">Delivery is free on orders of £100 or more delivered to England, Scotland or Wales. <a href="/pages/delivery">Delivery costs and timings</a></p>
+  {%- render 'tl-urgency', mode: 'line' -%}
+  {%- endif -%}
+
+{%- when 'cases' -%}
+  {%- comment -%}
+    ALSO IN THESE CASES, kept from the page and from pull request 85, and
+    moved up into the buy box. The cases are the hand-picked complementary
+    products in Search and Discovery, the same list the old block read. Cases
+    take the same Black Friday cut as the bottles (REF · BLACK FRIDAY 2026 v4,
+    D17), so they show the green price when the bottle does. A case price is
+    printed as set; nothing compares it to its bottles.
+  {%- endcomment -%}
+  {%- assign tl_cases = product.metafields['shopify--discovery--product_recommendation'].complementary_products.value -%}
+  {%- capture tl_cards -%}
+    {%- for c in tl_cases -%}
+      {%- unless c.available -%}{%- continue -%}{%- endunless -%}
+      {%- assign cv = c.selected_or_first_available_variant -%}
+      {%- assign c_off = cv.price | times: tl_d | divided_by: 100.0 | floor -%}
+      {%- assign c_pay = cv.price | minus: c_off -%}
+      <div class="tl-bb-case">
+        <a class="tl-bb-case__img" href="{{ c.url }}">
+          {%- if c.featured_image -%}{{ c.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: c.featured_image.alt | default: c.title, widths: '100,200' }}{%- endif -%}
+        </a>
+        <div class="tl-bb-case__meta">
+          <a class="tl-bb-case__name" href="{{ c.url }}">{{ c.title }}</a>
+          {%- if tl_bf_on -%}
+            <span class="tl-bb-case__price" data-bf-only><b class="tl-bb-green">{{ c_pay | money }}</b> <s class="tl-was"><span class="visually-hidden">Was </span>{{ cv.price | money }}</s></span>
+            <span class="tl-bb-case__price" data-bf-alt>{{ cv.price | money }}</span>
+          {%- else -%}
+            <span class="tl-bb-case__price">{{ cv.price | money }}</span>
+          {%- endif -%}
+          {%- if cv.inventory_management == 'shopify' and cv.inventory_quantity > 0 and cv.inventory_quantity <= 60 -%}
+            <span class="tl-bb-case__left">Only {{ cv.inventory_quantity }} left.</span>
+          {%- endif -%}
+        </div>
+        <form class="tl-bb-form" action="{{ routes.cart_add_url }}" method="post" data-tl-bb-add>
+          <input type="hidden" name="id" value="{{ cv.id }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="tl-bb-case__add">{{ 'products.product.add_to_cart' | t }}</button>
+        </form>
+      </div>
+    {%- endfor -%}
+  {%- endcapture -%}
+  {%- if tl_cards != blank -%}
+  <div class="tl-bb-cases">
+    <p class="tl-bb-cases__head">Also in these cases</p>
+    {{ tl_cards }}
+  </div>
+  {%- endif -%}
+
+{%- when 'find' -%}
+  {%- comment -%}
+    FIND YOUR WINE, by the button. Overtone and BOOM both put a quiz prompt
+    there, read 7 Nov 2026: "Not sure if this is right for you?" and a link
+    to their quiz. Ours links to the Find your wine page, and the page's own
+    title is the link. DRAFT for his yes: "Not sure this is the one?". Not on
+    spirits or the gift card, which the finder doesn't cover.
+  {%- endcomment -%}
+  {%- unless product.gift_card? or product.type == 'Spirit' -%}
+    <p class="tl-bb-find">Not sure this is the one? <a href="/pages/find-your-wine">Find your wine</a></p>
+  {%- endunless -%}
+
+{%- when 'faq' -%}
+  {%- comment -%}
+    FAQs ON THE PRODUCT PAGE, like Overtone's and BOOM's, read 7 Nov 2026.
+    Every word is copied from the live FAQs page, /pages/faqs, read the same
+    day: the heading, the intro line, five questions and their answers, and
+    the closing line. Picked for what a shopper asks before buying. Nothing
+    on carriers or delivery times, which stay off product pages. Change the
+    FAQs page and this together.
+  {%- endcomment -%}
+  {%- unless product.gift_card? -%}
+  <div class="tl-bb-faq">
+    <h2 class="tl-bb-faq__head">FAQs</h2>
+    <p class="tl-bb-faq__intro">Quick answers to what we get asked most.</p>
+    <details><summary><h3>Can I buy a single bottle, or mix my own?</h3></summary><div class="tl-bb-faq__a"><p>Both. There is no minimum order. Buy one bottle, one of our cases, or any mix of the two.</p></div></details>
+    <details><summary><h3>Can I send it to someone else?</h3></summary><div class="tl-bb-faq__a"><p>Yes. Put their name and address in as the delivery address at checkout. Whoever takes it in must be 18 or over.</p></div></details>
+    <details><summary><h3>How is it packed?</h3></summary><div class="tl-bb-faq__a"><p>In double-walled cases with dividers, because glass travels badly and we would rather it did not break at all.</p></div></details>
+    <details><summary><h3>Do your prices include VAT?</h3></summary><div class="tl-bb-faq__a"><p>Yes. Every price on the site includes VAT, and so does the delivery charge.</p></div></details>
+    <details><summary><h3>Do I need to be 18 to order?</h3></summary><div class="tl-bb-faq__a"><p>Yes. How we check, and what happens if we cannot confirm it, is on our <a href="/pages/age-verification">Responsible drinking and age verification page</a>.</p></div></details>
+    <p class="tl-bb-faq__more">Not here? Ask the chat button, any time.</p>
+  </div>
+  {%- endunless -%}
+
+{%- when 'sticky' -%}
+  {%- comment -%}
+    THE PHONE BAR. tikves-storefront-audit allows a sticky add to cart only
+    if it hides while the product form is in view. It shows once the main
+    button has scrolled up out of sight, and hides again when it comes back.
+    Phone only. One price: the green one while Black Friday shows, otherwise
+    the shelf price. It adds the quantity chosen in the form.
+    Also here, phone only: the first screen. On a phone the bottle photo
+    filled the screen and the price and button sat a full scroll down; both
+    references show title, price and the button by the first scroll. The
+    main photo frame is held to 38% of the screen height on this template
+    only, and the whole bottle fits inside it.
+  {%- endcomment -%}
+  {%- if product.available -%}
+  <div class="tl-bb-sticky" data-tl-bb-sticky hidden>
+    <div class="tl-bb-sticky__info">
+      <span class="tl-bb-sticky__name">{{ product.title }}</span>
+      {%- if tl_bf_on -%}
+        {%- assign s_off = tl_p | times: tl_d | divided_by: 100.0 | floor -%}
+        <span data-bf-only><b class="tl-bb-green">{{ tl_p | minus: s_off | money }}</b> <s class="tl-was"><span class="visually-hidden">Was </span>{{ tl_p | money }}</s></span>
+        <span data-bf-alt>{{ tl_p | money }}</span>
+      {%- else -%}
+        <span>{{ tl_p | money }}</span>
+      {%- endif -%}
+    </div>
+    <form class="tl-bb-form" action="{{ routes.cart_add_url }}" method="post" data-tl-bb-add data-tl-bb-sticky-form>
+      <input type="hidden" name="id" value="{{ tl_v.id }}">
+      <input type="hidden" name="quantity" value="1">
+      <button type="submit" class="tl-bb-sticky__add">{{ 'products.product.add_to_cart' | t }}</button>
+    </form>
+  </div>
+  {%- endif -%}
+  <style>
+    .tl-bb-glance{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+    .tl-bb-glance li{margin:0;padding:4px 10px;border:1px solid #B9AC9B;border-radius:999px;font-size:13px;line-height:1.4;color:#1F2328}
+    .tl-bb-bf{margin:12px 0 4px;padding:12px 14px;border:1px solid #B9AC9B;border-radius:8px;background:#EAE3D9}
+    .tl-bb-bf p{margin:0}
+    .tl-bb-bf--preview{border:2px dashed #A64029}
+    .tl-bb-bf__preview{display:inline-block;margin:0 0 8px !important;padding:2px 8px;background:#1F2328;color:#F5EFE7;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:3px}
+    .tl-bb-bf__head{font-weight:600;font-size:15px}
+    .tl-bb-bf__price{margin-top:4px !important;font-size:15px}
+    .tl-bb-bf__price b,.tl-bb-green{color:#1f7a3a;font-weight:700}
+    .tl-bb-bf__price b{font-size:22px;margin-right:6px}
+    .tl-was{color:#5c5a57;font-weight:400;text-decoration:line-through;text-decoration-thickness:1px}
+    .tl-bb-bf__price .tl-was{font-size:16px}
+    .tl-bb-bf__off{font-size:14px;margin-top:2px !important}
+    .tl-bb-bf__end{margin-top:4px !important;font-size:13px}
+    .tl-bb-stock{margin:8px 0 0;font-size:14px;font-weight:600}
+    .tl-bb-delivery{margin:10px 0 0;font-size:14px;line-height:1.5}
+    .tl-bb-delivery a{color:inherit;text-decoration:underline;text-underline-offset:3px;white-space:nowrap}
+    .tl-bb-cases{margin:18px 0 0}
+    .tl-bb-cases__head{margin:0 0 8px;font-weight:600;font-size:15px}
+    .tl-bb-case{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:8px 0;border-top:1px solid #B9AC9B}
+    .tl-bb-case:last-child{border-bottom:1px solid #B9AC9B}
+    .tl-bb-case__img{display:block;background:#EAE3D9;border-radius:4px;overflow:hidden}
+    .tl-bb-case__img img{display:block;width:64px;height:64px;object-fit:cover}
+    .tl-bb-case__meta{display:flex;flex-direction:column;gap:2px;font-size:14px;line-height:1.35;min-width:0}
+    .tl-bb-case__name{color:inherit;text-decoration:none;font-weight:600}
+    .tl-bb-case__left{font-size:13px}
+    .tl-bb-form{margin:0}
+    .tl-bb-case__add{padding:9px 14px;border:1px solid #1F2328;border-radius:999px;background:transparent;color:#1F2328;font-size:12px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+    .tl-bb-case__add[disabled],.tl-bb-sticky__add[disabled]{opacity:.6;cursor:default}
+    [data-bf-alt],html.tl-bb-bf-off [data-bf-only]{display:none !important}
+    html.tl-bb-bf-off [data-bf-alt]{display:inline !important}
+    .tl-bb-find{margin:12px 0 0;font-size:14px;line-height:1.5}
+    .tl-bb-find a{color:inherit;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+    .tl-bb-faq{margin:28px 0 8px;text-align:left}
+    .tl-bb-faq__head{margin:0 0 6px}
+    .tl-bb-faq__intro{margin:0 0 12px;font-size:14px;line-height:1.5}
+    .tl-bb-faq details{border-bottom:1px solid #B9AC9B}
+    .tl-bb-faq details:first-of-type{border-top:1px solid #B9AC9B}
+    .tl-bb-faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+    .tl-bb-faq summary::-webkit-details-marker{display:none}
+    .tl-bb-faq summary h3{margin:0;font-size:15px;line-height:1.35;font-weight:600;letter-spacing:0;text-transform:none}
+    .tl-bb-faq summary::after{content:"";flex:0 0 14px;height:14px;background:linear-gradient(#1F2328,#1F2328) center/14px 1.5px no-repeat,linear-gradient(#1F2328,#1F2328) center/1.5px 14px no-repeat}
+    .tl-bb-faq details[open] summary::after{background:linear-gradient(#1F2328,#1F2328) center/14px 1.5px no-repeat}
+    .tl-bb-faq summary:focus-visible{outline:2px solid #A64029;outline-offset:4px}
+    .tl-bb-faq__a{padding:0 0 14px;font-size:14px;line-height:1.55}
+    .tl-bb-faq__a p{margin:0}
+    .tl-bb-faq__a a{color:inherit;text-decoration:underline;text-underline-offset:3px}
+    .tl-bb-faq__more{margin:12px 0 0;font-size:14px}
+    .tl-bb-sticky{display:none}
+    @media (max-width: 768px){
+      .tl-bb-sticky:not([hidden]){display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;align-items:center;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:#F5EFE7;border-top:1px solid #B9AC9B;box-shadow:0 -4px 14px rgba(31,35,40,.08)}
+      .tl-bb-sticky__info{display:flex;flex-direction:column;min-width:0;flex:1 1 auto;font-size:14px;line-height:1.3}
+      .tl-bb-sticky__name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      .tl-bb-sticky__add{padding:12px 18px;border:0;border-radius:999px;background:#A64029;color:#fff;font-size:13px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+      .product-section .product-image-main .image-wrap{padding-bottom:38vh !important}
+      .product-section .product-image-main .image-wrap image-element{position:absolute;top:0;left:0;width:100%;height:100%;display:block}
+      .product-section .product-image-main .image-wrap img{width:100%;height:100%;object-fit:contain}
+    }
+  </style>
+  <script>
+  (function () {
+    if (window.tlBuyBox) return;
+    window.tlBuyBox = true;
+
+    function money(c) { return '£' + (c / 100).toFixed(2); }
+    function bottles(n) { return n === 1 ? 'this bottle' : n + ' bottles'; }
+    function qtyInput() { return document.querySelector('.product-single__meta input[name="quantity"]'); }
+    function qty() { var i = qtyInput(); var n = i ? parseInt(i.value, 10) : 1; return n > 0 ? n : 1; }
+
+    // Black Friday block: the window, the countdown, and the figure for the quantity chosen.
+    var bf = document.querySelector('[data-tl-bb-bf]');
+    function bfUpdate() {
+      if (!bf) return;
+      var p = parseInt(bf.getAttribute('data-price'), 10), d = parseInt(bf.getAttribute('data-depth'), 10), q = qty();
+      var line = p * q, off = Math.floor(line * d / 100 + 1e-6);
+      var pay = bf.querySelector('[data-tl-bb-pay]'), o = bf.querySelector('[data-tl-bb-off]'), was = bf.querySelector('[data-tl-bb-was]');
+      if (pay) pay.textContent = money(line - off);
+      if (was) was.innerHTML = '<span class="visually-hidden">Was </span>' + money(line);
+      if (o) o.textContent = money(off) + ' off' + (bf.hasAttribute('data-pack') ? '' : ' ' + bottles(q));
+    }
+    // The window and the minute come from snippets/tl-dates (TL.dates and
+    // TL.now), so the end lives in one place; the same dates are the
+    // fallback. TL.now is the real clock on the published theme. On a copy
+    // it can be pinned with ?tl_now=, and the block then says so. The check
+    // runs even with no block on the page (a sold out bottle), because the
+    // cases row and the phone bar carry Black Friday prices of their own.
+    var TD = (window.TL && window.TL.dates) || {};
+    var start = TD.bfStart || Date.UTC(2026, 10, 27, 0, 0, 0), end = TD.bfEnd || Date.UTC(2026, 11, 3, 23, 59, 59);
+    var now = (window.TL && window.TL.now) ? window.TL.now() : Date.now();
+    if (now < start || now > end) {
+      // Outside the real window: the block goes, the shelf price comes back.
+      if (bf) { bf.remove(); bf = null; }
+      document.documentElement.classList.add('tl-bb-bf-off');
+    }
+    if (bf) {
+      if (window.TL && window.TL.pinned) {
+        bf.classList.add('tl-bb-bf--preview');
+        var tag = document.createElement('p');
+        tag.className = 'tl-bb-bf__preview';
+        tag.textContent = 'Preview · clock set to ' + new Date(now).toISOString().slice(0, 16).replace('T', ' ') + ' UTC';
+        bf.insertBefore(tag, bf.firstChild);
+      }
+      // The buy box carries the depth, the end and the count here, so the
+      // Black Friday line under the delivery sentence would say it twice.
+      document.querySelectorAll('.product-single__meta [data-tl-lines] [data-tl-fill="bf"]').forEach(function (el) {
+        var box = el.parentNode;
+        box.removeChild(el);
+        if (!box.querySelector('[data-tl-fill]')) box.parentNode.removeChild(box);
+      });
+      var left = bf.querySelector('[data-tl-bb-left]');
+      if (left && window.TL && window.TL.left) {
+        var l = window.TL.left(end, now);
+        var pl = function (n, w) { return n + ' ' + w + (n === 1 ? '' : 's'); };
+        if (l) left.textContent = l.kind === 'lastday' ? 'Last day, ' + pl(l.n, 'hour') + ' left.' : pl(l.n, l.kind === 'hours' ? 'hour' : 'day') + ' left.';
+      }
+      bfUpdate();
+      document.addEventListener('input', function (e) { if (e.target === qtyInput()) bfUpdate(); });
+      document.addEventListener('change', function (e) { if (e.target === qtyInput()) bfUpdate(); });
+      document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.js-qty__adjust')) setTimeout(bfUpdate, 0); });
+    }
+
+    // The phone bar: shown only while the main add to cart is out of view.
+    // 7 Nov 2026: while it is up, the 10% badge, the access icon and the chat
+    // button lift above it, so none of them sits on the bar's name or its
+    // button. The lift rules live with the other stacking rules in
+    // snippets/tikves-site-css.liquid (class tl-bar-up, height --tl-tray-h).
+    var bar = document.querySelector('[data-tl-bb-sticky]');
+    var mainBtn = document.querySelector('.product-single__meta form[action*="/cart/add"] [type="submit"], .product-single__meta button[name="add"]');
+    function lift() {
+      var root = document.documentElement;
+      if (!bar || bar.hidden) { root.classList.remove('tl-bar-up'); return; }
+      root.style.setProperty('--tl-tray-h', bar.offsetHeight + 'px');
+      root.classList.add('tl-bar-up');
+    }
+    // Read on scroll, one frame at a time, rather than by intersection: a
+    // jump that carries the button from below the screen to above it in one
+    // go never crosses the screen, and an observer would not fire.
+    function check() {
+      var show = mainBtn.getBoundingClientRect().bottom < 0;
+      if (bar.hidden === show) { bar.hidden = !show; }
+      lift();
+    }
+    if (bar && mainBtn) {
+      var ticking = false;
+      var onMove = function () {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function () { ticking = false; check(); });
+      };
+      window.addEventListener('scroll', onMove, { passive: true });
+      window.addEventListener('resize', onMove);
+      check();
+    }
+
+    // One add handler for the cases row and the bar. Same events as tl-mix-pdp.
+    document.addEventListener('submit', function (e) {
+      var form = e.target.closest ? e.target.closest('[data-tl-bb-add]') : null;
+      if (!form) return;
+      e.preventDefault();
+      if (form.hasAttribute('data-tl-bb-sticky-form')) {
+        form.querySelector('input[name="quantity"]').value = qty();
+      }
+      var btn = form.querySelector('button');
+      if (!btn || btn.disabled) return;
+      var html = btn.innerHTML;
+      btn.disabled = true;
+      fetch('/cart/add.js', { method: 'POST', headers: { 'Accept': 'application/json' }, body: new FormData(form) })
+        .then(function (r) { if (!r.ok) { throw new Error('add failed'); } return r.json(); })
+        .then(function () { return fetch('/cart.js', { headers: { 'Accept': 'application/json' } }).then(function (r) { return r.json(); }); })
+        .then(function (cart) {
+          var num = document.querySelector('.cart-link__bubble-num');
+          if (num) { num.textContent = cart.item_count; }
+          var bub = document.querySelector('.cart-link__bubble');
+          if (bub) { bub.classList.add('cart-link__bubble--visible'); }
+          document.dispatchEvent(new CustomEvent('cart:build'));
+          document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
+          document.dispatchEvent(new CustomEvent('cart:open'));
+          setTimeout(function () { btn.disabled = false; btn.innerHTML = html; }, 1500);
+        })
+        .catch(function () { btn.disabled = false; btn.innerHTML = html; form.submit(); });
+    });
+  })();
+  </script>
+
+{%- endcase -%}

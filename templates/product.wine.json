@@ -62,7 +62,7 @@
         "guarantee": {
           "type": "custom",
           "settings": {
-            "code": "{% comment %} Guarantee line, 17 Oct 2026, operator. Replaces the sales point that said 14-day returns, unopened, which undersold the guarantee. Words taken from the Returns page. The terms live there, not here. {% endcomment %}<p class=\"tl-pdp-guarantee\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <a href=\"/pages/returns\" style=\"text-decoration:underline;text-underline-offset:3px\">How our guarantee works</a></p>"
+            "code": "{% comment %} Guarantee line, 17 Oct 2026, operator. Words taken from the Returns page. The terms live there, not here. 7 Nov 2026 buy box test: the line opens to the Returns page's own first three paragraphs, word for word, as BOOM opens its guarantee in the buy box. {% endcomment %}<details class=\"tl-pdp-guarantee\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><summary style=\"cursor:pointer;list-style:none\"><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <span style=\"text-decoration:underline;text-underline-offset:3px\">How our guarantee works</span></summary><div style=\"margin:8px 0 0;padding:0 0 0 12px;border-left:2px solid #B9AC9B\"><p style=\"margin:0 0 6px\">Open a bottle and taste it properly. If it isn't what you hoped, tell us within 14 days of delivery.</p><p style=\"margin:0 0 6px\">You choose. A refund of what that bottle cost you, or a different bottle up to the same value.</p><p style=\"margin:0 0 6px\">You keep the one you opened. Nothing comes back to us. One bottle per order.</p><p style=\"margin:0\"><a href=\"/pages/returns\" style=\"text-decoration:underline;text-underline-offset:3px\">How our guarantee works</a></p></div></details>"
           }
         },
         "sales_point-secure": {
@@ -116,14 +116,52 @@
           "type": "separator",
           "settings": {}
         },
-        "complementary": {
-          "type": "complementary_products",
+        "bb_glance": {
+          "type": "custom",
           "settings": {
-            "product_complementary_heading": "Also in these cases",
-            "complementary_count": 2,
-            "per_slide": 2,
-            "control_type": "dots",
-            "image_style": "default"
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'glance' %}"
+          }
+        },
+        "bb_bf": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'bf' %}"
+          }
+        },
+        "bb_stock": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'stock' %}"
+          }
+        },
+        "bb_delivery": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'delivery' %}"
+          }
+        },
+        "bb_cases": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'cases' %}"
+          }
+        },
+        "bb_sticky": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'sticky' %}"
+          }
+        },
+        "bb_find": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'find' %}"
+          }
+        },
+        "bb_faq": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'faq' %}"
           }
         }
       },
@@ -131,13 +169,19 @@
         "vintage",
         "summary",
         "price",
+        "bb_glance",
+        "bb_bf",
         "quantity",
         "buy_buttons",
         "inventory_status",
+        "bb_stock",
+        "bb_find",
+        "bb_delivery",
         "custom_gXHzAU",
         "back_in_stock",
         "guarantee",
         "sales_point-secure",
+        "bb_cases",
         "mw_quote",
         "separator-1",
         "description",
@@ -145,8 +189,9 @@
         "tasting_notes_tab",
         "food_occasion",
         "awards",
+        "bb_faq",
         "separator-2",
-        "complementary"
+        "bb_sticky"
       ],
       "settings": {
         "sku_enable": false,

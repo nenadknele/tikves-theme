@@ -875,6 +875,20 @@
       },
       {
         "type": "checkbox",
+        "id": "tl_bf_price",
+        "label": "Black Friday price on the shop",
+        "info": "Shows the green Black Friday price with the shop price crossed out: the product page buy box, its cases row and phone bar, the product cards and search results, and the basket's recommendations. On by default since 10 Nov 2026, his word. Never the gift card. Only Fri 27 Nov 00:00 to Thu 3 Dec 23:59 UK, whatever this switch says. Turn it off if the Shopify discount is ever switched off or its depth changes. The announcement bar and the lines under the price run from the clock alone and do not need this switch.",
+        "default": true
+      },
+      {
+        "type": "number",
+        "id": "tl_bf_depth",
+        "label": "Black Friday depth, per cent off",
+        "info": "15, his ruling of 7 Nov 2026 (REF · BLACK FRIDAY 2026 v7). A whole number from 1 to 99, the same as the Shopify discount. Blank shows nothing.",
+        "default": 15
+      },
+      {
+        "type": "checkbox",
         "id": "cart_terms_conditions_enable",
         "label": "t:settings_schema.cart.settings.cart_terms_conditions_enable.label"
       },
