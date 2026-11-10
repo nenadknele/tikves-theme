@@ -117,9 +117,9 @@
           for da in product.discount_allocations
             assign tl_da_t = da.discount_application.title | default: ''
             assign tl_da_code = tl_da_t | slice: 0, 6 | upcase
-            if tl_da_t == 'Black Friday · 15% off' or tl_da_code == 'EARLY-'
+            if tl_da_t == 'Black Friday · 15% off' or tl_da_code == 'TEN-23'
               assign tl_bf_amt = tl_bf_amt | plus: da.amount
-              if tl_da_code == 'EARLY-'
+              if tl_da_code == 'TEN-23'
                 assign tl_bf_word = 'Early access · 15% off'
               endif
             endif
