@@ -82,7 +82,8 @@
   word. No compare-at price is ever set, so nothing reaches the Google feed
   and nothing is left behind after Thu 3 Dec.
   TL.bfDepth(t) is the depth in force at t, or 0. TL.bfPay(cents, t) is the
-  price after the cut, rounded the way the buy box and Shopify round it.
+  price after the cut, the cut rounded down to the penny as Shopify does it
+  (read from a draft order calculation, 10 Nov 2026).
   The html class tl-bf-price is set while it is in force; the cards show
   their green price under that class and their plain price without it.
   Early access shows no crossed-out price: only a code holder gets the cut.
@@ -158,7 +159,7 @@
     }
     function bfPay(cents, t) {
       var d = bfDepth(t);
-      return d ? cents - Math.round(cents * d / 100) : cents;
+      return d ? cents - Math.floor(cents * d / 100 + 1e-6) : cents;
     }
     var BF = '15% off every bottle, case and set';
     var texts = {

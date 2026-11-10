@@ -53,9 +53,14 @@
     price, what comes off, and what it was.
   · PRICE MATHS, as pull request 85: nothing here sets a price, the Shopify
     discount does. For a line of q bottles at price p and depth d per cent,
-    off = round(p x q x d / 100) in pence, pay = p x q minus off. Shopify
-    rounds per line. Every price on the shop is whole pounds, so at a whole
-    number depth the figure is exact and no rounding can split it.
+    off = p x q x d / 100 in pence, rounded DOWN, pay = p x q minus off.
+    Shopify rounds per line, and it rounds the half penny in the shopper's
+    disfavour: read on 10 Nov 2026 from a Shopify draft order calculation,
+    one bottle at a half-pound price and three of them, both a penny above
+    what rounding to the nearest gave. Some prices end in 50p, so the half
+    penny is real. Every figure the theme prints follows this rule: the
+    buy box, the cases row, the phone bar, the cards and the basket's
+    recommendations (TL.bfPay in snippets/tl-dates).
   · The basket shows the full price until the real discount exists. This
     block never creates or implies a discount on its own.
 
@@ -138,7 +143,7 @@
 {%- when 'bf' -%}
   {%- if tl_bf_on and product.available -%}
   {%- liquid
-    assign bf_off = tl_p | times: tl_d | divided_by: 100.0 | round
+    assign bf_off = tl_p | times: tl_d | divided_by: 100.0 | floor
     assign bf_pay = tl_p | minus: bf_off
   -%}
   <div class="tl-bb-bf" data-tl-bb-bf data-price="{{ tl_p }}" data-depth="{{ tl_d }}"{% if tl_pack %} data-pack{% endif %}>
@@ -196,7 +201,7 @@
     {%- for c in tl_cases -%}
       {%- unless c.available -%}{%- continue -%}{%- endunless -%}
       {%- assign cv = c.selected_or_first_available_variant -%}
-      {%- assign c_off = cv.price | times: tl_d | divided_by: 100.0 | round -%}
+      {%- assign c_off = cv.price | times: tl_d | divided_by: 100.0 | floor -%}
       {%- assign c_pay = cv.price | minus: c_off -%}
       <div class="tl-bb-case">
         <a class="tl-bb-case__img" href="{{ c.url }}">
@@ -281,7 +286,7 @@
     <div class="tl-bb-sticky__info">
       <span class="tl-bb-sticky__name">{{ product.title }}</span>
       {%- if tl_bf_on -%}
-        {%- assign s_off = tl_p | times: tl_d | divided_by: 100.0 | round -%}
+        {%- assign s_off = tl_p | times: tl_d | divided_by: 100.0 | floor -%}
         <span data-bf-only><b class="tl-bb-green">{{ tl_p | minus: s_off | money }}</b> <s class="tl-was"><span class="visually-hidden">Was </span>{{ tl_p | money }}</s></span>
         <span data-bf-alt>{{ tl_p | money }}</span>
       {%- else -%}
@@ -370,7 +375,7 @@
     function bfUpdate() {
       if (!bf) return;
       var p = parseInt(bf.getAttribute('data-price'), 10), d = parseInt(bf.getAttribute('data-depth'), 10), q = qty();
-      var line = p * q, off = Math.round(line * d / 100);
+      var line = p * q, off = Math.floor(line * d / 100 + 1e-6);
       var pay = bf.querySelector('[data-tl-bb-pay]'), o = bf.querySelector('[data-tl-bb-off]'), was = bf.querySelector('[data-tl-bb-was]');
       if (pay) pay.textContent = money(line - off);
       if (was) was.innerHTML = '<span class="visually-hidden">Was </span>' + money(line);

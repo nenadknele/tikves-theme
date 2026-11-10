@@ -261,7 +261,7 @@ policy asks for ABV on the landing page. Operator approved in chat.
                 unless product.gift_card? or product.price_varies or on_sale
                   if product.available and product.price > 0
                     assign tl_cw = true
-                    assign tl_cw_off = product.price | times: tl_cw_d | divided_by: 100.0 | round
+                    assign tl_cw_off = product.price | times: tl_cw_d | divided_by: 100.0 | floor
                   endif
                 endunless
               endif
