@@ -131,7 +131,19 @@
     assign g_st = product.metafields.wine.serving_temperature.value
     assign g_fd = product.metafields.custom.food_pairing.value | first
   -%}
-  {%- if g_sw != blank or g_gr != blank or g_st != blank or g_fd != blank -%}
+  {%- comment -%}
+    11 Nov 2026, his word "go": a product that carries custom.glance (a list of
+    short facts, approved word for word) prints that list as it stands and
+    nothing else. Used on the spirit, case and set template, where the wine
+    fields above do not describe the product. Kumova Zolta is the first.
+    Empty on a product means no strip from this branch.
+  {%- endcomment -%}
+  {%- assign g_own = product.metafields.custom.glance.value -%}
+  {%- if g_own != blank -%}
+  <ul class="tl-bb-glance">
+    {%- for g_item in g_own -%}<li>{{ g_item | escape }}</li>{%- endfor -%}
+  </ul>
+  {%- elsif g_sw != blank or g_gr != blank or g_st != blank or g_fd != blank -%}
   <ul class="tl-bb-glance">
     {%- if g_sw != blank -%}<li>{{ g_sw }}</li>{%- endif -%}
     {%- if g_gr != blank -%}<li>{{ g_gr }}</li>{%- endif -%}
