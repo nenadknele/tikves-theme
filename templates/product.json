@@ -3,9 +3,21 @@
     "main": {
       "type": "main-product",
       "blocks": {
+        "top_line": {
+          "type": "text",
+          "settings": {
+            "text": "{{ product.metafields.custom.top_line.value }}"
+          }
+        },
         "price": {
           "type": "price",
           "settings": {}
+        },
+        "bb_glance": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} At-a-glance strip on spirits, cases and sets, 11 Nov 2026. Prints custom.glance word for word, and nothing when it is empty. Logic lives in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'glance' %}"
+          }
         },
         "variant_picker": {
           "type": "variant_picker",
@@ -96,7 +108,9 @@
         }
       },
       "block_order": [
+        "top_line",
         "price",
+        "bb_glance",
         "bb_bf",
         "variant_picker",
         "buy_buttons",
