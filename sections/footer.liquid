@@ -198,7 +198,32 @@
 
     {%- if section.settings.show_payment_icons -%}
       {%- unless shop.enabled_payment_types == empty -%}
-        <ul class="inline-list payment-icons footer__section">
+        {%- style -%}
+          .tl-footer-payments {
+            display: block;
+            max-width: 340px;
+            margin: 0 auto 30px;
+            padding: 0;
+            text-align: center;
+            text-wrap: balance;
+            font-size: 0;
+            line-height: 0;
+          }
+          .tl-footer-payments li {
+            display: inline-block;
+            margin: 4px;
+            vertical-align: middle;
+          }
+          .tl-footer-payments svg {
+            display: block;
+            width: 38px;
+            height: 24px;
+          }
+          @media only screen and (min-width: 769px) {
+            .tl-footer-payments { max-width: 560px; }
+          }
+        {%- endstyle -%}
+        <ul class="inline-list payment-icons tl-footer-payments footer__section" aria-label="Ways to pay">
           {%- for type in shop.enabled_payment_types -%}
             <li class="icon--payment">
               {{ type | payment_type_svg_tag }}

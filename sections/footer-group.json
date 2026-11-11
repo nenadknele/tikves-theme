@@ -69,7 +69,7 @@
         "show_locale_selector": false,
         "contact_phone": "020 7243 5000",
         "contact_email": "info@tikveslondon.uk",
-        "show_payment_icons": false,
+        "show_payment_icons": true,
         "legal_line": "Tikves London Ltd, 11 Redan House, 23 Redan Place, London W2 4SA. Registered in England and Wales, company no. 07356331. VAT 227226129.",
         "show_copyright": true,
         "copyright_text": "· All rights reserved"
