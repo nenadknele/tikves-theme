@@ -4,9 +4,9 @@
       "type": "main-product",
       "blocks": {
         "top_line": {
-          "type": "text",
+          "type": "custom",
           "settings": {
-            "text": "{{ product.metafields.custom.top_line.value }}"
+            "code": "{% comment %} Line under the title on spirits, cases and sets, 11 Nov 2026. Prints custom.top_line word for word, and nothing when it is empty. A liquid block, not a text block: a text block reading a metafield with no definition is refused by the theme sync. {% endcomment %}{% assign tl_top = product.metafields.custom.top_line.value %}{% if tl_top != blank %}<p class=\"tl-pdp-topline\" style=\"margin:0\">{{ tl_top | escape }}</p>{% endif %}"
           }
         },
         "price": {
