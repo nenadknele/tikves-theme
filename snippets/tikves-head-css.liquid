@@ -268,6 +268,11 @@
       clear: both;
     }
   }
+  /* Review stars, tikves-review-stars.liquid */
+  .tl-stars { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9em; line-height: 1; text-decoration: none; color: inherit; margin: 4px 0; }
+  .tl-stars__track { position: relative; display: inline-block; color: rgba(0, 0, 0, 0.2); letter-spacing: 1px; white-space: nowrap; }
+  .tl-stars__fill { position: absolute; left: 0; top: 0; overflow: hidden; color: #a63d2a; white-space: nowrap; }
+  .tl-stars__count { opacity: 0.75; }
 {% endstyle %}
 
 {%- comment -%} 2 Nov 2026: the stuck header hides on the way down on phones. See the snippet. {%- endcomment -%}
