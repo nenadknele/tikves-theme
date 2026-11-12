@@ -1,0 +1,31 @@
+{%- comment -%}
+  Review stars from the standard Shopify review metafields
+  (reviews.rating, reviews.rating_count), which Judge.me keeps in sync.
+  Prints nothing when the product has no reviews, and nothing for a gift card.
+
+  Usage:
+    {%- render 'tikves-review-stars', product: product -%}
+    {%- render 'tikves-review-stars', product: product, link: '#judgeme_product_reviews' -%}
+{%- endcomment -%}
+{%- liquid
+  assign trs_count = product.metafields.reviews.rating_count.value | default: 0 | plus: 0
+  assign trs_rating = product.metafields.reviews.rating.value
+-%}
+{%- if trs_count > 0 and trs_rating != blank and product.gift_card? == false -%}
+  {%- liquid
+    assign trs_value = trs_rating.rating | plus: 0.0
+    assign trs_max = trs_rating.scale_max | default: 5 | plus: 0.0
+    assign trs_pct = trs_value | divided_by: trs_max | times: 100 | round
+    assign trs_shown = trs_value | round: 1
+    if trs_count == 1
+      assign trs_word = 'review'
+    else
+      assign trs_word = 'reviews'
+    endif
+  -%}
+  {%- capture trs_label -%}Rated {{ trs_shown }} out of {{ trs_max | round }} from {{ trs_count }} {{ trs_word }}{%- endcapture -%}
+  {%- if link != blank -%}<a href="{{ link }}" class="tl-stars" aria-label="{{ trs_label }}">{%- else -%}<div class="tl-stars" role="img" aria-label="{{ trs_label }}">{%- endif -%}
+    <span class="tl-stars__track" aria-hidden="true">★★★★★<span class="tl-stars__fill" style="width: {{ trs_pct }}%;">★★★★★</span></span>
+    <span class="tl-stars__count" aria-hidden="true">{{ trs_shown }} ({{ trs_count }})</span>
+  {%- if link != blank -%}</a>{%- else -%}</div>{%- endif -%}
+{%- endif -%}

@@ -124,6 +124,10 @@
                 </h1>
               {%- endif -%}
 
+              {%- unless isModal -%}
+                {%- render 'tikves-review-stars', product: product, link: '#judgeme_product_reviews' -%}
+              {%- endunless -%}
+
               {%- if sku_enable -%}
                 <p data-sku class="product-single__sku" data-kit-refresh="sku">
                   {%- if current_variant.sku -%}
