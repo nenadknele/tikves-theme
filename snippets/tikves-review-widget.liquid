@@ -1,12 +1,12 @@
 {%- comment -%}
   Judge.me review widget for a product page, from Judge.me's own liquid
-  install code. Wrapped so it prints nothing until the product has a review,
-  and never on a gift card. Needs the Judge.me core app embed, which is on.
+  install code. Shows on every product page so buyers can write a review or
+  ask a question, but never on a gift card. Needs the Judge.me core app embed, which is on.
 {%- endcomment -%}
 {%- liquid
   assign trw_count = product.metafields.reviews.rating_count.value | default: 0 | plus: 0
 -%}
-{%- if trw_count > 0 and product.gift_card? == false -%}
+{%- if product.gift_card? == false -%}
   <div class="page-width tl-review-widget">
     {%- assign has_legacy = false -%}
     {%- if product.metafields.judgeme.widget.size > 20 -%}
