@@ -23,43 +23,25 @@
             "container_width": 40
           }
         },
-        "menu_ApeaKc": {
-          "type": "menu",
-          "settings": {
-            "show_footer_title": true,
-            "menu": "footer-shop",
-            "container_width": 25
-          }
-        },
-        "menu_about": {
-          "type": "menu",
-          "settings": {
-            "show_footer_title": true,
-            "menu": "footer-about",
-            "container_width": 25
-          }
-        },
         "menu_help": {
           "type": "menu",
           "settings": {
-            "show_footer_title": true,
+            "show_footer_title": false,
             "menu": "footer",
-            "container_width": 25
+            "container_width": 95
           }
         },
         "menu_legal": {
           "type": "menu",
           "settings": {
-            "show_footer_title": true,
+            "show_footer_title": false,
             "menu": "footer-legal",
-            "container_width": 25
+            "container_width": 95
           }
         }
       },
       "block_order": [
         "newsletter_tl01",
-        "menu_ApeaKc",
-        "menu_about",
         "menu_help",
         "menu_legal"
       ],
