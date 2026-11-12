@@ -460,6 +460,13 @@
     .product-single__meta .tl-bb-case__meta{flex:1 1 auto;font-size:15px}
     .product-single__meta .tl-bb-case .tl-bb-form{margin-top:auto}
     .product-single__meta .tl-bb-case__add{width:100%;padding:11px 10px;border-color:#1F2328;background:#1F2328;color:#F5EFE7}
+    /* 12 Nov 2026, his word "twice the same information", then "keep cards":
+       twelve wine descriptions end with an "Also in our cases" box that names
+       the same cases as the cards. While the cards show, that box is hidden.
+       It stays in the product description, so a wine whose cases are all
+       sold out (no cards) still prints it. Taking it out of the product
+       data is a later job. */
+    .product-single__meta:has(.tl-bb-cases) .rte > div[style*="border-top"]:last-child{display:none}
     /* The dropdowns sit above the button now, flush to each other. */
     .product-single__meta .product-block:has(> .product-block--tab){margin-bottom:0 !important}
     .product-single__meta .product-block:has(> .product-block--tab) > .product-block--tab{margin:0}
