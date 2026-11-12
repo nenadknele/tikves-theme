@@ -463,7 +463,9 @@
     /* The dropdowns sit above the button now, flush to each other. */
     .product-single__meta .product-block:has(> .product-block--tab){margin-bottom:0 !important}
     .product-single__meta .product-block:has(> .product-block--tab) > .product-block--tab{margin:0}
-    .product-single__meta .product-block:has(> .product-block--tab):has(+ .product-block:not(:has(> .product-block--tab))){margin-bottom:18px !important}
+    .product-single__meta .product-block:has(> .product-block--tab) + .product-block:has(.product__quantity),
+    .product-single__meta .product-block:has(> .product-block--tab) + .product-block:has(.product__quantity) + .product-block:has(.add-to-cart),
+    .product-single__meta .product-block:has(> .product-block--tab) + .product-block:has(.add-to-cart){margin-top:18px !important}
     /* Plain rows with a hairline, sentence case, as Overtone's: no box, no capitals. */
     .product-single__meta .product-block--tab .collapsible-trigger-btn--borders{border-left:0;border-right:0;padding-left:0;padding-right:4px;font-size:16px;letter-spacing:0;text-transform:none}
     .product-single__meta .product-block--tab .collapsible-content__inner{padding-left:0;padding-right:0;border-left:0;border-right:0}
