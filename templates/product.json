@@ -35,13 +35,6 @@
             "show_gift_card_recipient": true
           }
         },
-        "inventory_status": {
-          "type": "inventory_status",
-          "settings": {
-            "inventory_threshold": 0,
-            "inventory_transfers_enable": false
-          }
-        },
         "rarity": {
           "type": "text",
           "settings": {
@@ -52,12 +45,6 @@
           "type": "custom",
           "settings": {
             "code": "{% comment %} Back in stock capture, 27 Aug 2026. All logic and copy live in snippets/tikves-back-in-stock.liquid. Renders only when the product is sold out and belongs to a group with a Klaviyo list behind it: tag Rakija or vendor Chateau de Gourdon. Do not duplicate the code here. {% endcomment %}{% render 'tikves-back-in-stock', product: product %}"
-          }
-        },
-        "guarantee": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Guarantee line, 17 Oct 2026, operator. Words taken from the Returns page. The terms live there, not here. {% endcomment %}{% unless product.gift_card? %}<p class=\"tl-pdp-guarantee\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <a href=\"/pages/returns\" style=\"text-decoration:underline;text-underline-offset:3px\">How our guarantee works</a></p>{% endunless %}"
           }
         },
         "separator-1": {
@@ -76,24 +63,6 @@
             "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'bf' %}"
           }
         },
-        "bb_find": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'find' %}"
-          }
-        },
-        "bb_stock": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'stock' %}"
-          }
-        },
-        "bb_delivery": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'delivery' %}"
-          }
-        },
         "bb_faq": {
           "type": "custom",
           "settings": {
@@ -105,6 +74,12 @@
           "settings": {
             "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'sticky' %}"
           }
+        },
+        "bb_assure": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box tidy, 12 Nov 2026. Stock, delivery, dates, guarantee, secure checkout and the finder line as one list. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'assure' %}"
+          }
         }
       },
       "block_order": [
@@ -114,13 +89,9 @@
         "bb_bf",
         "variant_picker",
         "buy_buttons",
-        "inventory_status",
-        "bb_stock",
-        "rarity",
-        "bb_find",
-        "bb_delivery",
         "back_in_stock",
-        "guarantee",
+        "bb_assure",
+        "rarity",
         "separator-1",
         "description",
         "bb_faq",

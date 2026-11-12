@@ -297,6 +297,10 @@
     17 Oct and 7 Nov 2026, word for word from the Returns page. "Secure
     checkout" is the sales point. The finder line is part 'find'. Change a
     line here and in its old part together while both exist.
+    12 Nov 2026, later, his word "do this across all pdps": also on
+    templates/product.json, for cases, sets and spirits. There the guarantee
+    stays the line and its link, as that template had it; the opened text
+    speaks of one bottle and is the wine page's.
   {%- endcomment -%}
   {%- liquid
     assign a_instock = false
@@ -323,7 +327,7 @@
     {%- endif -%}
     {%- endif -%}
     {%- unless product.gift_card? -%}
-    <div class="tl-bb-row"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M21.18 31.69 28.54 39l15.91-15.88"/><path d="M53 12.54v15.24a31.41 31.41 0 0 1-3.7 14.95A25.46 25.46 0 0 1 32 56a25.46 25.46 0 0 1-17.3-13.27A31.41 31.41 0 0 1 11 27.78V12.54C24.88 13.67 32 8 32 8s7.12 5.67 21 4.54Z"/></svg><details class="tl-bb-guarantee"><summary><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <span>How our guarantee works</span></summary><div class="tl-bb-guarantee__more"><p>Open a bottle and taste it properly. If it isn't what you hoped, tell us within 14 days of delivery.</p><p>You choose. A refund of what that bottle cost you, or a different bottle up to the same value.</p><p>You keep the one you opened. Nothing comes back to us. One bottle per order.</p><p><a href="/pages/returns">How our guarantee works</a></p></div></details></div>
+    <div class="tl-bb-row"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M21.18 31.69 28.54 39l15.91-15.88"/><path d="M53 12.54v15.24a31.41 31.41 0 0 1-3.7 14.95A25.46 25.46 0 0 1 32 56a25.46 25.46 0 0 1-17.3-13.27A31.41 31.41 0 0 1 11 27.78V12.54C24.88 13.67 32 8 32 8s7.12 5.67 21 4.54Z"/></svg>{%- if product.template_suffix == 'wine' -%}<details class="tl-bb-guarantee"><summary><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <span>How our guarantee works</span></summary><div class="tl-bb-guarantee__more"><p>Open a bottle and taste it properly. If it isn't what you hoped, tell us within 14 days of delivery.</p><p>You choose. A refund of what that bottle cost you, or a different bottle up to the same value.</p><p>You keep the one you opened. Nothing comes back to us. One bottle per order.</p><p><a href="/pages/returns">How our guarantee works</a></p></div></details>{%- else -%}<p class="tl-bb-guarantee"><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <a href="/pages/returns">How our guarantee works</a></p>{%- endif -%}</div>
     {%- endunless -%}
     <div class="tl-bb-row"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M19.45 23.6v-3.2c0-7 5.89-11.75 12.55-11.75 7.21 0 12.55 5.49 12.55 11.75v3.2"/><path d="M10 23.6h44v31.75H10z"/><path d="M32 37.47v7.47"/><circle cx="32" cy="35.87" r="1.6"/></svg><p>Secure checkout</p></div>
   </div>
@@ -430,7 +434,7 @@
     .tl-bb-assure .tl-urgency__line{margin:0 0 2px}
     .tl-bb-guarantee summary{cursor:pointer;list-style:none}
     .tl-bb-guarantee summary::-webkit-details-marker{display:none}
-    .tl-bb-guarantee summary strong{display:block}
+    .tl-bb-guarantee summary strong,p.tl-bb-guarantee strong{display:block}
     .tl-bb-guarantee summary span,.tl-bb-guarantee a{text-decoration:underline;text-underline-offset:3px;color:inherit}
     .tl-bb-guarantee summary:focus-visible{outline:2px solid #A64029;outline-offset:4px}
     .tl-bb-guarantee__more{margin:8px 0 2px;padding:0 0 0 12px;border-left:2px solid #B9AC9B}
@@ -460,6 +464,7 @@
       .tl-bb-row>p,.tl-bb-row>div,.tl-bb-row>div>p:first-child,.tl-bb-assure .tl-urgency,.tl-bb-assure .tl-urgency__line:first-child{display:inline}
       .tl-bb-row>details{display:inline}
       .tl-bb-guarantee summary{display:inline}
+      .tl-bb-row>p.tl-bb-guarantee strong{display:block}
       .tl-bb-guarantee__more{display:block;margin:10px 0 2px;padding:0;border-left:0}
     }
     .tl-bb-sticky{display:none}
