@@ -23,43 +23,25 @@
             "container_width": 40
           }
         },
-        "menu_ApeaKc": {
-          "type": "menu",
-          "settings": {
-            "show_footer_title": true,
-            "menu": "footer-shop",
-            "container_width": 25
-          }
-        },
-        "menu_about": {
-          "type": "menu",
-          "settings": {
-            "show_footer_title": true,
-            "menu": "footer-about",
-            "container_width": 25
-          }
-        },
         "menu_help": {
           "type": "menu",
           "settings": {
-            "show_footer_title": true,
+            "show_footer_title": false,
             "menu": "footer",
-            "container_width": 25
+            "container_width": 95
           }
         },
         "menu_legal": {
           "type": "menu",
           "settings": {
-            "show_footer_title": true,
+            "show_footer_title": false,
             "menu": "footer-legal",
-            "container_width": 25
+            "container_width": 95
           }
         }
       },
       "block_order": [
         "newsletter_tl01",
-        "menu_ApeaKc",
-        "menu_about",
         "menu_help",
         "menu_legal"
       ],
@@ -69,10 +51,11 @@
         "show_locale_selector": false,
         "contact_phone": "020 7243 5000",
         "contact_email": "info@tikveslondon.uk",
-        "show_payment_icons": false,
-        "legal_line": "Tikves London Ltd, 11 Redan House, 23 Redan Place, London W2 4SA. Registered in England and Wales, company no. 07356331. VAT 227226129.",
+        "show_payment_icons": true,
+        "security_line": "We use encrypted SSL security to ensure your data is 100% protected",
+        "legal_line": "",
         "show_copyright": true,
-        "copyright_text": "· All rights reserved"
+        "copyright_text": ""
       }
     }
   },
