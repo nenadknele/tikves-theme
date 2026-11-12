@@ -439,21 +439,28 @@
     .tl-bb-assure + .tl-bb-find{margin:16px 0 0;text-align:left}
     .product-single__meta .tl-bb-cases{margin:0}
     .product-single__meta .add-to-cart{min-height:52px;font-size:13px}
+    /* 12 Nov 2026, later, his word: "it needs to be centred". On a phone the
+       column stays centred, as the theme has it, and everything in the buy
+       box now follows: the strip, the list (icon at the start of each line),
+       the Shop Pay line and the finder line. Desktop stays left. */
     @media (max-width: 768px){
-      .template-product .product-single__meta,
-      .template-product .product-single__meta .product__policies{text-align:left !important}
-      .template-product .product-single__meta .sales-point .icon-and-text,
-      .product-single__meta .kit-product-variant-picker .kit-fieldset .kit-stack{justify-content:flex-start}
       .template-product .product-single__meta .product-block--header{margin-bottom:8px}
       .template-product .product-single__meta .product-single__title{margin-bottom:0}
-      .template-product .product-single__meta .tl-bb-glance{margin-top:2px}
+      .template-product .product-single__meta .tl-bb-glance{margin-top:2px;justify-content:center}
       .template-product .product-single__meta .js-qty__num{min-height:52px !important;border-radius:999px}
       .template-product .product-single__meta .js-qty__wrapper{border-radius:999px}
       .template-product .product-single__meta .product-block:has(.add-to-cart){margin-bottom:16px !important}
       /* The Shop Pay line sat under the button only, in the right-hand column.
          It now runs the full width under the row: 124px quantity plus its 10px gap. */
-      .template-product .product-single__meta .product-block:has(.product__quantity) + .product-block:has(.add-to-cart) .shopify-payment-terms{margin:10px 0 0 -134px;text-align:left}
-      .template-product .product-single__meta .tl-mw-quote{text-align:left}
+      .template-product .product-single__meta .product-block:has(.product__quantity) + .product-block:has(.add-to-cart) .shopify-payment-terms{margin:10px 0 0 -134px;text-align:center}
+      .tl-bb-assure,.tl-bb-assure + .tl-bb-find{text-align:center}
+      .tl-bb-row{display:block;padding:12px 6px}
+      .tl-bb-row>svg{display:inline-block;width:20px;height:20px;margin:0 6px 0 0;vertical-align:-5px}
+      .tl-bb-dot{display:inline-block;margin:0 8px 0 0;vertical-align:1px}
+      .tl-bb-row>p,.tl-bb-row>div,.tl-bb-row>div>p:first-child,.tl-bb-assure .tl-urgency,.tl-bb-assure .tl-urgency__line:first-child{display:inline}
+      .tl-bb-row>details{display:inline}
+      .tl-bb-guarantee summary{display:inline}
+      .tl-bb-guarantee__more{display:block;margin:10px 0 2px;padding:0;border-left:0}
     }
     .tl-bb-sticky{display:none}
     @media (max-width: 768px){
