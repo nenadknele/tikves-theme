@@ -110,6 +110,11 @@
                 </div>
               {%- endif -%}
 
+              {%- comment -%} 12 Nov 2026: the stock line above the title, as Overtone has it. Words and conditions live in snippets/tl-buybox.liquid. Product page only. {%- endcomment -%}
+              {%- if context == 'main-product' and isModal != true -%}
+                {%- render 'tl-buybox', product: product, part: 'stockline' -%}
+              {%- endif -%}
+
               {%- if isModal -%}
                 <p class="h2 product-single__title">
                   {{ product.title }}
