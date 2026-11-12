@@ -1,0 +1,53 @@
+{%- comment -%}
+  Homepage review row. Judge.me's featured carousel, from its own liquid
+  install code. Prints nothing until the shop has the minimum number of
+  reviews set below.
+{%- endcomment -%}
+{%- liquid
+  assign jm_metafields = shop.metafields.judgeme
+  assign trr_count = jm_metafields.all_reviews_count | default: 0 | plus: 0
+-%}
+{%- if trr_count >= section.settings.min_reviews and jm_metafields.featured_carousel != blank -%}
+  <div class="index-section">
+    <div class="page-width">
+      <div class="jdgm-carousel-wrapper">
+        <div class="jdgm-carousel-title-and-link">
+          <h2 class="jdgm-carousel-title">{{ section.settings.heading | escape }}</h2>
+          <span class="jdgm-all-reviews-rating-wrapper">
+            <span style="display:block" data-score="{{ jm_metafields.all_reviews_rating }}" class="jdgm-all-reviews-rating" aria-label="{{ jm_metafields.all_reviews_rating }} stars" tabindex="0" role="img"></span>
+            <span style="display:block" class="jdgm-carousel-number-of-reviews" data-number-of-reviews="{{ jm_metafields.all_reviews_count }}">from {{ jm_metafields.all_reviews_count }} reviews</span>
+          </span>
+        </div>
+        {{ jm_metafields.featured_carousel }}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Tikveš reviews row",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "What our customers say"
+    },
+    {
+      "type": "range",
+      "id": "min_reviews",
+      "label": "Show once the shop has this many reviews",
+      "min": 1,
+      "max": 30,
+      "step": 1,
+      "default": 5
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tikveš reviews row"
+    }
+  ]
+}
+{% endschema %}

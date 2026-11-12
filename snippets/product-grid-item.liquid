@@ -219,6 +219,7 @@ policy asks for ABV on the landing page. Operator approved in chat.
       <a href="{{ product.url | within: collection }}" class="grid-product__link">
         <div class="grid-product__meta">
           <div class="grid-product__title grid-product__title--{{ settings.type_product_style }}">{{ product.title }}</div>
+          {%- render 'tikves-review-stars', product: product -%}
           {%- liquid
             assign tile_line = product.metafields.custom.tile_line.value
             assign card_abv = product.metafields.wine.abv.value

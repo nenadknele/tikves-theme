@@ -169,6 +169,10 @@
         "link_url": "shopify://pages/find-your-wine"
       }
     },
+    "tk_reviews": {
+      "type": "tikves-reviews-row",
+      "settings": {}
+    },
     "mw_voices": {
       "type": "tikves-voices",
       "blocks": {
@@ -424,6 +428,7 @@
     "tile_checked",
     "tile_start",
     "mw_voices",
+    "tk_reviews",
     "text_and_image_rKq3Y4",
     "tk_kumova",
     "region_image",

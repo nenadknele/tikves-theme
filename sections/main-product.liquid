@@ -23,6 +23,10 @@
   context: 'main-product',
 -%}
 
+{%- unless isModal -%}
+  {%- render 'tikves-review-widget', product: product -%}
+{%- endunless -%}
+
 {% schema %}
 {
   "name": "t:sections.main-product.name",
