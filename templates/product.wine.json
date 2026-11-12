@@ -40,13 +40,6 @@
             "show_gift_card_recipient": false
           }
         },
-        "inventory_status": {
-          "type": "inventory_status",
-          "settings": {
-            "inventory_threshold": 0,
-            "inventory_transfers_enable": false
-          }
-        },
         "custom_gXHzAU": {
           "type": "custom",
           "settings": {
@@ -57,19 +50,6 @@
           "type": "custom",
           "settings": {
             "code": "{% comment %} Back in stock capture, 27 Aug 2026. All logic and copy live in snippets/tikves-back-in-stock.liquid. Renders only when the product is sold out and belongs to a group with a Klaviyo list behind it: tag Rakija or vendor Chateau de Gourdon. Do not duplicate the code here. {% endcomment %}{% render 'tikves-back-in-stock', product: product %}"
-          }
-        },
-        "guarantee": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Guarantee line, 17 Oct 2026, operator. Words taken from the Returns page. The terms live there, not here. 7 Nov 2026 buy box test: the line opens to the Returns page's own first three paragraphs, word for word, as BOOM opens its guarantee in the buy box. {% endcomment %}<details class=\"tl-pdp-guarantee\" style=\"margin:14px 0 0;font-size:14px;line-height:1.5\"><summary style=\"cursor:pointer;list-style:none\"><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <span style=\"text-decoration:underline;text-underline-offset:3px\">How our guarantee works</span></summary><div style=\"margin:8px 0 0;padding:0 0 0 12px;border-left:2px solid #B9AC9B\"><p style=\"margin:0 0 6px\">Open a bottle and taste it properly. If it isn't what you hoped, tell us within 14 days of delivery.</p><p style=\"margin:0 0 6px\">You choose. A refund of what that bottle cost you, or a different bottle up to the same value.</p><p style=\"margin:0 0 6px\">You keep the one you opened. Nothing comes back to us. One bottle per order.</p><p style=\"margin:0\"><a href=\"/pages/returns\" style=\"text-decoration:underline;text-underline-offset:3px\">How our guarantee works</a></p></div></details>"
-          }
-        },
-        "sales_point-secure": {
-          "type": "sales_point",
-          "settings": {
-            "icon": "lock",
-            "text": "Secure checkout"
           }
         },
         "mw_quote": {
@@ -128,18 +108,6 @@
             "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'bf' %}"
           }
         },
-        "bb_stock": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'stock' %}"
-          }
-        },
-        "bb_delivery": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'delivery' %}"
-          }
-        },
         "bb_cases": {
           "type": "custom",
           "settings": {
@@ -152,16 +120,16 @@
             "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'sticky' %}"
           }
         },
-        "bb_find": {
-          "type": "custom",
-          "settings": {
-            "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'find' %}"
-          }
-        },
         "bb_faq": {
           "type": "custom",
           "settings": {
             "code": "{% comment %} Buy box test, 7 Nov 2026. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'faq' %}"
+          }
+        },
+        "bb_assure": {
+          "type": "custom",
+          "settings": {
+            "code": "{% comment %} Buy box tidy, 12 Nov 2026. Stock, delivery, dates, guarantee, secure checkout and the finder line as one list. Logic and words live in snippets/tl-buybox.liquid. {% endcomment %}{% render 'tl-buybox', product: product, part: 'assure' %}"
           }
         }
       },
@@ -171,24 +139,19 @@
         "price",
         "bb_glance",
         "bb_bf",
+        "tasting_notes_tab",
+        "food_occasion",
+        "awards",
         "quantity",
         "buy_buttons",
-        "inventory_status",
-        "bb_stock",
-        "bb_find",
-        "bb_delivery",
-        "custom_gXHzAU",
         "back_in_stock",
-        "guarantee",
-        "sales_point-secure",
+        "custom_gXHzAU",
         "bb_cases",
+        "bb_assure",
         "mw_quote",
         "separator-1",
         "description",
         "quick_facts",
-        "tasting_notes_tab",
-        "food_occasion",
-        "awards",
         "bb_faq",
         "separator-2",
         "bb_sticky"

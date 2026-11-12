@@ -13,6 +13,9 @@
     part: 'delivery'  the free delivery sentence and the Christmas line
     part: 'cases'     "Also in these cases", one tap each
     part: 'find'      "Find your wine" by the button, like their quiz prompt
+    part: 'stockline' 12 Nov 2026: the stock line above the title
+    part: 'assure'    12 Nov 2026: the finder box, then delivery, dates,
+                      guarantee and secure checkout as slim lines
     part: 'faq'       FAQs under the body, word for word from /pages/faqs
     part: 'sticky'    the phone bar that shows once the button scrolls away,
                       and the phone first-screen spacing
@@ -217,7 +220,7 @@
       {%- assign c_pay = cv.price | minus: c_off -%}
       <div class="tl-bb-case">
         <a class="tl-bb-case__img" href="{{ c.url }}">
-          {%- if c.featured_image -%}{{ c.featured_image | image_url: width: 200 | image_tag: loading: 'lazy', alt: c.featured_image.alt | default: c.title, widths: '100,200' }}{%- endif -%}
+          {%- if c.featured_image -%}{{ c.featured_image | image_url: width: 400 | image_tag: loading: 'lazy', alt: c.featured_image.alt | default: c.title, widths: '200,400', sizes: '(max-width: 768px) 45vw, 240px' }}{%- endif -%}
         </a>
         <div class="tl-bb-case__meta">
           <a class="tl-bb-case__name" href="{{ c.url }}">{{ c.title }}</a>
@@ -279,6 +282,62 @@
     <p class="tl-bb-faq__more">Not here? Ask the chat button, any time.</p>
   </div>
   {%- endunless -%}
+
+{%- when 'stockline' -%}
+  {%- comment -%}
+    THE STOCK LINE ABOVE THE TITLE, 12 Nov 2026, after his phone screenshots
+    of an Overtone product page ("Item is in stock" sits above their title).
+    Rendered from snippets/product-template.liquid, just before the title.
+    The words are the theme's own label and the live count line of part
+    'stock', same conditions, nothing new. Not on the gift card.
+  {%- endcomment -%}
+  {%- unless product.gift_card? -%}
+  {%- if product.available -%}
+  {%- if tl_v.inventory_management == blank or tl_v.inventory_quantity > 0 -%}
+    <p class="tl-bb-stockline"><span class="tl-bb-dot" aria-hidden="true"></span><span>{{ 'products.product.in_stock_label' | t }}</span>{%- if tl_v.inventory_management == 'shopify' and tl_v.inventory_quantity > 0 and tl_v.inventory_quantity <= 60 -%}<span class="tl-bb-stockline__left">Only {{ tl_v.inventory_quantity }} left.</span>{%- endif -%}</p>
+  {%- endif -%}
+  {%- endif -%}
+  {%- endunless -%}
+
+{%- when 'assure' -%}
+  {%- comment -%}
+    UNDER THE BUTTON, 12 Nov 2026. Built to his phone screenshots of an
+    Overtone product page, sent the same evening: under their button sit the
+    add-on cards, then the quiz prompt as a tinted box with a full-width
+    button, then slim lines with a small icon each and no rules between them.
+    Ours, in that order: the cases cards (part 'cases', its own block), then
+    this part: the finder box, then delivery, the dates, the guarantee and
+    secure checkout. The stock line moved above the title (part 'stockline').
+    It replaces inventory_status, bb_stock, bb_delivery, guarantee,
+    sales_point-secure and bb_find on the templates.
+    NO NEW WORDS. The box heading and its button are the finder line's own two
+    halves, "Not sure this is the one?" and "Find your wine". The delivery
+    sentence and the dates are part 'delivery'. The guarantee is the block of
+    17 Oct and 7 Nov 2026, word for word from the Returns page; on
+    templates/product.json (cases, sets, spirits) it stays the line and its
+    link, because the opened text speaks of one bottle. "Secure checkout" is
+    the sales point. Change a line here and in its old part together.
+  {%- endcomment -%}
+  {%- unless product.gift_card? or product.type == 'Spirit' -%}
+  <div class="tl-bb-findbox">
+    <p class="tl-bb-findbox__head">Not sure this is the one?</p>
+    <a class="tl-bb-findbox__btn" href="/pages/find-your-wine">Find your wine</a>
+  </div>
+  {%- endunless -%}
+  <div class="tl-bb-assure">
+    {%- if product.available -%}
+    <div class="tl-bb-row"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M16.5 43.22H6.88V16.5h33.14v26.72H23.94"/><path d="M45.42 43.22h-5.4V30.4h17.1v12.82h-4.23"/><path d="m57.12 30.4-6.41-8.56H40.02"/><circle cx="20.24" cy="43.76" r="3.74"/><circle cx="49.2" cy="43.76" r="3.74"/></svg><p class="tl-bb-delivery">Delivery is free on orders of £100 or more delivered to England, Scotland or Wales. <a href="/pages/delivery">Delivery costs and timings</a></p></div>
+    {%- capture a_urg -%}{%- render 'tl-urgency', mode: 'line' -%}{%- endcapture -%}
+    {%- assign a_urg_s = a_urg | strip -%}
+    {%- if a_urg_s != blank -%}
+    <div class="tl-bb-row tl-bb-row--dates"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M10 16h44v38H10z"/><path d="M10 27h44"/><path d="M22 10v11"/><path d="M42 10v11"/></svg><div>{{ a_urg }}</div></div>
+    {%- endif -%}
+    {%- endif -%}
+    {%- unless product.gift_card? -%}
+    <div class="tl-bb-row"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M21.18 31.69 28.54 39l15.91-15.88"/><path d="M53 12.54v15.24a31.41 31.41 0 0 1-3.7 14.95A25.46 25.46 0 0 1 32 56a25.46 25.46 0 0 1-17.3-13.27A31.41 31.41 0 0 1 11 27.78V12.54C24.88 13.67 32 8 32 8s7.12 5.67 21 4.54Z"/></svg>{%- if product.template_suffix == 'wine' -%}<details class="tl-bb-guarantee"><summary><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <span>How our guarantee works</span></summary><div class="tl-bb-guarantee__more"><p>Open a bottle and taste it properly. If it isn't what you hoped, tell us within 14 days of delivery.</p><p>You choose. A refund of what that bottle cost you, or a different bottle up to the same value.</p><p>You keep the one you opened. Nothing comes back to us. One bottle per order.</p><p><a href="/pages/returns">How our guarantee works</a></p></div></details>{%- else -%}<p class="tl-bb-guarantee"><strong>Open it. Taste it. If it isn't for you, we put it right.</strong> <a href="/pages/returns">How our guarantee works</a></p>{%- endif -%}</div>
+    {%- endunless -%}
+    <div class="tl-bb-row"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M19.45 23.6v-3.2c0-7 5.89-11.75 12.55-11.75 7.21 0 12.55 5.49 12.55 11.75v3.2"/><path d="M10 23.6h44v31.75H10z"/><path d="M32 37.47v7.47"/><circle cx="32" cy="35.87" r="1.6"/></svg><p>Secure checkout</p></div>
+  </div>
 
 {%- when 'sticky' -%}
   {%- comment -%}
@@ -361,6 +420,74 @@
     .tl-bb-faq__a p{margin:0}
     .tl-bb-faq__a a{color:inherit;text-decoration:underline;text-underline-offset:3px}
     .tl-bb-faq__more{margin:12px 0 0;font-size:14px}
+    /* 12 Nov 2026. His word: "looks very messy, align everything", then his
+       phone screenshots of an Overtone product page. One alignment and one
+       rhythm: on a phone the whole column starts at the left edge, as theirs
+       does and as ours already does on a desktop. The only centred thing is
+       the inside of the finder box, as in theirs. Blocks that print nothing
+       no longer leave their gap behind (the script marks them data-tl-blank). */
+    .product-single__meta .product-block[data-tl-blank]{display:none}
+    .tl-bb-dot{display:inline-block;flex:0 0 auto;width:9px;height:9px;border-radius:50%;background:#4FB548}
+    .tl-bb-stockline{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;margin:0 0 8px;font-size:14px;line-height:1.4;color:#1F2328;text-align:left}
+    .tl-bb-stockline__left{font-weight:600}
+    .tl-bb-stockline__left::before{content:"\00B7";margin-right:8px;font-weight:400}
+    .tl-bb-findbox{margin:0 0 14px;padding:18px 16px;border-radius:16px;background:#EAE3D9;text-align:center}
+    .tl-bb-findbox__head{margin:0 0 12px;font-size:16px;line-height:1.3;font-weight:600;color:#1F2328}
+    .tl-bb-findbox__btn{display:block;padding:13px 18px;border-radius:999px;background:#1F2328;color:#F5EFE7 !important;font-size:14px;font-weight:500;line-height:1.3;text-decoration:none !important}
+    .tl-bb-findbox__btn:focus-visible{outline:2px solid #A64029;outline-offset:3px}
+    .tl-bb-assure{margin:0;text-align:left}
+    .tl-bb-row{display:grid;grid-template-columns:22px minmax(0,1fr);column-gap:12px;align-items:start;padding:7px 0;font-size:14px;line-height:1.5;color:#1F2328}
+    .tl-bb-row p{margin:0}
+    .tl-bb-row>svg{display:block;width:22px;height:22px;margin-top:-1px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+    .tl-bb-row--dates:not(:has([data-tl-fill])){display:none}
+    .tl-bb-assure .tl-bb-delivery,.tl-bb-assure .tl-urgency{margin:0;font-size:14px;line-height:1.5}
+    .tl-bb-assure .tl-urgency__line{margin:0 0 2px}
+    .tl-bb-guarantee summary{cursor:pointer;list-style:none}
+    .tl-bb-guarantee summary::-webkit-details-marker{display:none}
+    .tl-bb-guarantee summary strong,p.tl-bb-guarantee strong{display:block}
+    .tl-bb-guarantee summary span,.tl-bb-guarantee a{text-decoration:underline;text-underline-offset:3px;color:inherit}
+    .tl-bb-guarantee summary:focus-visible{outline:2px solid #A64029;outline-offset:4px}
+    .tl-bb-guarantee__more{margin:8px 0 2px;padding:0 0 0 12px;border-left:2px solid #B9AC9B}
+    .tl-bb-guarantee__more p{margin:0 0 6px}
+    .tl-bb-guarantee__more p:last-child{margin:0}
+    /* The cases as cards, two across, as Overtone runs its add-ons under the button. */
+    .product-single__meta .tl-bb-cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 14px;margin:6px 0 0;text-align:left}
+    .product-single__meta .tl-bb-cases__head{grid-column:1/-1;margin:0;font-size:16px}
+    .product-single__meta .tl-bb-case{display:flex;flex-direction:column;align-items:stretch;gap:8px;padding:0;border:0}
+    .product-single__meta .tl-bb-case:last-child{border:0}
+    .product-single__meta .tl-bb-case__img{border-radius:10px}
+    .product-single__meta .tl-bb-case__img img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover}
+    .product-single__meta .tl-bb-case__meta{flex:1 1 auto;font-size:15px}
+    .product-single__meta .tl-bb-case .tl-bb-form{margin-top:auto}
+    .product-single__meta .tl-bb-case__add{width:100%;padding:11px 10px;border-color:#1F2328;background:#1F2328;color:#F5EFE7}
+    /* The dropdowns sit above the button now, flush to each other. */
+    .product-single__meta .product-block:has(> .product-block--tab){margin-bottom:0 !important}
+    .product-single__meta .product-block:has(> .product-block--tab) > .product-block--tab{margin:0}
+    .product-single__meta .product-block:has(> .product-block--tab) + .product-block:has(.product__quantity),
+    .product-single__meta .product-block:has(> .product-block--tab) + .product-block:has(.product__quantity) + .product-block:has(.add-to-cart),
+    .product-single__meta .product-block:has(> .product-block--tab) + .product-block:has(.add-to-cart){margin-top:18px !important}
+    /* Plain rows with a hairline, sentence case, as Overtone's: no box, no capitals. */
+    .product-single__meta .product-block--tab .collapsible-trigger-btn--borders{border-left:0;border-right:0;padding-left:0;padding-right:4px;font-size:16px;letter-spacing:0;text-transform:none}
+    .product-single__meta .product-block--tab .collapsible-content__inner{padding-left:0;padding-right:0;border-left:0;border-right:0}
+    .product-single__meta .product-block--tab .collapsible-content--all{border-left:0;border-right:0}
+    .product-single__meta .product-block:has(> .product-block--tab) + .product-block:has(> .product-block--tab) .collapsible-trigger-btn--borders{border-top:0}
+    .product-single__meta .add-to-cart{min-height:52px;font-size:13px}
+    @media (max-width: 768px){
+      .template-product .product-single__meta,
+      .template-product .product-single__meta .product__policies{text-align:left !important}
+      .template-product .product-single__meta .sales-point .icon-and-text,
+      .product-single__meta .kit-product-variant-picker .kit-fieldset .kit-stack{justify-content:flex-start}
+      .template-product .product-single__meta .product-block--header{margin-bottom:8px}
+      .template-product .product-single__meta .product-single__title{margin-bottom:0}
+      .template-product .product-single__meta .tl-bb-glance{margin-top:2px}
+      .template-product .product-single__meta .js-qty__num{min-height:52px !important;border-radius:999px}
+      .template-product .product-single__meta .js-qty__wrapper{border-radius:999px}
+      .template-product .product-single__meta .product-block:has(.add-to-cart){margin-bottom:18px !important}
+      /* The Shop Pay line sat under the button only, in the right-hand column.
+         It now runs the full width under the row: 124px quantity plus its 10px gap. */
+      .template-product .product-single__meta .product-block:has(.product__quantity) + .product-block:has(.add-to-cart) .shopify-payment-terms{margin:10px 0 0 -134px;text-align:left}
+      .template-product .product-single__meta .tl-mw-quote{text-align:left}
+    }
     .tl-bb-sticky{display:none}
     @media (max-width: 768px){
       .tl-bb-sticky:not([hidden]){display:flex;position:fixed;left:0;right:0;bottom:0;z-index:20;align-items:center;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:#F5EFE7;border-top:1px solid #B9AC9B;box-shadow:0 -4px 14px rgba(31,35,40,.08)}
@@ -466,6 +593,18 @@
       window.addEventListener('resize', onMove);
       check();
     }
+
+    // 12 Nov 2026: a block that prints nothing (a line outside its window, the
+    // back in stock capture on a bottle that is in stock) still took its
+    // bottom margin, so the gaps down the buy box were uneven. Mark those
+    // blocks; the style above takes them out. A block holding only a style
+    // or a script counts as empty, and its style still applies. Run after
+    // the Black Friday block has been removed or kept, above.
+    document.querySelectorAll('.product-single__meta [data-product-blocks] > .product-block').forEach(function (el) {
+      var clone = el.cloneNode(true);
+      clone.querySelectorAll('style, script').forEach(function (n) { n.parentNode.removeChild(n); });
+      if (clone.children.length === 0 && clone.textContent.replace(/\s+/g, '') === '') el.setAttribute('data-tl-blank', '');
+    });
 
     // One add handler for the cases row and the bar. Same events as tl-mix-pdp.
     document.addEventListener('submit', function (e) {
