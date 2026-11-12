@@ -4,9 +4,9 @@
       "type": "main-product",
       "blocks": {
         "top_line": {
-          "type": "text",
+          "type": "custom",
           "settings": {
-            "text": "{{ product.metafields.custom.top_line.value }}"
+            "code": "{% comment %} Short line under the title, 11 Nov 2026, his word. Prints custom.top_line word for word, nothing when it is empty. 12 Nov 2026: was a text block bound to the metafield. custom.top_line has no metafield definition, so Shopify refused the whole template and it never reached the theme. Read in Liquid instead, which needs no definition. {% endcomment %}{% assign tl_top = product.metafields.custom.top_line.value %}{% if tl_top != blank %}{{ tl_top | escape }}{% endif %}"
           }
         },
         "price": {
