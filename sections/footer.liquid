@@ -220,6 +220,10 @@
       </a>
     </div>
 
+    {%- if section.settings.security_line != blank -%}
+      <p class="tl-footer-secure" style="max-width: 420px; margin: 0 auto 22px; text-align: center; text-wrap: balance;">{{ section.settings.security_line }}</p>
+    {%- endif -%}
+
     {%- if section.settings.show_payment_icons -%}
       {%- unless shop.enabled_payment_types == empty -%}
         {%- style -%}
@@ -323,6 +327,12 @@
       "id": "show_payment_icons",
       "label": "t:sections.footer.settings.show_payment_icons.label",
       "default": false
+    },
+    {
+      "type": "text",
+      "id": "security_line",
+      "label": "Security line",
+      "info": "One short sentence shown above the payment icons. Leave blank to hide."
     },
     {
       "type": "text",

@@ -52,6 +52,7 @@
         "contact_phone": "020 7243 5000",
         "contact_email": "info@tikveslondon.uk",
         "show_payment_icons": true,
+        "security_line": "We use encrypted SSL security to protect your details at checkout.",
         "legal_line": "",
         "show_copyright": true,
         "copyright_text": ""
