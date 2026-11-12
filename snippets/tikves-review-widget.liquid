@@ -6,7 +6,7 @@
 {%- liquid
   assign trw_count = product.metafields.reviews.rating_count.value | default: 0 | plus: 0
 -%}
-{%- if trw_count > 0 and product.gift_card? == false -%}
+{%- if product.gift_card? == false -%}
   <div class="page-width tl-review-widget">
     {%- assign has_legacy = false -%}
     {%- if product.metafields.judgeme.widget.size > 20 -%}
