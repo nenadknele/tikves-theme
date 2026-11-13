@@ -1,0 +1,20 @@
+{%- comment -%}
+  Homepage H1 · 13 Nov 2026. The page's one H1, saying what the shop is,
+  so it does not depend on whichever band or hero is first that week.
+  Read by search engines and screen readers; not shown on screen
+  (.visually-hidden, theme.css). Every other homepage section is h2.
+  The words are his: change them in the template, on his word.
+{%- endcomment -%}
+{%- if section.settings.heading != blank -%}
+  <h1 class="visually-hidden">{{ section.settings.heading | escape }}</h1>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Homepage H1",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Page heading (h1, not shown on screen)", "default": "Wine from Macedonia and the Rhône, delivered in Great Britain" }
+  ],
+  "presets": [{ "name": "Homepage H1" }]
+}
+{% endschema %}
