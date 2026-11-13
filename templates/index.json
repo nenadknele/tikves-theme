@@ -9,10 +9,16 @@
  */
 {
   "sections": {
+    "home_h1": {
+      "type": "tl-home-h1",
+      "settings": {
+        "heading": "Wine from Macedonia and the Rhône, delivered in Great Britain"
+      }
+    },
     "early_bird_band": {
       "type": "tl-early-bird-band",
       "settings": {
-        "heading_tag": "h1",
+        "heading_tag": "h2",
         "kicker": "Black Friday",
         "heading": "Shop it",
         "heading_em": "first.",
@@ -417,6 +423,7 @@
   },
   "order": [
     "tk_design",
+    "home_h1",
     "early_bird_band",
     "hero",
     "best",
