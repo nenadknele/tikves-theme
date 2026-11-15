@@ -1,0 +1,210 @@
+{%- comment -%}
+  TIKVES LONDON · BLACK FRIDAY BAND · 15 Nov 2026
+  One section, two places.
+  · The top of the Black Friday page (templates/page.black-friday.json):
+    "Only in the Black Friday week" OFF. It always shows there, as the h1.
+  · The homepage (templates/index.json): "Only in the Black Friday week" ON.
+    It shows from Fri 27 Nov 00:00 to Thu 3 Dec 23:59 UK and at no other
+    time. The dates are not here. They live in snippets/tl-dates.liquid,
+    which sets html.tl-bf-live inside that window. The band is hidden by
+    CSS without that class, so a cached page never shows it early or late.
+    It also waits for the page it links to: while /pages/black-friday is
+    unpublished the homepage band renders nothing, so it never links to a
+    page nobody can open.
+  · TEST COPIES ONLY: a template whose suffix contains "bftest" renders the
+    homepage band before the page is published. The clock still applies;
+    use ?tl_now=2026-11-28T10:00:00Z on a copy.
+
+  HIS WORD, 15 Nov 2026, in chat: the flower panel look, Barovo Red as the
+  bottle, headline "Black Friday at Tikveš London.", button "Shop Black
+  Friday", the homepage band on the site clock, the gift card not named.
+  Offer words from REF · BLACK FRIDAY 2026 v13 and its deltas.
+
+  WORDS never on it: sale, deal, save, last chance, a countdown, a stock
+  count, a price, a delivery promise.
+
+  PICTURES: two files in Shopify Files, picked in the template. The words
+  are real text over the desktop picture and under the phone picture. The
+  phone picture carries BLACK FRIDAY as part of the artwork, so its alt
+  text says so. With no picture the band is Wine with Cream words.
+
+  AFTER THE END, on the page only: once the clock passes the end of the
+  week the offer lines hide and the "after" line shows, so a page left
+  published by mistake never states an offer that has finished.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign bf_show = true
+  if s.timed
+    assign bf_show = false
+    assign bf_page = pages[s.page_handle]
+    if bf_page != blank and bf_page.url != blank
+      assign bf_show = true
+    endif
+    assign bf_sfx = template.suffix | default: ''
+    if bf_sfx contains 'bftest'
+      assign bf_show = true
+    endif
+  endif
+  assign htag = s.heading_tag | default: 'h2'
+  assign bf_link = s.button_link | default: '/pages/black-friday'
+  assign bf_prefix = section.id | split: '__' | first
+  assign pic_d = s.image
+  assign pic_m = s.image_mobile | default: s.image
+  assign loading = 'eager'
+  if s.timed
+    assign loading = 'lazy'
+  endif
+-%}
+
+{%- if bf_show -%}
+  <div class="tl-bfb{% if s.timed %} tl-bfb--timed{% endif %}{% if pic_d == blank %} tl-bfb--nopic{% endif %}" data-tl-bfb>
+    <div class="bfb__stage">
+      {%- if pic_d != blank -%}
+        <picture class="bfb__pic"{% if s.button_label != blank %} data-bfb-link="{{ bf_link }}"{% endif %}>
+          <source
+            media="(min-width: 769px)"
+            srcset="{{ pic_d | image_url: width: 1200 }} 1200w, {{ pic_d | image_url: width: 1600 }} 1600w, {{ pic_d | image_url: width: 2000 }} 2000w, {{ pic_d | image_url: width: 2400 }} 2400w"
+            sizes="100vw"
+            width="{{ pic_d.width }}"
+            height="{{ pic_d.height }}">
+          <img
+            class="bfb__img"
+            src="{{ pic_m | image_url: width: 780 }}"
+            srcset="{{ pic_m | image_url: width: 480 }} 480w, {{ pic_m | image_url: width: 780 }} 780w, {{ pic_m | image_url: width: 1170 }} 1170w"
+            sizes="100vw"
+            width="{{ pic_m.width }}"
+            height="{{ pic_m.height }}"
+            alt="{{ s.image_alt | escape }}"
+            loading="{{ loading }}"
+            {% unless s.timed %}fetchpriority="high"{% endunless %}
+            decoding="async">
+        </picture>
+      {%- endif -%}
+      <div class="bfb__words">
+        <{{ htag }} class="bfb__head">{{ s.heading }}</{{ htag }}>
+        {%- if s.line_1 != blank -%}<p class="bfb__line bfb__offer">{{ s.line_1 }}</p>{%- endif -%}
+        {%- if s.line_2 != blank -%}<p class="bfb__line bfb__offer">{{ s.line_2 }}</p>{%- endif -%}
+        {%- if s.after_text != blank and s.timed == false -%}<p class="bfb__line bfb__after">{{ s.after_text }}</p>{%- endif -%}
+        {%- if s.button_label != blank -%}
+          <a class="bfb__btn" href="{{ bf_link }}">{{ s.button_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+    {%- if section.blocks.size > 0 -%}
+      <nav class="bfb__jump" aria-label="{{ s.jump_label | escape }}">
+        <ul>
+          {%- for block in section.blocks -%}
+            {%- if block.settings.label != blank and block.settings.key != blank -%}
+              <li {{ block.shopify_attributes }}><a href="#shopify-section-{{ bf_prefix }}__{{ block.settings.key | strip }}">{{ block.settings.label }}</a></li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </nav>
+    {%- endif -%}
+  </div>
+
+  {%- unless s.timed -%}
+    <script>
+      (function () {
+        try {
+          if (window.TL && TL.now() > TL.dates.bfEnd) {
+            document.querySelectorAll('[data-tl-bfb]').forEach(function (el) { el.classList.add('tl-bfb--over'); });
+          }
+        } catch (e) {}
+      })();
+    </script>
+  {%- endunless -%}
+
+  {%- style -%}
+    .tl-bfb {
+      --bf-paper: #F5EFE7; --bf-ink: #1F2328; --bf-wine: #4A0D18; --bf-stone: #B9AC9B;
+      background: var(--bf-paper); color: var(--bf-ink);
+    }
+    .tl-bfb--timed { display: none; }
+    html.tl-bf-live .tl-bfb--timed { display: block; }
+    .tl-bfb h1, .tl-bfb h2, .tl-bfb p { text-transform: none; letter-spacing: 0; margin: 0; }
+    .bfb__stage { position: relative; }
+    .bfb__pic, .bfb__img { display: block; width: 100%; }
+    .bfb__img { height: auto; }
+    .bfb__words { padding: 20px 20px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .bfb__head { font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback); font-weight: 600; font-size: 24px; line-height: 1.15; margin-bottom: 6px !important; }
+    .bfb__line { font-size: 15px; line-height: 1.45; }
+    .bfb__after { display: none; }
+    .tl-bfb--over .bfb__offer { display: none; }
+    .tl-bfb--over .bfb__after { display: block; }
+    .bfb__btn {
+      display: block; width: 100%; box-sizing: border-box; margin-top: 14px; padding: 16px 20px;
+      background: #A64029; color: #FFFFFF; text-decoration: none; text-align: center;
+      font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.25;
+    }
+    .bfb__btn:hover { background: #8A3421; color: #FFFFFF; }
+    .bfb__btn:focus-visible, .bfb__jump a:focus-visible { outline: 2px solid var(--bf-ink); outline-offset: 3px; }
+    .tl-bfb--nopic .bfb__stage { background: var(--bf-wine); }
+    .tl-bfb--nopic .bfb__words { color: var(--bf-paper); padding: 56px 20px; }
+    .tl-bfb--nopic .bfb__btn { background: var(--bf-paper); color: var(--bf-ink); }
+    .bfb__jump { padding: 4px 12px 20px; }
+    .bfb__jump ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+    .bfb__jump li { margin: 0; }
+    .bfb__jump a {
+      display: block; padding: 10px 16px; border: 1px solid var(--bf-stone); border-radius: 999px;
+      color: var(--bf-ink); text-decoration: none; font-size: 14px; line-height: 1.2; min-height: 20px;
+    }
+    .bfb__jump a:hover { border-color: var(--bf-ink); }
+    {%- if section.blocks.size > 0 %}
+    [id^="shopify-section-{{ bf_prefix }}__"] { scroll-margin-top: 96px; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+    {%- endif %}
+    @media (min-width: 769px) {
+      .tl-bfb:not(.tl-bfb--nopic) .bfb__words {
+        position: absolute; left: 7.6%; top: 50%; transform: translateY(-50%);
+        width: 40%; max-width: 560px; padding: 0; text-align: left; align-items: flex-start; gap: 4px;
+        color: var(--bf-paper);
+      }
+      .bfb__head { font-size: clamp(30px, 3.6vw, 52px); line-height: 1.12; margin-bottom: 12px !important; }
+      .bfb__line { font-size: clamp(15px, 1.35vw, 19px); }
+      .tl-bfb:not(.tl-bfb--nopic) .bfb__btn { background: var(--bf-paper); color: var(--bf-ink); }
+      .tl-bfb:not(.tl-bfb--nopic) .bfb__btn:hover { background: #FFFFFF; color: var(--bf-ink); }
+      .bfb__btn { display: inline-block; width: auto; margin-top: 22px; padding: 17px 34px; font-size: 14px; }
+      .tl-bfb--nopic .bfb__words { padding: 96px 24px; }
+      .bfb__jump { padding: 20px 24px 8px; }
+      .bfb__jump a { font-size: 15px; padding: 11px 20px; }
+    }
+  {%- endstyle -%}
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Black Friday band",
+  "tag": "section",
+  "settings": [
+    { "type": "paragraph", "content": "The top of the Black Friday page, and the homepage band for the Black Friday week. The dates live in snippets/tl-dates." },
+    { "type": "checkbox", "id": "timed", "label": "Only in the Black Friday week", "default": false, "info": "On for the homepage. It then shows only inside the week on the site clock, and only while the page below is published. Off for the Black Friday page itself." },
+    { "type": "text", "id": "page_handle", "label": "Page it waits for", "default": "black-friday" },
+    { "type": "select", "id": "heading_tag", "label": "Heading level", "options": [{ "value": "h1", "label": "h1" }, { "value": "h2", "label": "h2" }], "default": "h2", "info": "h1 on the Black Friday page. h2 on the homepage, which has its own h1." },
+    { "type": "image_picker", "id": "image", "label": "Desktop picture" },
+    { "type": "image_picker", "id": "image_mobile", "label": "Phone picture" },
+    { "type": "text", "id": "image_alt", "label": "Picture description", "default": "Black Friday. A bottle of Barovo Red in front of a deep red rose." },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Black Friday at Tikveš London." },
+    { "type": "text", "id": "line_1", "label": "Line one", "default": "15% off every bottle, case and set." },
+    { "type": "text", "id": "line_2", "label": "Line two", "default": "Until the end of Thursday 3 December." },
+    { "type": "text", "id": "after_text", "label": "Line after the week has ended", "default": "Black Friday has finished. The range is below at its usual prices.", "info": "Black Friday page only." },
+    { "type": "text", "id": "button_label", "label": "Button", "info": "Leave empty on the Black Friday page." },
+    { "type": "url", "id": "button_link", "label": "Button link" },
+    { "type": "text", "id": "jump_label", "label": "Name of the jump links, for screen readers", "default": "Jump to a part of the range" }
+  ],
+  "blocks": [
+    {
+      "type": "jump",
+      "name": "Jump link",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "text", "id": "key", "label": "Section key in the template", "info": "The key of the row it jumps to, as written in the page template: cases, sets, best, reds, whites, spirits." }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Black Friday band" }]
+}
+{% endschema %}
