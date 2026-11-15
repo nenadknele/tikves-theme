@@ -1,0 +1,219 @@
+{%- comment -%}
+  TIKVES LONDON · THE BLACK FRIDAY PAGE · 14 Nov 2026
+  Used only by templates/page.black-friday.json, for /pages/black-friday.
+  Built unpublished from the Claude Code handoff of 14 Nov 2026. Julian says
+  when it goes live.
+
+  The shape, after how Overtone and Boom lay out their Black Friday pages.
+  Shape only, none of their words or pictures:
+  1. A top band on the cream ground of the early bird page: kicker, one
+     headline, the offer in plain words, one date line. No timer.
+  2. Jump links built from the rows below, so a link never points at a row
+     that is not on the page.
+  3. Short rows of the theme's own product cards, four across on desktop and
+     two on a phone, each with See all to its collection.
+  4. The terms at the bottom, as REF · BLACK FRIDAY 2026 v13 words them.
+
+  PRICES. The cards are snippets/product-grid-item, so they show the price
+  the shop shows that week: in the weekend window, the green price after the
+  cut with the shop price struck through, worked out from settings.tl_bf_depth
+  and gated by the clock in snippets/tl-dates. Nothing here types a price.
+
+  THE DEPTH. The offer line and the terms read the percentage from the same
+  theme setting the cards use, settings.tl_bf_depth. If it is blank or out of
+  range the offer line and the terms print nothing.
+
+  OUTSIDE THE WEEKEND. The offer line, the date line and the terms show only
+  while html.tl-bf-live is set (Fri 27 Nov 00:00 to Thu 3 Dec 23:59 UK, from
+  snippets/tl-dates). Before or after, the page states no offer. This is a
+  safety net, not an early access state: the page is meant to be live only in
+  the weekend. On a theme copy, ?tl_now=2026-11-28T10:00:00Z shows it.
+
+  THE GIFT CARD never shows in a row: it is outside the offer.
+  THE STOCK COUNT never shows on this page: tl_no_count is passed to the card.
+  SOLD OUT stays up: the card reads Sold out and its button is disabled.
+
+  No new script, no new font. Card images lazy load below the first row.
+{%- endcomment -%}
+
+{%- liquid
+  assign bf_d = 0
+  if settings.tl_bf_depth != blank
+    assign bf_d = settings.tl_bf_depth | plus: 0
+  endif
+  assign bf_int = bf_d | floor
+  if bf_int != bf_d or bf_d < 1 or bf_d > 99
+    assign bf_d = 0
+  endif
+-%}
+
+{%- style -%}
+  .tlbf {
+    --bf-paper: #F5EFE7;
+    --bf-paper-deep: #EAE3D9;
+    --bf-ink: #1F2328;
+    --bf-stone: #B9AC9B;
+    --bf-head: {{ settings.type_header_font_family.family }}, {{ settings.type_header_font_family.fallback_families }};
+    --bf-body: {{ settings.type_base_font_family.family }}, {{ settings.type_base_font_family.fallback_families }};
+    color: var(--bf-ink);
+  }
+  .tlbf h1, .tlbf h2, .tlbf p { text-transform: none; letter-spacing: 0; }
+  .tlbf-top { background: var(--bf-paper); border-bottom: 1px solid var(--bf-stone); padding: 40px 16px 28px; text-align: center; }
+  .tlbf-kicker { font-family: var(--bf-body); font-size: 13px; font-weight: 600; letter-spacing: 0.12em !important; text-transform: uppercase !important; margin: 0 0 12px; }
+  .tlbf-h { font-family: var(--bf-head); font-weight: 600; font-size: 34px; line-height: 1.1; margin: 0 auto 14px; max-width: 18ch; }
+  .tlbf-offer { font-family: var(--bf-body); font-size: 18px; line-height: 1.4; margin: 0 auto 6px; max-width: 34ch; }
+  .tlbf-date { font-family: var(--bf-body); font-size: 15px; line-height: 1.4; margin: 0 auto; color: #5c5a57; }
+  .tlbf-live { display: none; }
+  html.tl-bf-live .tlbf-live { display: block; }
+  .tlbf-jump { margin: 24px -16px 0; padding: 0 16px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .tlbf-jump::-webkit-scrollbar { display: none; }
+  .tlbf-jump ul { list-style: none; margin: 0 auto; padding: 0; display: flex; gap: 8px; justify-content: center; width: max-content; min-width: 100%; }
+  .tlbf-jump a { display: inline-block; min-height: 44px; box-sizing: border-box; padding: 11px 18px; border: 1px solid var(--bf-ink); border-radius: 999px; font-family: var(--bf-body); font-size: 15px; line-height: 1.3; color: var(--bf-ink); text-decoration: none; white-space: nowrap; }
+  .tlbf-jump a:hover { background: var(--bf-ink); color: var(--bf-paper); }
+  .tlbf-jump a:focus-visible { outline: 2px solid var(--bf-ink); outline-offset: 3px; }
+  .tlbf-row { padding: 36px 0 8px; scroll-margin-top: 90px; }
+  .tlbf-row .section-header { margin-bottom: 20px; }
+  .tlbf-row .section-header__title { font-family: var(--bf-head); }
+  .tlbf-terms { background: var(--bf-paper-deep); border-top: 1px solid var(--bf-stone); margin-top: 32px; padding: 32px 16px 40px; }
+  .tlbf-terms__in { max-width: 640px; margin: 0 auto; }
+  .tlbf-terms h2 { font-family: var(--bf-head); font-weight: 600; font-size: 20px; margin: 0 0 10px; }
+  .tlbf-terms p { font-family: var(--bf-body); font-size: 15px; line-height: 1.55; margin: 0; }
+  @media (min-width: 769px) {
+    .tlbf-top { padding: 64px 32px 36px; }
+    .tlbf-h { font-size: 52px; }
+    .tlbf-offer { font-size: 20px; }
+    .tlbf-jump { margin: 28px 0 0; padding: 0; overflow: visible; }
+    .tlbf-row { padding-top: 48px; }
+    .tlbf-terms { padding: 44px 32px 56px; }
+  }
+{%- endstyle -%}
+
+<div class="tlbf">
+  <div class="tlbf-top">
+    {%- if section.settings.kicker != blank -%}
+      <p class="tlbf-kicker">{{ section.settings.kicker | escape }}</p>
+    {%- endif -%}
+    <h1 class="tlbf-h">{{ section.settings.heading | escape }}</h1>
+    {%- if bf_d > 0 and section.settings.offer_tail != blank -%}
+      <p class="tlbf-offer tlbf-live">{{ bf_d }}% {{ section.settings.offer_tail | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.date_line != blank -%}
+      <p class="tlbf-date tlbf-live">{{ section.settings.date_line | escape }}</p>
+    {%- endif -%}
+
+    {%- capture tlbf_links -%}
+      {%- for block in section.blocks -%}
+        {%- assign c = collections[block.settings.collection] -%}
+        {%- if block.settings.jump_label != blank and c != blank and c.products_count > 0 -%}
+          <li><a href="#bf-{{ block.settings.jump_label | handleize }}">{{ block.settings.jump_label | escape }}</a></li>
+        {%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- if tlbf_links != blank -%}
+      <nav class="tlbf-jump" aria-label="Jump to">
+        <ul>{{ tlbf_links }}</ul>
+      </nav>
+    {%- endif -%}
+  </div>
+
+  {%- for block in section.blocks -%}
+    {%- assign c = collections[block.settings.collection] -%}
+    {%- if c == blank or c.products_count == 0 -%}{%- continue -%}{%- endif -%}
+    {%- liquid
+      if block.settings.jump_label != blank
+        assign row_id = 'bf-' | append: block.settings.jump_label | handleize
+      else
+        assign row_id = 'bf-row-' | append: block.id
+      endif
+      assign row_heading = block.settings.heading | default: c.title
+      assign is_first = false
+      if forloop.first
+        assign is_first = true
+      endif
+    -%}
+    <div class="tlbf-row" id="{{ row_id }}" {{ block.shopify_attributes }}
+      data-section-id="{{ section.id }}" data-section-type="collection-grid" data-context="featured-collection">
+      <div class="page-width">
+        <div class="section-header section-header--with-link">
+          <h2 class="section-header__title h2">{{ row_heading | escape }}</h2>
+          <a href="{{ c.url }}" class="btn btn--secondary btn--small section-header__link">{{ section.settings.see_all | escape }}</a>
+        </div>
+      </div>
+      <div class="page-width">
+        <div class="grid grid--uniform">
+          {%- assign shown = 0 -%}
+          {%- for product in c.products limit: 12 -%}
+            {%- if product.gift_card? -%}{%- continue -%}{%- endif -%}
+            {%- assign shown = shown | plus: 1 -%}
+            {%- if is_first -%}
+              {%- render 'product-grid-item',
+                product: product,
+                collection: c,
+                per_row: 4,
+                quick_shop_enable: settings.quick_shop_enable,
+                fallback: 'variable',
+                grid_index: shown,
+                tl_no_count: true,
+              -%}
+            {%- else -%}
+              {%- render 'product-grid-item',
+                product: product,
+                collection: c,
+                per_row: 4,
+                quick_shop_enable: settings.quick_shop_enable,
+                fallback: 'variable',
+                tl_no_count: true,
+              -%}
+            {%- endif -%}
+            {%- if shown >= 4 -%}{%- break -%}{%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  {%- endfor -%}
+
+  {%- if bf_d > 0 and section.settings.terms_tail != blank -%}
+    <div class="tlbf-terms tlbf-live">
+      <div class="tlbf-terms__in">
+        {%- if section.settings.terms_heading != blank -%}
+          <h2>{{ section.settings.terms_heading | escape }}</h2>
+        {%- endif -%}
+        <p>{{ bf_d }}% {{ section.settings.terms_tail | escape }}</p>
+      </div>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Black Friday page",
+  "class": "tl-black-friday-section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "The Black Friday page, 14 Nov 2026. The percentage comes from the theme setting 'Black Friday depth, per cent off'. The offer line, the date line and the terms show only from Fri 27 Nov 00:00 to Thu 3 Dec 23:59 UK."
+    },
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Black Friday" },
+    { "type": "text", "id": "heading", "label": "Headline", "default": "Black Friday at Tikveš London." },
+    { "type": "text", "id": "offer_tail", "label": "Offer line, after the percentage", "default": "off every bottle, case and set, except the gift card." },
+    { "type": "text", "id": "date_line", "label": "Date line", "default": "Until the end of Thursday 3 December." },
+    { "type": "text", "id": "see_all", "label": "See all link", "default": "See all" },
+    { "type": "text", "id": "terms_heading", "label": "Terms heading", "default": "The terms" },
+    { "type": "textarea", "id": "terms_tail", "label": "Terms, after the percentage", "default": "off every bottle, case and set, except the gift card. From 00:00 on Friday 27 November to 23:59 on Thursday 3 December 2026, UK time. It comes off at checkout, with no code. It doesn't combine with other money-off codes." }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Product row",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "heading", "label": "Heading", "info": "Blank uses the collection title." },
+        { "type": "text", "id": "jump_label", "label": "Jump link label", "info": "Blank leaves this row out of the jump links." }
+      ]
+    }
+  ],
+  "disabled_on": {
+    "groups": ["header", "footer", "custom.popups"]
+  }
+}
+{% endschema %}

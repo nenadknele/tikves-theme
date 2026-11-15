@@ -1,0 +1,77 @@
+{
+  "sections": {
+    "main": {
+      "type": "tl-black-friday",
+      "blocks": {
+        "cases": {
+          "type": "row",
+          "settings": {
+            "collection": "cases",
+            "heading": "Cases",
+            "jump_label": "Cases"
+          }
+        },
+        "sets": {
+          "type": "row",
+          "settings": {
+            "collection": "sets",
+            "heading": "Sets",
+            "jump_label": "Sets"
+          }
+        },
+        "best": {
+          "type": "row",
+          "settings": {
+            "collection": "best-sellers",
+            "heading": "Best sellers",
+            "jump_label": ""
+          }
+        },
+        "reds": {
+          "type": "row",
+          "settings": {
+            "collection": "reds",
+            "heading": "Reds",
+            "jump_label": "Reds"
+          }
+        },
+        "whites": {
+          "type": "row",
+          "settings": {
+            "collection": "whites",
+            "heading": "Whites",
+            "jump_label": "Whites"
+          }
+        },
+        "gifts": {
+          "type": "row",
+          "settings": {
+            "collection": "gifts",
+            "heading": "Gifts",
+            "jump_label": "Gifts"
+          }
+        }
+      },
+      "block_order": [
+        "cases",
+        "sets",
+        "best",
+        "reds",
+        "whites",
+        "gifts"
+      ],
+      "settings": {
+        "kicker": "Black Friday",
+        "heading": "Black Friday at Tikveš London.",
+        "offer_tail": "off every bottle, case and set, except the gift card.",
+        "date_line": "Until the end of Thursday 3 December.",
+        "see_all": "See all",
+        "terms_heading": "The terms",
+        "terms_tail": "off every bottle, case and set, except the gift card. From 00:00 on Friday 27 November to 23:59 on Thursday 3 December 2026, UK time. It comes off at checkout, with no code. It doesn't combine with other money-off codes."
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
