@@ -1,0 +1,160 @@
+{
+  "sections": {
+    "top": {
+      "type": "tl-bf-band",
+      "blocks": {
+        "jump_cases": {
+          "type": "jump",
+          "settings": {
+            "label": "Cases",
+            "key": "cases"
+          }
+        },
+        "jump_sets": {
+          "type": "jump",
+          "settings": {
+            "label": "Sets",
+            "key": "sets"
+          }
+        },
+        "jump_reds": {
+          "type": "jump",
+          "settings": {
+            "label": "Reds",
+            "key": "reds"
+          }
+        },
+        "jump_whites": {
+          "type": "jump",
+          "settings": {
+            "label": "Whites",
+            "key": "whites"
+          }
+        },
+        "jump_spirits": {
+          "type": "jump",
+          "settings": {
+            "label": "Spirits",
+            "key": "spirits"
+          }
+        }
+      },
+      "block_order": [
+        "jump_cases",
+        "jump_sets",
+        "jump_reds",
+        "jump_whites",
+        "jump_spirits"
+      ],
+      "settings": {
+        "timed": false,
+        "page_handle": "black-friday",
+        "heading_tag": "h1",
+        "image_alt": "Black Friday. A bottle of Barovo Red in front of a deep red rose.",
+        "heading": "Black Friday at Tikveš London.",
+        "line_1": "15% off every bottle, case and set.",
+        "line_2": "Until the end of Thursday 3 December.",
+        "after_text": "Black Friday has finished. The range is below at its usual prices.",
+        "button_label": "",
+        "jump_label": "Jump to a part of the range",
+        "show_picture": true
+      }
+    },
+    "cases": {
+      "type": "tikves-shelf",
+      "settings": {
+        "title": "Cases",
+        "heading_size": "h2",
+        "intro": "",
+        "collection": "cases",
+        "per_row": 5,
+        "link_label": "See all cases"
+      }
+    },
+    "sets": {
+      "type": "tikves-shelf",
+      "settings": {
+        "title": "Sets",
+        "heading_size": "h2",
+        "intro": "",
+        "collection": "sets",
+        "per_row": 5,
+        "link_label": "See all sets"
+      }
+    },
+    "best": {
+      "type": "tikves-shelf",
+      "settings": {
+        "title": "Best Sellers",
+        "heading_size": "h2",
+        "intro": "",
+        "collection": "best-sellers",
+        "per_row": 5,
+        "link_label": "See all best sellers"
+      }
+    },
+    "reds": {
+      "type": "tikves-shelf",
+      "settings": {
+        "title": "Reds",
+        "heading_size": "h2",
+        "intro": "",
+        "collection": "reds",
+        "per_row": 4,
+        "link_label": "See all reds"
+      }
+    },
+    "whites": {
+      "type": "tikves-shelf",
+      "settings": {
+        "title": "Whites",
+        "heading_size": "h2",
+        "intro": "",
+        "collection": "whites",
+        "per_row": 4,
+        "link_label": "See all whites"
+      }
+    },
+    "spirits": {
+      "type": "tikves-shelf",
+      "settings": {
+        "title": "Spirits",
+        "heading_size": "h2",
+        "intro": "",
+        "collection": "spirits",
+        "per_row": 4,
+        "link_label": "See all spirits"
+      }
+    },
+    "terms": {
+      "type": "rich-text",
+      "blocks": {
+        "text": {
+          "type": "text",
+          "settings": {
+            "enlarge_text": false,
+            "text": "<p>15% off every bottle, case and set. From 00:00 on Friday 27 November to 23:59 on Thursday 3 December 2026, UK time. It comes off at checkout, with no code. It doesn't combine with other money-off codes.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "text"
+      ],
+      "settings": {
+        "align_text": "center",
+        "narrow_column": true,
+        "divider": false
+      }
+    }
+  },
+  "order": [
+    "top",
+    "cases",
+    "sets",
+    "best",
+    "reds",
+    "whites",
+    "spirits",
+    "terms"
+  ]
+}
