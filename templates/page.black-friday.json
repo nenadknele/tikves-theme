@@ -50,15 +50,14 @@
         "timed": false,
         "page_handle": "black-friday",
         "heading_tag": "h1",
-        "image": "shopify://shop_images/bf-hero-desktop.jpg",
-        "image_mobile": "shopify://shop_images/bf-hero-phone.jpg",
         "image_alt": "Black Friday. A bottle of Barovo Red in front of a deep red rose.",
         "heading": "Black Friday at Tikveš London.",
         "line_1": "15% off every bottle, case and set.",
         "line_2": "Until the end of Thursday 3 December.",
         "after_text": "Black Friday has finished. The range is below at its usual prices.",
         "button_label": "",
-        "jump_label": "Jump to a part of the range"
+        "jump_label": "Jump to a part of the range",
+        "show_picture": true
       }
     },
     "cases": {

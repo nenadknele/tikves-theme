@@ -34,8 +34,8 @@
         "timed": true,
         "page_handle": "black-friday",
         "heading_tag": "h2",
-        "image": "shopify://shop_images/bf-hero-desktop.jpg",
-        "image_mobile": "shopify://shop_images/bf-hero-phone.jpg",
+        "hide_key": "hero",
+        "show_picture": true,
         "image_alt": "Black Friday. A bottle of Barovo Red in front of a deep red rose.",
         "heading": "Black Friday at Tikveš London.",
         "line_1": "15% off every bottle, case and set.",
@@ -70,7 +70,6 @@
     },
     "hero": {
       "type": "tikves-hero",
-      "disabled": true,
       "settings": {
         "image": "shopify://shop_images/barovo-hero-desktop-169.jpg",
         "image_mobile": "shopify://shop_images/barovo-hero-phone-tight.jpg",
@@ -80,7 +79,7 @@
         "focal_desktop": "center bottom",
         "focal_mobile": "center center",
         "heading": "Barovo, From One Vineyard",
-        "heading_tag": "h1",
+        "heading_tag": "h2",
         "title_caps": false,
         "subheading": "One red from one named vineyard in Tikveš.",
         "text_panel": false,
