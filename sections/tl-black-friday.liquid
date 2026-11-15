@@ -78,6 +78,23 @@
   .tlbf-terms__in { max-width: 640px; margin: 0 auto; }
   .tlbf-terms h2 { font-family: var(--bf-head); font-weight: 600; font-size: 20px; margin: 0 0 10px; }
   .tlbf-terms p { font-family: var(--bf-body); font-size: 15px; line-height: 1.55; margin: 0; }
+  /* Two cards across on a phone, the handoff of 14 Nov 2026. This page only:
+     snippets/tikves-head-css keeps one per row everywhere else, per the
+     ruling of 6 Sep 2026. Same specificity plus .tlbf, so this wins here. */
+  @media only screen and (max-width: 768px) {
+    .tlbf .grid--uniform .grid-product {
+      width: 50% !important;
+      max-width: 50% !important;
+      flex: 0 0 50% !important;
+      clear: none !important;
+      margin-bottom: 24px !important;
+    }
+    .tlbf .grid--uniform .grid-product:nth-of-type(odd) { clear: both !important; }
+    .tlbf .grid-product .grid-product__title { font-size: 15px !important; line-height: 1.3; }
+    .tlbf .grid-product__price { font-size: 14px; }
+    .tlbf .tk-gatc__btn { width: 100% !important; padding: 11px 8px !important; font-size: 11px !important; letter-spacing: 0.06em !important; }
+    .tlbf .grid-product__tag { font-size: 10px; }
+  }
   @media (min-width: 769px) {
     .tlbf-top { padding: 64px 32px 36px; }
     .tlbf-h { font-size: 52px; }
