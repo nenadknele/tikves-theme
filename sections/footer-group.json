@@ -23,6 +23,24 @@
             "container_width": 40
           }
         },
+        "menu_shop": {
+          "type": "menu",
+          "settings": {
+            "show_footer_title": false,
+            "menu": "footer-shop",
+            "tl_desktop_only": true,
+            "container_width": 95
+          }
+        },
+        "menu_about": {
+          "type": "menu",
+          "settings": {
+            "show_footer_title": false,
+            "menu": "footer-about",
+            "tl_desktop_only": true,
+            "container_width": 95
+          }
+        },
         "menu_help": {
           "type": "menu",
           "settings": {
@@ -42,6 +60,8 @@
       },
       "block_order": [
         "newsletter_tl01",
+        "menu_shop",
+        "menu_about",
         "menu_help",
         "menu_legal"
       ],

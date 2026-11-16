@@ -8,6 +8,10 @@
       {%- render 'collapsible-icons' -%}
     </button>
   {%- endif -%}
+  {%- unless block.settings.show_footer_title -%}
+    {%- comment -%} Desktop column heading, 16 Nov 2026. Hidden under 960px in sections/footer.liquid. {%- endcomment -%}
+    <h2 class="h4 footer__title tl-ft-coltitle">{{ linklists[block.settings.menu].title }}</h2>
+  {%- endunless -%}
   <div
     {% if block.settings.show_footer_title %}
       id="Footer-{{ block.id }}" class="collapsible-content collapsible-content--small"
