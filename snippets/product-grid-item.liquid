@@ -89,7 +89,7 @@ policy asks for ABV on the landing page. Operator approved in chat.
       {%- if product.available -%}
         {%- assign tl_v = product.selected_or_first_available_variant -%}
         {%- if tl_v.inventory_management == 'shopify' and tl_v.inventory_quantity > 0 and tl_v.inventory_quantity <= 60 -%}
-          <div class="grid-product__tag grid-product__tag--custom tl-tag">Only {{ tl_v.inventory_quantity }} left</div>
+          <div class="grid-product__tag grid-product__tag--custom tl-tag tl-tag--stock">Only {{ tl_v.inventory_quantity }} left</div>
         {%- elsif product.metafields.custom.rarity_note.value != blank -%}
           <div class="grid-product__tag grid-product__tag--custom tl-tag">Hard to find in the UK</div>
         {%- endif -%}

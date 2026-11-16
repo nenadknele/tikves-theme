@@ -464,6 +464,13 @@
   .tl-cart-each { font-size: 0.8em; opacity: 0.75; }
   .tl-cart-off { display: block; line-height: 1.35; margin-top: 2px; }
   .tl-nowrap { white-space: nowrap; }
+  /* Stock badge on the product cards, 16 Nov 2026, his word: "Only N left"
+     goes charcoal so it stops matching the Add to cart button. The body text
+     colour, white words. The rarity badge keeps the button colour. */
+  .grid-product__tag.tl-tag--stock {
+    background-color: var(--colorTextBody);
+    color: var(--colorBtnPrimaryText);
+  }
 {% endstyle %}
 {%- if template.name == 'cart' -%}
 {% style %}
