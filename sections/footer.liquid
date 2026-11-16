@@ -96,7 +96,7 @@
           {%- assign row_width = row_width | minus: 100 -%}
         {%- endif -%}
 
-        <div {{ block.shopify_attributes }} class="grid__item footer__item--{{ block.id }}" data-type="{{ block.type }}">
+        <div {{ block.shopify_attributes }} class="grid__item footer__item--{{ block.id }}{% if block.type == 'menu' and block.settings.tl_desktop_only %} tl-ft-desktop-only{% endif %}" data-type="{{ block.type }}">
           {%- style -%}
             @media only screen and (min-width: 769px) and (max-width: 959px) {
               .footer__item--{{ block.id }} {
@@ -220,6 +220,7 @@
       </a>
     </div>
 
+    <div class="tl-ft-bar">
     {%- if section.settings.security_line != blank -%}
       <p class="tl-footer-secure" style="max-width: 420px; margin: 0 auto 22px; text-align: center; text-wrap: balance;">{{ section.settings.security_line }}</p>
     {%- endif -%}
@@ -273,6 +274,167 @@
         {%- endif -%}
       </p>
     {%- endif -%}
+    </div>
+
+    {%- comment -%}
+      DESKTOP FOOTER IN OVERTONE'S SHAPE, 16 Nov 2026, his word: "i want our
+      footer on desktop to look as much as possible to overtone.co footer".
+      From 960px up: the signup sits in a wide column on the left with the
+      social icons and the contact lines under it, the menus stand beside it
+      as columns with a heading each, and a ruled bar at the foot carries the
+      copyright on the left and the payment icons on the right. Under 960px
+      nothing here applies and the footer is the centred stack it was.
+      Layout only. Our own type and colours. No wording changes.
+    {%- endcomment -%}
+    {%- style -%}
+      .tl-ft-coltitle { display: none; }
+      @media only screen and (max-width: 959px) {
+        .site-footer .grid__item.tl-ft-desktop-only { display: none; }
+      }
+      @media only screen and (min-width: 960px) {
+        .site-footer { padding-top: 76px; padding-bottom: 0; }
+        .site-footer > .page-width {
+          display: grid;
+          grid-template-columns: minmax(0, 31%) minmax(0, 1fr);
+          grid-template-rows: auto 1fr auto;
+          grid-template-areas: "news cols" "contact cols" "bar bar";
+          column-gap: 7%;
+        }
+
+        /* Left column: the signup. */
+        .site-footer .tl-footer-news {
+          grid-area: news;
+          max-width: none;
+          margin: 0 0 0 clamp(0px, 5vw, 110px);
+          text-align: left;
+        }
+        .site-footer .tl-footer-news-rule { display: none; }
+        .site-footer .tl-footer-news .tl-stay-in-touch { padding: 0; }
+        .site-footer .tl-footer-news .footer__title,
+        .site-footer .tl-ft-coltitle {
+          display: block;
+          font-size: 21px;
+          line-height: 1.2;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          margin: 0 0 30px;
+          padding: 0;
+          text-align: left;
+        }
+        .site-footer .tl-footer-news .tl-stay-in-touch__text {
+          max-width: 440px;
+          margin: 0 0 14px;
+          font-size: 15px;
+        }
+        .site-footer .tl-footer-news .tl-join {
+          flex-direction: column;
+          gap: 20px;
+          max-width: 440px;
+          margin: 0;
+        }
+        .site-footer .tl-footer-news .tl-join__input {
+          height: 52px !important;
+          padding: 0 !important;
+          border: 0;
+          border-bottom: 1px solid #1F2328;
+          font-size: 16px;
+        }
+        .site-footer .tl-footer-news .tl-join__input:focus { border-bottom-color: #A64029; }
+        .site-footer .tl-footer-news .tl-join__btn {
+          width: 100%;
+          height: 42px !important;
+          font-weight: 600;
+        }
+        .site-footer .tl-footer-news .tl-join__fine {
+          max-width: 440px;
+          margin: 14px 0 0;
+        }
+        .site-footer .tl-footer-news .tl-stay-in-touch__social {
+          display: flex;
+          flex-wrap: wrap;
+          margin: 30px 0 0 -8px;
+          padding: 0;
+        }
+        .site-footer .tl-footer-news .tl-stay-in-touch__social li { margin: 0 14px 0 0; }
+
+        /* Left column, under the signup: phone, email, the Google line. */
+        .site-footer .tl-footer-bottom {
+          grid-area: contact;
+          align-self: start;
+          align-items: flex-start;
+          gap: 10px;
+          text-align: left;
+          margin: 26px 0 0 clamp(0px, 5vw, 110px);
+          padding-top: 0;
+          border-top: 0;
+          font-size: 14px;
+        }
+        .site-footer .tl-footer-bottom .social-icons { display: none; }
+        .site-footer .tl-footer-bottom__contact { align-items: flex-start; }
+
+        /* Right: one column per menu, heading on top. */
+        .site-footer > .page-width > .grid {
+          grid-area: cols;
+          display: grid;
+          grid-auto-flow: column;
+          grid-auto-columns: minmax(0, 1fr);
+          column-gap: 28px;
+          margin: 0 clamp(0px, 3vw, 60px) 0 0;
+        }
+        .site-footer > .page-width > .grid:before,
+        .site-footer > .page-width > .grid:after { display: none; }
+        .site-footer .grid__item[data-type="menu"] {
+          float: none;
+          width: auto;
+          padding: 0;
+          text-align: left;
+        }
+        .site-footer .grid__item[data-type="menu"] .site-footer__linklist li {
+          display: block;
+          margin: 0 0 20px;
+        }
+        .site-footer .grid__item[data-type="menu"] .site-footer__linklist a {
+          padding: 0;
+          font-size: 15px;
+          line-height: 1.4;
+        }
+        .site-footer .grid__item[data-type="menu"] .site-footer__linklist a:hover { text-decoration: underline; }
+
+        /* The bar: copyright left, ways to pay right. */
+        .site-footer .tl-ft-bar {
+          grid-area: bar;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          grid-template-areas: "copy pay" "secure pay";
+          align-items: center;
+          column-gap: 32px;
+          margin-top: 64px;
+          padding: 22px 0 24px;
+          border-top: 1px solid #1F2328;
+        }
+        .site-footer .tl-ft-bar .footer__small-text {
+          grid-area: copy;
+          padding: 0;
+          text-align: left;
+          font-size: 15px;
+        }
+        .site-footer .tl-ft-bar .tl-footer-secure {
+          grid-area: secure;
+          max-width: none !important;
+          margin: 4px 0 0 !important;
+          text-align: left !important;
+          font-size: 12px;
+          opacity: 0.7;
+        }
+        .site-footer .tl-ft-bar .tl-footer-payments {
+          grid-area: pay;
+          max-width: none;
+          margin: 0;
+          text-align: right;
+        }
+        .site-footer .tl-ft-bar .tl-footer-payments li { margin: 3px 0 3px 8px; }
+      }
+    {%- endstyle -%}
 
   </div>
 </footer>
@@ -398,6 +560,13 @@
           "label": "t:sections.footer.blocks.navigation.settings.menu.label",
           "default": "footer",
           "info": "t:sections.footer.blocks.navigation.settings.menu.info"
+        },
+        {
+          "type": "checkbox",
+          "id": "tl_desktop_only",
+          "label": "Desktop only",
+          "info": "Shows this menu as a column on wide screens and hides it on phones and tablets.",
+          "default": false
         },
         {
           "type": "range",
