@@ -1,5 +1,5 @@
 {%- comment -%}
-  TIKVES LONDON · BLACK FRIDAY BAND · 16 Nov 2026 · Boom's shape
+  TIKVES LONDON · BLACK FRIDAY BAND · 16 Nov 2026 · Barovo Red alone on wine red
   One section, two places.
   · The top of the Black Friday page (templates/page.black-friday.json):
     "Only in the Black Friday week" OFF. It always shows there, as the h1.
@@ -28,16 +28,26 @@
   White, Barovo Red and Babuna Red as the three bottles, and the outlined
   button.
 
+  HIS WORD, 16 Nov 2026, later the same day, in chat: the three flower
+  panels did not look premium and come out. One locked picture takes their
+  place: Barovo Red alone on wine red, BLACK FRIDAY in the picture above
+  the bottle. REF · BLACK FRIDAY 2026 · THE BAND PICTURE IS BAROVO RED
+  ALONE ON WINE RED · v1, in 00 · CANONICAL. The shape stays: words on
+  cream, picture first on the phone, words left and picture right from
+  769px, the outlined button.
+
   WORDS never on it: sale, deal, save, last chance, a countdown, a stock
   count, a price, a delivery promise.
 
-  PICTURES: assets/bf-panel-1.jpg, bf-panel-2.jpg and bf-panel-3.jpg, in
-  the theme itself, so nothing has to be uploaded. Each is one bottle on
-  its flower, two wide by three tall, with the bottle in the middle so the
-  sides can be cropped on a phone without touching it. No words are in the
-  pictures. A picture picked in the editor replaces the three panels with
-  that one picture. With "Show the picture" off the band is Wine with
-  Cream words.
+  PICTURES: assets/bf-hero-barovo-phone.jpg (2340 x 2240) and, from
+  769px, assets/bf-hero-barovo-desktop.jpg (2400 x 1800, 4 by 3), in the
+  theme itself, so nothing has to be uploaded. Both carry BLACK FRIDAY in
+  the picture. THE PICTURE IS SHOWN WHOLE, never cover-cropped: it keeps
+  its own shape at every width, so the bottle, its shadow and the words in
+  it always stay inside the frame. Pictures picked in the editor replace
+  it and are shown whole too. With "Show the picture" off the band is Wine
+  with Cream words. assets/bf-panel-1.jpg to bf-panel-3.jpg are no longer
+  used; removing them is his to rule.
 
   THE BAROVO HERO, his word 15 Nov 2026: it is back on the homepage. While
   this band shows in the week it hides the section named in "Section it
@@ -67,9 +77,32 @@
   assign bf_prefix = section.id | split: '__' | first
   assign pic_d = s.image
   assign pic_m = s.image_mobile | default: s.image
-  assign loading = 'eager'
-  if s.timed
-    assign loading = 'lazy'
+  if pic_d != blank
+    assign d_800 = pic_d | image_url: width: 800
+    assign d_1200 = pic_d | image_url: width: 1200
+    assign d_1600 = pic_d | image_url: width: 1600
+    assign d_2000 = pic_d | image_url: width: 2000
+    assign d_w = pic_d.width
+    assign d_h = pic_d.height
+    assign m_480 = pic_m | image_url: width: 480
+    assign m_750 = pic_m | image_url: width: 750
+    assign m_1080 = pic_m | image_url: width: 1080
+    assign m_1500 = pic_m | image_url: width: 1500
+    assign m_w = pic_m.width
+    assign m_h = pic_m.height
+  else
+    assign d_800 = 'bf-hero-barovo-desktop.jpg' | asset_img_url: '800x'
+    assign d_1200 = 'bf-hero-barovo-desktop.jpg' | asset_img_url: '1200x'
+    assign d_1600 = 'bf-hero-barovo-desktop.jpg' | asset_img_url: '1600x'
+    assign d_2000 = 'bf-hero-barovo-desktop.jpg' | asset_img_url: '2000x'
+    assign d_w = 2400
+    assign d_h = 1800
+    assign m_480 = 'bf-hero-barovo-phone.jpg' | asset_img_url: '480x'
+    assign m_750 = 'bf-hero-barovo-phone.jpg' | asset_img_url: '750x'
+    assign m_1080 = 'bf-hero-barovo-phone.jpg' | asset_img_url: '1080x'
+    assign m_1500 = 'bf-hero-barovo-phone.jpg' | asset_img_url: '1500x'
+    assign m_w = 2340
+    assign m_h = 2240
   endif
 -%}
 
@@ -77,44 +110,25 @@
   <div class="tl-bfb{% if s.timed %} tl-bfb--timed{% endif %}{% unless s.show_picture %} tl-bfb--nopic{% endunless %}" data-tl-bfb>
     <div class="bfb__stage">
       {%- if s.show_picture -%}
-        {%- if pic_d != blank -%}
-          <picture class="bfb__pics bfb__pics--one">
-            <source
-              media="(min-width: 769px)"
-              srcset="{{ pic_d | image_url: width: 1200 }} 1200w, {{ pic_d | image_url: width: 1800 }} 1800w"
-              sizes="60vw"
-              width="{{ pic_d.width }}"
-              height="{{ pic_d.height }}">
-            <img
-              src="{{ pic_m | image_url: width: 780 }}"
-              srcset="{{ pic_m | image_url: width: 480 }} 480w, {{ pic_m | image_url: width: 780 }} 780w"
-              sizes="100vw"
-              width="{{ pic_m.width }}"
-              height="{{ pic_m.height }}"
-              alt="{{ s.image_alt | escape }}"
-              loading="{{ loading }}"
-              {% unless s.timed %}fetchpriority="high"{% endunless %}
-              decoding="async">
-          </picture>
-        {%- else -%}
-          <div class="bfb__pics">
-            {%- for i in (1..3) -%}
-              {%- assign bf_file = 'bf-panel-' | append: i | append: '.jpg' -%}
-              <div class="bfb__panel">
-                <img
-                  src="{{ bf_file | asset_img_url: '600x' }}"
-                  srcset="{{ bf_file | asset_img_url: '300x' }} 300w, {{ bf_file | asset_img_url: '600x' }} 600w, {{ bf_file | asset_img_url: '1000x' }} 1000w"
-                  sizes="(min-width: 769px) 20vw, 34vw"
-                  width="1000"
-                  height="1500"
-                  alt="{% if forloop.first %}{{ s.image_alt | escape }}{% endif %}"
-                  loading="{{ loading }}"
-                  {% unless s.timed %}{% if forloop.index == 2 %}fetchpriority="high"{% endif %}{% endunless %}
-                  decoding="async">
-              </div>
-            {%- endfor -%}
-          </div>
-        {%- endif -%}
+        <picture class="bfb__pic">
+          <source
+            media="(min-width: 769px)"
+            srcset="{{ d_800 }} 800w, {{ d_1200 }} 1200w, {{ d_1600 }} 1600w, {{ d_2000 }} 2000w"
+            sizes="(min-width: 1800px) 1080px, 60vw"
+            width="{{ d_w }}"
+            height="{{ d_h }}">
+          <img
+            class="bfb__img"
+            src="{{ m_750 }}"
+            srcset="{{ m_480 }} 480w, {{ m_750 }} 750w, {{ m_1080 }} 1080w, {{ m_1500 }} 1500w"
+            sizes="100vw"
+            width="{{ m_w }}"
+            height="{{ m_h }}"
+            alt="{{ s.image_alt | escape }}"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async">
+        </picture>
       {%- endif -%}
       <div class="bfb__words">
         <{{ htag }} class="bfb__head">{{ s.heading }}</{{ htag }}>
@@ -164,9 +178,9 @@
     {%- endif %}
     .tl-bfb h1, .tl-bfb h2, .tl-bfb p { text-transform: none; letter-spacing: 0; margin: 0; }
     .bfb__stage { display: flex; flex-direction: column; }
-    .bfb__pics { display: flex; width: 100%; height: 84vw; max-height: 440px; overflow: hidden; }
-    .bfb__panel { flex: 1 1 0; min-width: 0; overflow: hidden; }
-    .bfb__pics img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+    /* The picture is shown whole at every width: its own shape, never cropped. */
+    .bfb__pic { display: block; width: 100%; }
+    .bfb__img { display: block; width: 100%; height: auto; }
     .bfb__words { padding: 22px 20px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px; }
     .bfb__head { font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback); font-weight: 600; font-size: 26px; line-height: 1.15; margin-bottom: 6px !important; }
     .bfb__line { font-size: 15px; line-height: 1.45; }
@@ -198,11 +212,11 @@
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
     {%- endif %}
     @media (min-width: 769px) {
-      .tl-bfb:not(.tl-bfb--nopic) .bfb__stage { flex-direction: row; align-items: stretch; }
-      .tl-bfb:not(.tl-bfb--nopic) .bfb__pics { order: 2; width: 60%; height: auto; max-height: 720px; aspect-ratio: 2 / 1; }
+      .tl-bfb:not(.tl-bfb--nopic) .bfb__stage { flex-direction: row; align-items: center; justify-content: flex-end; }
+      .tl-bfb:not(.tl-bfb--nopic) .bfb__pic { order: 2; flex: 0 0 auto; width: 60%; max-width: 1080px; }
       .tl-bfb:not(.tl-bfb--nopic) .bfb__words {
-        order: 1; width: 40%; box-sizing: border-box; padding: 24px 4% 4.6% 7.6%;
-        text-align: left; align-items: flex-start; justify-content: flex-end; gap: 4px;
+        order: 1; flex: 1 1 0; min-width: 0; box-sizing: border-box; padding: 24px 4% 24px 7.6%;
+        text-align: left; align-items: flex-start; justify-content: center; gap: 4px;
       }
       .bfb__head { font-size: clamp(28px, 3.1vw, 50px); line-height: 1.1; margin-bottom: 12px !important; }
       .bfb__line { font-size: clamp(15px, 1.25vw, 19px); }
@@ -224,10 +238,10 @@
     { "type": "text", "id": "page_handle", "label": "Page it waits for", "default": "black-friday" },
     { "type": "text", "id": "hide_key", "label": "Section it stands in for", "info": "Homepage only. The key of the section to hide while this band shows, as written in the template: hero. Leave empty to hide nothing." },
     { "type": "select", "id": "heading_tag", "label": "Heading level", "options": [{ "value": "h1", "label": "h1" }, { "value": "h2", "label": "h2" }], "default": "h2", "info": "h1 on the Black Friday page. h2 on the homepage, which has its own h1." },
-    { "type": "checkbox", "id": "show_picture", "label": "Show the pictures", "default": true, "info": "Off gives a plain Wine band with Cream words." },
-    { "type": "image_picker", "id": "image", "label": "One picture instead of the three panels", "info": "Leave empty to use the theme's own three bottle panels, assets/bf-panel-1.jpg to bf-panel-3.jpg." },
-    { "type": "image_picker", "id": "image_mobile", "label": "That one picture, for the phone", "info": "Only used when a picture is picked above." },
-    { "type": "text", "id": "image_alt", "label": "Picture description", "default": "Black Friday. Bottles of Babuna White, Barovo Red and Babuna Red, each in front of flowers." },
+    { "type": "checkbox", "id": "show_picture", "label": "Show the picture", "default": true, "info": "Off gives a plain Wine band with Cream words." },
+    { "type": "image_picker", "id": "image", "label": "A picture instead of the Barovo picture", "info": "Leave empty to use the theme's own Black Friday picture, assets/bf-hero-barovo-desktop.jpg from 769px and bf-hero-barovo-phone.jpg on the phone. A picture picked here is shown whole, never cropped." },
+    { "type": "image_picker", "id": "image_mobile", "label": "That picture, for the phone", "info": "Only used when a picture is picked above. Leave empty to use the one above on the phone too." },
+    { "type": "text", "id": "image_alt", "label": "Picture description", "default": "Black Friday. A bottle of Barovo Red on a deep red background." },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Black Friday at Tikveš London." },
     { "type": "text", "id": "line_1", "label": "Line one", "default": "15% off every bottle, case and set." },
     { "type": "text", "id": "line_2", "label": "Line two", "default": "Until the end of Thursday 3 December." },
