@@ -11,19 +11,16 @@
   After the end of Thu 3 Dec the class is gone and both pages are as they
   were. What happens then is his to rule.
 
-  THE SAME WAIT FOR THE PAGE as the Black Friday band: on the live theme it
-  only sends people on while /pages/black-friday is published, so it never
-  sends anyone to a page nobody can open. On a copy (theme.role is not
-  'main') it always does, so the redirect can be checked with ?tl_now
-  before the page is published.
+  THE SAME WAIT FOR THE PAGE as the Black Friday band: it only sends people
+  on while /pages/black-friday is published. Unpublished or missing means
+  no redirect, on every theme, the live one and every copy, so it never
+  sends anyone to a page nobody can open. (18 Nov 2026: an earlier copy
+  skipped this check on test themes; that bypass is gone.)
 {%- endcomment -%}
 {%- liquid
   assign eb_bf_ready = false
   assign eb_bf_page = pages['black-friday']
   if eb_bf_page != blank and eb_bf_page.url != blank
-    assign eb_bf_ready = true
-  endif
-  if theme.role != 'main'
     assign eb_bf_ready = true
   endif
 -%}
