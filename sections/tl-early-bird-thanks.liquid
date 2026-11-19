@@ -5,8 +5,16 @@
   Replaces the 6 Nov build of pull request 86. Where the sign-up form lands.
 
   FROM FRI 20 TO MON 23 NOV the heading and both lines change, under
-  html.tl-eb-open (snippets/tl-dates, tl-eb-words), his word of 9 Nov. No
-  closed state after Mon 23 Nov: he takes the page down.
+  html.tl-eb-open (snippets/tl-dates, tl-eb-words), his word of 9 Nov.
+
+  CLOSED STATE, 19 Nov 2026, approved by Julian: from Tue 24 Nov 00:00 UK,
+  for good, snippets/tl-dates sets html.tl-eb-closed. Under it the sign-up
+  parts (.eb-live) hide and a short closed block shows first
+  (snippets/tl-eb-closed, settings under "After early access"), so nothing
+  depends on the page being taken down by hand. Inside the Black Friday week
+  the redirect (snippets/tl-eb-to-bf) still wins while that page is
+  published.
+  The polaroids and "While you wait" stay in both states.
   The newsletter popup is off here (sections/newsletter-popup.liquid).
 
   WHAT IS ON IT, redone 9 Nov 2026 in the cream look, from Overtone's "You're
@@ -30,7 +38,16 @@
 
 <div class="tl-eb-x ebt">
   {%- assign s = section.settings -%}
-  <div class="ebt__band">
+  {%- render 'tl-eb-closed',
+    kicker: s.closed_kicker,
+    heading: s.closed_heading,
+    heading_em: s.closed_heading_em,
+    text: s.closed_text,
+    teaser: s.closed_teaser,
+    button_label: s.closed_button_label,
+    button_link: s.closed_button_link
+  -%}
+  <div class="ebt__band eb-live">
     {%- if s.kicker != blank -%}<p class="ebt__kicker">{{ s.kicker }}</p>{%- endif -%}
     <h1 class="eb-h ebt__head">
       {%- if s.heading_open != blank -%}
@@ -107,7 +124,16 @@
     { "type": "text", "id": "blog_handle", "label": "Journal blog handle", "default": "journal" },
     { "type": "url", "id": "button_link", "label": "Button link, if not the journal" },
     { "type": "header", "content": "Polaroids" },
-    { "type": "text", "id": "collage_heading", "label": "Heading over the polaroids" }
+    { "type": "text", "id": "collage_heading", "label": "Heading over the polaroids" },
+    { "type": "header", "content": "After early access (from Tue 24 Nov)" },
+    { "type": "paragraph", "content": "From Tue 24 Nov 00:00 UK, for good, the sign-up parts hide and this block shows instead (snippets/tl-eb-closed). Words approved by Julian, 19 Nov 2026." },
+    { "type": "text", "id": "closed_kicker", "label": "Kicker", "default": "Black Friday" },
+    { "type": "text", "id": "closed_heading", "label": "Heading", "default": "Early access has" },
+    { "type": "text", "id": "closed_heading_em", "label": "Heading, italic end", "default": "closed." },
+    { "type": "textarea", "id": "closed_text", "label": "Line", "default": "The early list is closed for this year." },
+    { "type": "textarea", "id": "closed_teaser", "label": "Teaser line", "default": "Black Friday starts Friday. Every bottle, case and set.", "info": "Shows only from Tue 24 to Thu 26 Nov. The same line the site runs those days (snippets/tl-dates, texts.bf)." },
+    { "type": "text", "id": "closed_button_label", "label": "Button", "default": "Shop the wines" },
+    { "type": "url", "id": "closed_button_link", "label": "Button link", "info": "Left empty, /collections/all." }
   ]
 }
 {% endschema %}

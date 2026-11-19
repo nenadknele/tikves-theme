@@ -39,8 +39,17 @@
   WORDS FROM FRI 20 TO MON 23 NOV: each changing line carries its "open"
   words beside it (snippets/tl-eb-words), shown under html.tl-eb-open,
   which snippets/tl-dates sets inside the early access window. Late joiners
-  get their code straight away from Klaviyo. After Mon 23 Nov 23:59 the page
-  has no closed state: he takes it down.
+  get their code straight away from Klaviyo.
+
+  CLOSED STATE, 19 Nov 2026, approved by Julian: from Tue 24 Nov 00:00 UK,
+  for good, snippets/tl-dates sets html.tl-eb-closed. Under it the sign-up
+  parts (.eb-live) hide and a short closed block shows first
+  (snippets/tl-eb-closed, settings under "After early access"), so nothing
+  depends on the page being taken down by hand. Inside the Black Friday week
+  the redirect (snippets/tl-eb-to-bf) still wins while that page is
+  published.
+  The form script does nothing in the closed state, and a submit started on
+  a page left open over midnight on the 23rd reloads instead of sending.
 
   WORDS, from the design and his drafts, his word owed before publish. Never
   on it: a depth, an end date, a gift, a delivery line, £85, "VIP", "sale",
@@ -72,7 +81,16 @@
 -%}
 
 <div class="tl-eb-x eb">
-  <div class="eb__top">
+  {%- render 'tl-eb-closed',
+    kicker: s.closed_kicker,
+    heading: s.closed_heading,
+    heading_em: s.closed_heading_em,
+    text: s.closed_text,
+    teaser: s.closed_teaser,
+    button_label: s.closed_button_label,
+    button_link: s.closed_button_link
+  -%}
+  <div class="eb__top eb-live">
     <div class="eb__words">
       {%- if s.kicker != blank -%}<p class="eb__kicker">{{ s.kicker }}</p>{%- endif -%}
       <h1 class="eb-h eb__head">
@@ -129,7 +147,7 @@
     </div>
   </div>
 
-  <div class="eb__how">
+  <div class="eb__how eb-live">
     {%- if s.how_heading != blank -%}
       <h2 class="eb-h eb__how-head">{{ s.how_heading }}</h2>
     {%- endif -%}
@@ -157,6 +175,8 @@
   (function () {
     var form = document.querySelector('[data-eb-form]:not([data-eb-ready])');
     if (!form) return;
+    function closed() { return !!(window.TL && TL.earlyClosed && TL.earlyClosed()); }
+    if (closed()) return;
     form.setAttribute('data-eb-ready', '');
     var email = form.querySelector('input[name="email"]');
     var age = form.querySelector('input[name="age"]');
@@ -171,6 +191,7 @@
     function fail() { err.hidden = false; btn.disabled = false; btn.removeAttribute('aria-busy'); }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
+      if (closed()) { window.location.reload(); return; }
       err.hidden = true;
       if (!form.reportValidity()) return;
       if (!age.checked) { age.focus(); return; }
@@ -311,7 +332,16 @@
     { "type": "textarea", "id": "step_3_text", "label": "3, text", "default": "Tap the button and the code goes in your basket. Shop a week before everyone else." },
     { "type": "textarea", "id": "step_3_text_open", "label": "3, text, 20 to 23 Nov", "default": "Tap the button and the code goes in your basket." },
     { "type": "header", "content": "Polaroids" },
-    { "type": "text", "id": "collage_heading", "label": "Heading over the polaroids", "default": "From the cellar" }
+    { "type": "text", "id": "collage_heading", "label": "Heading over the polaroids", "default": "From the cellar" },
+    { "type": "header", "content": "After early access (from Tue 24 Nov)" },
+    { "type": "paragraph", "content": "From Tue 24 Nov 00:00 UK, for good, the sign-up parts hide and this block shows instead (snippets/tl-eb-closed). Words approved by Julian, 19 Nov 2026." },
+    { "type": "text", "id": "closed_kicker", "label": "Kicker", "default": "Black Friday" },
+    { "type": "text", "id": "closed_heading", "label": "Heading", "default": "Early access has" },
+    { "type": "text", "id": "closed_heading_em", "label": "Heading, italic end", "default": "closed." },
+    { "type": "textarea", "id": "closed_text", "label": "Line", "default": "The early list is closed for this year." },
+    { "type": "textarea", "id": "closed_teaser", "label": "Teaser line", "default": "Black Friday starts Friday. Every bottle, case and set.", "info": "Shows only from Tue 24 to Thu 26 Nov. The same line the site runs those days (snippets/tl-dates, texts.bf)." },
+    { "type": "text", "id": "closed_button_label", "label": "Button", "default": "Shop the wines" },
+    { "type": "url", "id": "closed_button_link", "label": "Button link", "info": "Left empty, /collections/all." }
   ]
 }
 {% endschema %}
