@@ -1,0 +1,27 @@
+{%- comment -%}
+  EARLY ACCESS CLOSED · the closed block on both early bird pages · 19 Nov 2026
+  Rendered first inside <div class="tl-eb-x ..."> by sections/tl-early-bird
+  and sections/tl-early-bird-thanks. Hidden until snippets/tl-dates sets
+  html.tl-eb-closed, after the end of Mon 23 Nov UK, and shown for good
+  from then. Under that class the pages hide their sign-up parts (.eb-live),
+  so only one h1 shows at a time. The teaser line shows only under
+  html.tl-bf-teaser, Tue 24 to Thu 26 Nov. Look: snippets/tl-eb-style.
+
+  Parameters: kicker, heading, heading_em, text, teaser, button_label,
+  button_link. A part whose words are blank is left out.
+
+  WORDS approved by Julian on 19 Nov 2026, in chat. Never on it: a depth, an
+  end date, a gift, a delivery line, "VIP", "sale", "deal", "save", a
+  countdown or a stock count.
+{%- endcomment -%}
+<div class="eb-closed">
+  {%- if kicker != blank -%}<p class="eb-closed__kicker">{{ kicker }}</p>{%- endif -%}
+  {%- if heading != blank or heading_em != blank -%}
+    <h1 class="eb-h eb-closed__head">{{ heading }}{% if heading_em != blank %} <span class="eb-em">{{ heading_em }}</span>{% endif %}</h1>
+  {%- endif -%}
+  {%- if text != blank -%}<p class="eb-closed__text">{{ text }}</p>{%- endif -%}
+  {%- if teaser != blank -%}<p class="eb-closed__text eb-closed__teaser">{{ teaser }}</p>{%- endif -%}
+  {%- if button_label != blank -%}
+    <a class="eb-btn eb-btn--solid eb-closed__btn" href="{{ button_link | default: '/collections/all' }}">{{ button_label }}</a>
+  {%- endif -%}
+</div>

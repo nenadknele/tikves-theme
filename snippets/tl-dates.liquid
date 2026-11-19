@@ -244,6 +244,15 @@
   TL.dates.eaStart and eaEnd, the early access window, which the D list
   above holds since the cart fix merged; the fallback below only runs if
   they are ever missing, so there is still one place to change them.
+
+  EARLY ACCESS CLOSED, 19 Nov 2026: from the end of early access (after
+  TL.dates.eaEnd, Mon 23 Nov 23:59:59 UK) onwards, for good, TL.earlyClosed(t)
+  is true and sets the html class tl-eb-closed. Under it both early bird
+  pages hide the sign-up parts and show a short closed block
+  (snippets/tl-eb-closed, tl-eb-style), and the form script will not send.
+  It reads eaEnd, the date already here; no new date. The Black Friday
+  redirect (snippets/tl-eb-to-bf) still wins inside the week. The closed
+  words were approved by Julian on 19 Nov 2026, in chat.
 {%- endcomment -%}
 <script>
   (function () {
@@ -255,9 +264,11 @@
       TL.dates.eaEnd = Date.UTC(2026, 10, 23, 23, 59, 59);
     }
     TL.earlyOpen = function (t) { var n = t == null ? TL.now() : t; return n >= TL.dates.eaStart && n <= TL.dates.eaEnd; };
+    TL.earlyClosed = function (t) { return (t == null ? TL.now() : t) > TL.dates.eaEnd; };
     var root = document.documentElement;
     if (TL.earlyBand(TL.now())) root.classList.add('tl-eb-band');
     if (TL.earlyOpen(TL.now())) root.classList.add('tl-eb-open');
+    if (TL.earlyClosed(TL.now())) root.classList.add('tl-eb-closed');
   })();
 </script>
 <style>
