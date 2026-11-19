@@ -23,6 +23,7 @@
   menu. TESTING ON A COPY: any page shows it with ?view=early-bird-thanks.
 {%- endcomment -%}
 
+{%- render 'tl-eb-to-bf' -%}
 {%- render 'tl-eb-style' -%}
 {%- assign ebt_blog = blogs[section.settings.blog_handle] -%}
 {%- assign ebt_link = section.settings.button_link | default: ebt_blog.url | default: '/blogs/journal' -%}

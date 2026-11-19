@@ -11,6 +11,14 @@
   · Only until the end of Monday 23 November UK. That date lives in
     snippets/tl-dates.liquid (TL.dates.ebBandEnd), nowhere else. The band
     is hidden by CSS unless tl-dates set html.tl-eb-band.
+  · OFF IN THE BLACK FRIDAY WEEK, his word of 17 Nov 2026: while
+    html.tl-bf-live is set, the section is hidden, with the same wait for
+    the page as the Black Friday band (pages['black-friday'] published, or a
+    "bftest" template on a copy). The rule is written before the band, so
+    it never flashes. After Thu 3 Dec nothing here changes; his to rule.
+  · From 769px the picture layout only turns on under html.tl-eb-band, so
+    the 23 Nov end holds on a desktop too (17 Nov 2026: a plain
+    display: grid had been showing it past the end).
   · TEST COPIES ONLY: a homepage template whose suffix contains "ebtest"
     (index.ebtest.json, never in the repo) renders it before the page is
     published, so it can be checked on a copy. The clock still applies.
@@ -36,7 +44,22 @@
     assign eb_show = true
   endif
   assign eb_link = section.settings.button_link | default: '/pages/early-bird'
+  assign eb_bf_ready = false
+  assign eb_bf_page = pages['black-friday']
+  if eb_bf_page != blank and eb_bf_page.url != blank
+    assign eb_bf_ready = true
+  endif
+  if eb_sfx contains 'bftest'
+    assign eb_bf_ready = true
+  endif
 -%}
+
+{%- if eb_show and eb_bf_ready -%}
+  <style>
+    html.tl-bf-live .tl-ebb,
+    html.tl-bf-live .shopify-section:has([data-tl-eb-band]) { display: none !important; }
+  </style>
+{%- endif -%}
 
 {%- if eb_show -%}
   {%- render 'tl-eb-style' -%}
@@ -71,7 +94,7 @@
     .ebb__pic { display: block; background: var(--eb-paper-deep); padding: 0 16px 16px; }
     .ebb__img { display: block; width: 100%; height: auto; max-height: 420px; object-fit: cover; object-position: 50% 100%; }
     @media (min-width: 769px) {
-      .ebb--pic { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--eb-paper-deep); }
+      .ebb--pic { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); background: var(--eb-paper-deep); }
       html.tl-eb-band .ebb--pic { display: grid; }
       .ebb--pic .ebb__panel { order: 2; justify-content: center; }
       .ebb--pic .ebb__pic { order: 1; padding: 32px 0 32px 32px; }
