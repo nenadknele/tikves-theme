@@ -286,6 +286,52 @@
       nothing here applies and the footer is the centred stack it was.
       Layout only. Our own type and colours. No wording changes.
     {%- endcomment -%}
+    {%- comment -%}
+      MOBILE DROPDOWNS, 20 Nov 2026, his word: "the footer on mobile is too
+      long i need dropdown menu". Under 960px each menu (Shop, About, Help,
+      Legal) folds into a heading row that opens on tap. From 960px up the
+      button is hidden and the columns show in full, as before.
+    {%- endcomment -%}
+    {%- style -%}
+      .tl-ft-acc-btn { display: none; }
+      @media only screen and (max-width: 959px) {
+        .site-footer .grid__item[data-type="menu"] { border-bottom: 1px solid rgba(128, 128, 128, 0.3); border-bottom-color: color-mix(in srgb, currentColor 20%, transparent); }
+        .tl-ft-acc-btn {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
+          min-height: 56px;
+          padding: 0 4px;
+          margin: 0;
+          background: none;
+          border: 0;
+          color: inherit;
+          font: inherit;
+          font-size: 15px;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          text-align: left;
+          cursor: pointer;
+        }
+        .tl-ft-acc-btn svg { flex: 0 0 auto; transition: transform 0.2s ease; }
+        .tl-ft-acc-btn[aria-expanded="true"] svg { transform: rotate(180deg); }
+        .site-footer .tl-ft-acc-panel { display: none; text-align: left; padding: 0 4px 14px; }
+        .site-footer .tl-ft-acc-btn[aria-expanded="true"] ~ div .tl-ft-acc-panel { display: block; }
+      }
+    {%- endstyle -%}
+    <script>
+      (function () {
+        if (window.tlFtAcc) return;
+        window.tlFtAcc = true;
+        document.addEventListener('click', function (e) {
+          var btn = e.target.closest && e.target.closest('.tl-ft-acc-btn');
+          if (!btn) return;
+          btn.setAttribute('aria-expanded', btn.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+        });
+      })();
+    </script>
+
     {%- style -%}
       .tl-ft-coltitle { display: none; }
       @media only screen and (max-width: 959px) {

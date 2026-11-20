@@ -11,13 +11,18 @@
   {%- unless block.settings.show_footer_title -%}
     {%- comment -%} Desktop column heading, 16 Nov 2026. Hidden under 960px in sections/footer.liquid. {%- endcomment -%}
     <h2 class="h4 footer__title tl-ft-coltitle">{{ linklists[block.settings.menu].title }}</h2>
+    {%- comment -%} Mobile dropdown, 20 Nov 2026. Shown under 960px only, see sections/footer.liquid. {%- endcomment -%}
+    <button type="button" class="tl-ft-acc-btn" aria-expanded="false" aria-controls="TlFtAcc-{{ block.id }}">
+      <span>{{ linklists[block.settings.menu].title }}</span>
+      <svg aria-hidden="true" focusable="false" viewBox="0 0 28 16" width="14" height="8"><path d="m1.57 1.59 12.76 12.77L27.1 1.59" stroke-width="2.5" stroke="currentColor" fill="none"/></svg>
+    </button>
   {%- endunless -%}
   <div
     {% if block.settings.show_footer_title %}
       id="Footer-{{ block.id }}" class="collapsible-content collapsible-content--small"
     {% endif %}>
     <div class="collapsible-content__inner">
-      <div class="footer__collapsible{% unless block.settings.show_footer_title %} footer_collapsible--disabled{% endunless %}">
+      <div class="footer__collapsible{% unless block.settings.show_footer_title %} footer_collapsible--disabled tl-ft-acc-panel{% endunless %}"{% unless block.settings.show_footer_title %} id="TlFtAcc-{{ block.id }}"{% endunless %}>
         <ul class="no-bullets site-footer__linklist">
           {%- for link in linklists[block.settings.menu].links -%}
             <li><a href="{{ link.url }}">{{ link.title }}</a></li>
