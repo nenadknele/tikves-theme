@@ -66,7 +66,15 @@
                   </div>
                 {%- endif -%}
               {%- when 'subcollections' -%}
-                {%- if paginate.current_page == 1 and current_filter_size == 0 -%}
+                {%- comment -%}
+                  20 Nov 2026: no tile row on /collections/all. There the row was three
+                  large tiles, "Shop by Type", "Shop by Grape" and "Shop by Occasion",
+                  all linking to /collections/all-wines and all showing the same bottle,
+                  ahead of the first product. Every "Shop with my code" button in the
+                  early access emails lands on this page. The same three are in the menu.
+                  Other collections keep their tiles.
+                {%- endcomment -%}
+                {%- if paginate.current_page == 1 and current_filter_size == 0 and collection.handle != 'all' -%}
                   {%- render 'subcollections', per_row: block.settings.subcollections_per_row -%}
                 {%- endif -%}
               {%- when 'product_grid' -%}

@@ -223,11 +223,12 @@
 
 {%- style -%}
   .eb { background: var(--eb-paper); }
-  .eb__top { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "words" "pic" "join"; }
+  /* 20 Nov 2026, his word "make the improvements": on a phone the form comes before the picture, so the email box is on the first screen. Desktop is unchanged (picture left, words and form right). */
+  .eb__top { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-areas: "words" "join" "pic"; }
   .eb__words { grid-area: words; padding: 36px 24px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-  .eb__pic { grid-area: pic; padding: 0 16px; }
+  .eb__pic { grid-area: pic; padding: 0 16px 40px; }
   .eb__pic-img { display: block; width: 100%; height: auto; }
-  .eb__join { grid-area: join; padding: 28px 24px 40px; max-width: 520px; margin: 0 auto; box-sizing: border-box; width: 100%; }
+  .eb__join { grid-area: join; padding: 4px 24px 32px; max-width: 520px; margin: 0 auto; box-sizing: border-box; width: 100%; }
   .eb__kicker { margin: 0; font-size: 12px; line-height: 1.4; font-weight: 500; letter-spacing: 0.2em !important; text-transform: uppercase !important; }
   .eb__head { font-size: 40px; line-height: 1.08; font-weight: 400; }
   .eb__stamp { margin: 0; width: 88px; height: 88px; border: 1px solid var(--eb-ink); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
