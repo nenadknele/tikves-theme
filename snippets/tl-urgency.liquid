@@ -123,6 +123,15 @@
           var short = el.getAttribute('data-tl-bar');
           if (p.bfTeaser && el.hasAttribute('data-tl-bar-teaser')) short = el.getAttribute('data-tl-bar-teaser');
           el.textContent = short || text.replace(/\.$/, '');
+          // 20 Nov 2026: a visitor who already holds an early access code
+          // (TL.eaCode, snippets/tl-dates) is told it is on, not asked to join.
+          if (TL.eaCode && el.getAttribute('data-tl-fill') === 'ea') {
+            el.textContent = 'Your early access code is on';
+            var eaLink = slide.querySelector('.announcement-link-text');
+            if (eaLink) eaLink.textContent = 'Shop';
+            var eaA = slide.querySelector('a.announcement-link');
+            if (eaA) eaA.setAttribute('href', '/collections/all');
+          }
           var link = slide.querySelector('[data-tl-link-teaser]');
           if (link) {
             if (p.bfTeaser) {
@@ -169,7 +178,10 @@
             if (key === 'gift') {
               el.innerHTML = 'Too late for Christmas delivery? <a href="/products/gift-card">A gift card<\/a> comes by email, straight away.';
             } else if (key === 'ea') {
-              el.innerHTML = 'Early access is open. <a href="/pages/early-bird">Join the list<\/a> and we email you a code straight away.';
+              // 20 Nov 2026: a code holder (TL.eaCode) reads that the code is on.
+              el.innerHTML = TL.eaCode
+                ? 'Your early access code is on. 15% comes off in your basket.'
+                : 'Early access is open. <a href="/pages/early-bird">Join the list<\/a> and we email you a code straight away.';
             } else {
               el.textContent = text;
             }

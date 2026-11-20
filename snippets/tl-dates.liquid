@@ -271,6 +271,33 @@
     if (TL.earlyClosed(TL.now())) root.classList.add('tl-eb-closed');
   })();
 </script>
+{%- comment -%}
+  A VISITOR WHO HOLDS AN EARLY ACCESS CODE, 20 Nov 2026, his word "make the
+  improvements" after a live walk of the shop with a code. The "Shop with my
+  code" button in the emails opens /discount/<code>, and Shopify then sets
+  the discount_code cookie. Inside the early access window, a cookie value
+  starting EARLY- means this visitor already has a code. TL.eaCode is true
+  and the html class tl-ea-code is set. Under it:
+  · the announcement bar and the line under the price and in the cart say
+    the code is on, in place of "Join the list" (snippets/tl-urgency);
+  · the first-order reminder bubble is hidden, because that offer does not
+    combine with the code. The popup for everyone else is unchanged.
+  No price changes outside the basket: the cut still shows in the basket
+  only, his ruling of 10 Nov 2026. Words approved by Julian, 20 Nov 2026:
+  "Your early access code is on. 15% comes off in your basket."
+{%- endcomment -%}
+<script>
+  (function () {
+    if (!window.TL || typeof TL.eaCode !== 'undefined') return;
+    var has = false;
+    try { has = /(?:^|;\s*)discount_code=EARLY-/i.test(document.cookie); } catch (e) {}
+    TL.eaCode = !!(has && TL.earlyOpen && TL.earlyOpen(TL.now()));
+    if (TL.eaCode) document.documentElement.classList.add('tl-ea-code');
+  })();
+</script>
+<style>
+  html.tl-ea-code newsletter-reminder { display: none !important; }
+</style>
 <style>
   .tl-ebb { display: none; }
   html.tl-eb-band .tl-ebb { display: block; }
