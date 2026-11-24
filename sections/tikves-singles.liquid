@@ -103,6 +103,9 @@
             </a>
             <div class="tksg__meta">
               <a class="tksg__title grid-product__title grid-product__title--{{ settings.type_product_style }}" href="{{ product.url | within: col }}">{{ product.title }}</a>
+              {%- comment -%} 24 Nov 2026, his yes in chat: review stars on the homepage cards, the same snippet the collection cards use. Prints nothing for a product with no reviews. {%- endcomment -%}
+              {%- capture tk_stars -%}{%- render 'tikves-review-stars', product: product -%}{%- endcapture -%}
+              {%- if tk_stars != blank -%}<div class="tksg__stars">{{ tk_stars }}</div>{%- endif -%}
               {%- if line != blank or card_abv != blank -%}
                 <div class="tksg__line">
                   {{- line -}}
@@ -255,6 +258,8 @@
   #tksg-{{ section.id }} .tksg__meta { padding: 12px 0 0; text-align: center; }
   /* 29 Oct 2026, operator, after Overtone: name, line and price centred under the bottle. */
   #tksg-{{ section.id }} .tksg__title { display: block; text-decoration: none; margin: 0 0 4px; }
+  #tksg-{{ section.id }} .tksg__stars { margin: 0 0 4px; line-height: 1; }
+  #tksg-{{ section.id }} .tksg__stars .tl-stars { margin: 0; }
   #tksg-{{ section.id }} .tksg__line { font-size: 14px; opacity: 0.75; margin: 0 0 6px; }
   #tksg-{{ section.id }} .tksg__price { font-size: 16px; margin: 0 0 10px; }
   #tksg-{{ section.id }} .tksg__form { margin: 0; }
