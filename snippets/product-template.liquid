@@ -251,14 +251,10 @@
                         <span data-unit-price>{{ current_variant.unit_price | money }}</span>/{{ unit_price_base_unit }}
                       </div>
 
-                      {%- if shop.taxes_included or shop.shipping_policy.body != blank -%}
+                      {%- comment -%} 24 Nov 2026, his word in chat: "Delivery calculated at checkout" came out from under the price. The charges are flat and are now said in the buy box line (snippets/tl-buybox), so this line would have contradicted it. "Tax included." stays. {%- endcomment -%}
+                      {%- if shop.taxes_included -%}
                         <div class="product__policies rte small--text-center">
-                          {%- if shop.taxes_included -%}
-                            {{ 'products.product.include_taxes' | t }}
-                          {%- endif -%}
-                          {%- if shop.shipping_policy.body != blank -%}
-                            {{ 'products.product.shipping_policy_html' | t: link: shop.shipping_policy.url }}
-                          {%- endif -%}
+                          {{ 'products.product.include_taxes' | t }}
                         </div>
                       {%- endif -%}
                     </div>
