@@ -193,12 +193,19 @@
     is the shipping policy's own, word for word. No carrier, no service, no
     time. The Christmas line is 18 v6 section 5's, approved word for word for
     any surface, with its countdown from snippets/tl-dates.
+    24 Nov 2026, his word in chat ("do 1 and 2"): the line now says the
+    charges as well as the free threshold, so the delivery cost is not first
+    seen at checkout. Read that day in four places that agree: 18 v6 section
+    4, the live shipping policy, the Delivery page and the delivery profile.
+    This changes the earlier rule that no rate is restated off the Delivery
+    page. Isle of Man is not named; the link carries it. If a charge moves,
+    this line moves with it.
     7 Nov 2026: shown only while the bottle can be bought. Under a SOLD OUT
     button, a delivery line and a Christmas order-by date read as a promise
     the page can't keep.
   {%- endcomment -%}
   {%- if product.available -%}
-  <p class="tl-bb-delivery">Delivery is free on orders of £100 or more delivered to England, Scotland or Wales. <a href="/pages/delivery">Delivery costs and timings</a></p>
+  <p class="tl-bb-delivery">Delivery is £10 to England, £15 to Scotland and Wales, and free on orders of £100 or more. <a href="/pages/delivery">Delivery costs and timings</a></p>
   {%- render 'tl-urgency', mode: 'line' -%}
   {%- endif -%}
 
@@ -326,7 +333,7 @@
   {%- endunless -%}
   <div class="tl-bb-assure">
     {%- if product.available -%}
-    <div class="tl-bb-row"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M16.5 43.22H6.88V16.5h33.14v26.72H23.94"/><path d="M45.42 43.22h-5.4V30.4h17.1v12.82h-4.23"/><path d="m57.12 30.4-6.41-8.56H40.02"/><circle cx="20.24" cy="43.76" r="3.74"/><circle cx="49.2" cy="43.76" r="3.74"/></svg><p class="tl-bb-delivery">Delivery is free on orders of £100 or more delivered to England, Scotland or Wales. <a href="/pages/delivery">Delivery costs and timings</a></p></div>
+    <div class="tl-bb-row"><svg aria-hidden="true" focusable="false" viewBox="0 0 64 64"><path d="M16.5 43.22H6.88V16.5h33.14v26.72H23.94"/><path d="M45.42 43.22h-5.4V30.4h17.1v12.82h-4.23"/><path d="m57.12 30.4-6.41-8.56H40.02"/><circle cx="20.24" cy="43.76" r="3.74"/><circle cx="49.2" cy="43.76" r="3.74"/></svg><p class="tl-bb-delivery">Delivery is £10 to England, £15 to Scotland and Wales, and free on orders of £100 or more. <a href="/pages/delivery">Delivery costs and timings</a></p></div>
     {%- capture a_urg -%}{%- render 'tl-urgency', mode: 'line' -%}{%- endcapture -%}
     {%- assign a_urg_s = a_urg | strip -%}
     {%- if a_urg_s != blank -%}

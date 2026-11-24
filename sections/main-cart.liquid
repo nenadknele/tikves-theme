@@ -23,11 +23,13 @@
         <div class="cart__page-col">
           {% comment %} Safe place field. No signature model, operator ruling 26 Jul 2026 implemented 24 Aug 2026. The bolded at-your-risk line is the fence against abuse: chosen safe place plus delivery record counts as delivered. {% endcomment %}
           {% if settings.cart_notes_enable %}
-            <div class="tl-note">
+            {% comment %} 24 Nov 2026, his word in chat: on a phone this block pushed the Check out button a full screen down. It now opens on a tap, as the same field already does in the cart drawer. The words are unchanged. Open by itself when a note is already saved. {% endcomment %}
+            <details class="tl-note"{% if cart.note != blank %} open{% endif %}>
+              <summary class="tl-note__summary">Add delivery instructions</summary>
               <label for="CartNote">Where should we leave it if you're out?</label>
               <p class="tl-note__help">Optional. Somewhere secure at your address, out of sight and out of the weather. <strong>Left there at your risk. Once the delivery record shows it was left in your chosen place, it counts as delivered.</strong> If nobody is in, Royal Mail may leave it with a neighbour aged 18 or over.</p>
               <textarea name="note" class="input-full cart-notes" id="CartNote" rows="2">{{ cart.note }}</textarea>
-            </div>
+            </details>
           {% endif %}
 
           {% render 'tl-christmas-six' %}
@@ -95,7 +97,8 @@
 
           <div class="cart__item-row text-center">
             <small>
-              Delivery calculated at checkout.<br />
+              {% comment %} 24 Nov 2026, his word in chat: the charges are said here, so the cost is not first seen at checkout. Same sentence as the product page. Static on purpose: it does not depend on the basket, so it cannot go stale when a bottle is added. {% endcomment %}
+              Delivery is £10 to England, £15 to Scotland and Wales, and free on orders of £100 or more.<br />
             </small>
           </div>
 
