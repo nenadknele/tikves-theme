@@ -36,6 +36,13 @@
   cream, picture first on the phone, words left and picture right from
   769px, the outlined button.
 
+  HIS WORD, 24 Nov 2026, in chat: the Black Friday page is to be visible
+  before the week. So that it never reads as an offer already running,
+  from Tue 24 to Thu 26 Nov (html.tl-bf-teaser) the page band shows the
+  "before" line, "Starts at midnight on Friday 27 November.", in place of
+  line two. Page only; the homepage band is untouched and still waits for
+  the week. The words are his to change before merge.
+
   WORDS never on it: sale, deal, save, last chance, a countdown, a stock
   count, a price, a delivery promise.
 
@@ -133,7 +140,8 @@
       <div class="bfb__words">
         <{{ htag }} class="bfb__head">{{ s.heading }}</{{ htag }}>
         {%- if s.line_1 != blank -%}<p class="bfb__line bfb__offer">{{ s.line_1 }}</p>{%- endif -%}
-        {%- if s.line_2 != blank -%}<p class="bfb__line bfb__offer">{{ s.line_2 }}</p>{%- endif -%}
+        {%- if s.line_2 != blank -%}<p class="bfb__line bfb__offer bfb__until">{{ s.line_2 }}</p>{%- endif -%}
+        {%- if s.before_text != blank and s.timed == false -%}<p class="bfb__line bfb__offer bfb__before">{{ s.before_text }}</p>{%- endif -%}
         {%- if s.after_text != blank and s.timed == false -%}<p class="bfb__line bfb__after">{{ s.after_text }}</p>{%- endif -%}
         {%- if s.button_label != blank -%}
           <a class="bfb__btn" href="{{ bf_link }}">{{ s.button_label }}</a>
@@ -185,6 +193,10 @@
     .bfb__head { font-family: var(--typeHeaderPrimary), var(--typeHeaderFallback); font-weight: 600; font-size: 26px; line-height: 1.15; margin-bottom: 6px !important; }
     .bfb__line { font-size: 15px; line-height: 1.45; }
     .bfb__after { display: none; }
+    /* Before the week, Tue 24 to Thu 26 Nov (html.tl-bf-teaser, set in the head by snippets/tl-dates): the page says when it starts in place of when it ends. */
+    .bfb__before { display: none; }
+    html.tl-bf-teaser .bfb__before { display: block; }
+    html.tl-bf-teaser .bfb__until { display: none; }
     .tl-bfb--over .bfb__offer { display: none; }
     .tl-bfb--over .bfb__after { display: block; }
     .bfb__btn {
@@ -245,6 +257,7 @@
     { "type": "text", "id": "heading", "label": "Heading", "default": "Black Friday at Tikveš London." },
     { "type": "text", "id": "line_1", "label": "Line one", "default": "15% off every bottle, case and set." },
     { "type": "text", "id": "line_2", "label": "Line two", "default": "Until the end of Thursday 3 December." },
+    { "type": "text", "id": "before_text", "label": "Line before the week starts", "default": "Starts at midnight on Friday 27 November.", "info": "Black Friday page only. Shows from Tue 24 to Thu 26 Nov in place of line two (snippets/tl-dates, html.tl-bf-teaser)." },
     { "type": "text", "id": "after_text", "label": "Line after the week has ended", "default": "Black Friday has finished. The range is below at its usual prices.", "info": "Black Friday page only." },
     { "type": "text", "id": "button_label", "label": "Button", "info": "Leave empty on the Black Friday page." },
     { "type": "url", "id": "button_link", "label": "Button link" },
