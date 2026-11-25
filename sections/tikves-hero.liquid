@@ -149,6 +149,20 @@
       {%- if s.button_label != blank -%}
         <a class="tk-hero__btn tk-hero__btn--{{ s.button_style }}" href="{{ s.button_link | default: '/collections/all' }}">{{ s.button_label | escape }}</a>
       {%- endif -%}
+      {%- comment -%} 25 Nov 2026, operator: proof goes on the top. A named quote and one medal line sit right under the button. Both are settings, and each prints only when filled in. {%- endcomment -%}
+      {%- if s.proof_quote != blank or s.proof_medal != blank -%}
+        <div class="tk-hero__proof">
+          {%- if s.proof_quote != blank -%}
+            <p class="tk-hero__proof-quote">&ldquo;{{ s.proof_quote | escape }}&rdquo;</p>
+            {%- if s.proof_name != blank -%}
+              <p class="tk-hero__proof-name">{{ s.proof_name | escape }}</p>
+            {%- endif -%}
+          {%- endif -%}
+          {%- if s.proof_medal != blank -%}
+            <p class="tk-hero__proof-medal">{{ s.proof_medal | escape }}</p>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
   </div>
 </div>
@@ -308,6 +322,35 @@
     opacity: 1;
   }
 
+  /* 25 Nov 2026, operator: proof under the button. */
+  .tk-hero--{{ section.id }} .tk-hero__proof {
+    margin-top: 18px;
+    color: {{ txt_color }};
+    text-shadow: {{ txt_shadow }};
+  }
+  .tk-hero--{{ section.id }} .tk-hero__proof p { margin: 0; color: inherit; }
+  .tk-hero--{{ section.id }} .tk-hero__proof-quote {
+    font-size: 15px;
+    line-height: 1.4;
+    font-style: italic;
+  }
+  .tk-hero--{{ section.id }} .tk-hero__proof-name {
+    margin-top: 4px !important;
+    font-size: 11px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .tk-hero--{{ section.id }} .tk-hero__proof-medal {
+    margin-top: 12px !important;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__proof {
+    color: #1F2328;
+    text-shadow: none;
+  }
+
   /* 29 Oct 2026, operator: on the phone the words under the photograph
      sit centred, heading, line and button. Desktop keeps its overlay
      alignment. */
@@ -374,7 +417,8 @@
       padding: 64px max(56px, 6vw) !important;
     }
     .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__title,
-    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__sub {
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__sub,
+    .tk-hero--{{ section.id }}.tk-hero--stack .tk-hero__proof {
       color: {{ txt_color }};
       text-shadow: {{ txt_shadow }};
     }
@@ -480,6 +524,10 @@
         { "value": "large", "label": "Large" }
       ]
     },
+    { "type": "header", "content": "Proof under the button" },
+    { "type": "text", "id": "proof_quote", "label": "Quote", "info": "Their exact words, no quote marks. Only a person with written permission on file." },
+    { "type": "text", "id": "proof_name", "label": "Who said it" },
+    { "type": "text", "id": "proof_medal", "label": "Medal line", "info": "All five parts: wine, vintage, medal, competition, award year." },
     { "type": "header", "content": "Text column width" },
     { "type": "range", "id": "text_width_mobile", "label": "Mobile width", "min": 40, "max": 100, "step": 2, "unit": "%", "default": 60 },
     { "type": "range", "id": "text_width_desktop", "label": "Desktop width", "min": 280, "max": 900, "step": 10, "unit": "px", "default": 480 },
