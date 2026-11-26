@@ -5048,6 +5048,11 @@ theme.recentlyViewed = {
           var ds = window.getComputedStyle(dialogs[i]);
           if (ds.display !== 'none' && ds.visibility !== 'hidden' && dialogs[i].getClientRects().length) return false;
         }
+        // 26 Nov 2026: our own cookie bar (tl-gate-consent, 3 Nov) replaced
+        // Shopify's banner, so the check below stopped seeing it and the
+        // popup opened over the bar. Wait while our bar is on screen too.
+        var ownBar = document.querySelector('[data-tl-cc]');
+        if (ownBar && !ownBar.hidden) return false;
         var banner = document.getElementById('shopify-pc__banner');
         if (!banner) return true;
         var cs = window.getComputedStyle(banner);
