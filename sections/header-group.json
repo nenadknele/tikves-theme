@@ -25,6 +25,7 @@
         },
         "announcement_babuna_iwc": {
           "type": "announcement",
+          "disabled": true,
           "settings": {
             "text": "Babuna Red 2023. Gold, IWC 2026.",
             "link_text": "£29 a bottle",
@@ -59,7 +60,22 @@
           "settings": {
             "menu_item": "Shop",
             "show_images": false,
-            "center_content": true
+            "image_aspect_ratio": "landscape",
+            "center_content": true,
+            "promo_text_alignment": "left",
+            "promo_heading_size": "medium",
+            "promo1_image_shape": "landscape",
+            "promo1_link": "",
+            "promo1_heading": "",
+            "promo1_text": "",
+            "promo1_button_label": "",
+            "promo1_position": "after",
+            "promo2_image_shape": "landscape",
+            "promo2_link": "",
+            "promo2_heading": "",
+            "promo2_text": "",
+            "promo2_button_label": "",
+            "promo2_position": "after"
           }
         }
       },
